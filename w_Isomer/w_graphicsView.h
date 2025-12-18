@@ -21,6 +21,10 @@ public:
 private:
     QVector<Level> L_Levels;
     QVector<Transition> L_Transitions;
+
+    double maxEnergy;
+    double scale;
+    int drawHeight;
 };
 
 #endif // PAINTGRAPHICSVIEW_H

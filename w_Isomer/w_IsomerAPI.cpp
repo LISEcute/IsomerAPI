@@ -24,15 +24,17 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
 
-  // dbPath = QCoreApplication::applicationDirPath() + "/database_store/Isomer_DB_WIDGET.sqlite";
-  dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
-  qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath;
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
+  // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
+  qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
   if(!dbIsomLevel.open()){
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
+
+
 
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   model = new QSqlTableModel(this, dbIsomLevel);
@@ -131,6 +133,8 @@ void IsomerAPI::sourceFilter()
 void IsomerAPI::applyFilters()
 {
   sourceFilter();
+  qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
+
 
   QMap<QString, QString> filterMap = {
     {"le_T12", "T12"},

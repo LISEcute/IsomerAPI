@@ -19,15 +19,20 @@ LevelScheme::LevelScheme(const QVector<Level>& levels,
 
 {
     ui->setupUi(this);
-    setMinimumSize(500, 500);
-    resize(800,400);
+    setMinimumSize(500, 600);
+    resize(800,800);
     qDebug() << _filterQuery << _path;
 
-    //
+    // establish scene
     QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);
     scene->addItem(item);
     ui->graphicsView->setScene(scene);
+
+    // display policies
+    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     QAction *action_savePic2 = new QAction("TEST SAVE", this);
     ui->toolBar->addAction(action_savePic2);
