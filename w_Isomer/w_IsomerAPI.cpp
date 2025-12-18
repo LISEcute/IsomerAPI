@@ -19,6 +19,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     model(nullptr)
 {
   ui->setupUi(this);
+    // table config
+  ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
 
   // Database initialization
 
