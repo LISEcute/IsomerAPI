@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QString>
 
+
 #include "L_vectorStruct.h"
 
 //------------------------------------------------------
@@ -12,15 +13,17 @@
 class graphicsView : public QGraphicsItem
 {
 public:
-    graphicsView(const QVector<Level>& levels, const QVector<Transition>& transitions,QGraphicsItem *parent = nullptr);
+    graphicsView(const Isotope& iso,
+                 QGraphicsItem *parent = nullptr);
 
     QRectF boundingRect() const override;  // required
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
 private:
-    QVector<Level> L_Levels;
-    QVector<Transition> L_Transitions;
+    Isotope L_isotope;
+    // QVector<Level> L_Levels;
+    // QVector<Transition> L_Transitions;
 
     double maxEnergy;
     double scale;

@@ -12,16 +12,17 @@
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-graphicsView::graphicsView(const QVector<Level>& levels,
-                           const QVector<Transition>& transitions,
+graphicsView::graphicsView(const Isotope& iso,
                            QGraphicsItem *parent)
     :
     QGraphicsItem(parent),
-    L_Levels(levels),
-    L_Transitions(transitions)
+    L_isotope(iso)
+
+    // L_Levels(levels),
+    // L_Transitions(transitions)
 {
     maxEnergy = 0;
-
+    // ~~~~~ CONTINUE HERE
     for (const Level& lvl : L_Levels) {
         maxEnergy = std::max(maxEnergy, lvl.lvlEnergy);
     }
@@ -47,7 +48,6 @@ void graphicsView::paint(QPainter *painter,
     extern QRect OutTextOleg(QPainter *painter, int x, int y, const char *s, int loc, int clip=0,
                              const QRectF* PlotRect=nullptr);
 
-
     int trHOffset = 20;
 
     int lineLeft = 0;
@@ -56,6 +56,7 @@ void graphicsView::paint(QPainter *painter,
     int lineRight = trCount*trHOffset + 25;
     qDebug() << "[graphicsView: line left/right]" << lineLeft << lineRight;
     int indentation = 25;
+
 
 
 
@@ -109,7 +110,7 @@ void graphicsView::paint(QPainter *painter,
     int xOffset = 0;
     for (const Transition &tr : L_Transitions)
       {
-        int y1 = static_cast<int>(yBase - tr.level*scale);
+        int y1 = static_cast<int>(yBase - tr.lvlEnergy*scale);
         int y2 = static_cast<int>(yBase - tr.emission*scale);
 
         int x = lineLeft + indentation + xOffset;

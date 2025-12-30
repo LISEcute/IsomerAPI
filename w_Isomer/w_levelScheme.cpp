@@ -1,20 +1,19 @@
 #include "w_levelScheme.h"
 #include "ui_w_levelScheme.h"
+#include "L_vectorStruct.h"
 
 
 #include <QPainter>
 #include <QPaintEvent>
 #include <QGraphicsScene>
+#include <QHash>
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-LevelScheme::LevelScheme(const QVector<Level>& levels,
-                         const QVector<Transition>& transitions,
+LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
                          QWidget *parent)
     :
     QMainWindow(parent),
-    m_levels(std::move(levels)),
-    m_transitions(std::move(transitions)),
     ui(new Ui::LevelScheme)
 
 {
@@ -23,8 +22,23 @@ LevelScheme::LevelScheme(const QVector<Level>& levels,
     resize(800,800);
     qDebug() << _filterQuery << _path;
 
-    // establish scene
     QGraphicsScene *scene = new QGraphicsScene(this);
+
+    // ~~~~~ establsih graphics hashmap
+    QHash<QPair<int,int>, QGraphicsItem*> gphcStore;
+
+    // make graphics
+    for (const Isotope &iso : selectedIsotopes) {
+        QPair<int,int> gphcKey(iso.A, iso.Z);
+        auto *item = new graphicsView(iso);
+
+        gphcStore.insert(gphcKey, item);
+
+
+        // auto *item = new graphicsView(selectedIsotopes);
+        // scene->addItem(item);
+    }
+    /*QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);
     scene->addItem(item);
     ui->graphicsView->setScene(scene);
@@ -37,6 +51,7 @@ LevelScheme::LevelScheme(const QVector<Level>& levels,
     QAction *action_savePic2 = new QAction("TEST SAVE", this);
     ui->toolBar->addAction(action_savePic2);
     connect(ui->action_savePic, &QAction::triggered,this,&LevelScheme::saveImage);
+*/
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 

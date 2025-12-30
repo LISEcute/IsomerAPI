@@ -14,6 +14,7 @@
 #include <QSqlQuery>
 #include <QList>
 #include <QVector>
+#include <QHash>
 
 #include "L_vectorStruct.h"
 
@@ -35,7 +36,8 @@ public:
     IsomerAPI(QWidget *parent = nullptr);
     ~IsomerAPI();
 
-    std::tuple<QVector<Level>, QVector<Transition>> prepData();
+    QHash<QPair<int, int>, Isotope> prepData();
+    // std::tuple<QVector<Level>, QVector<Transition>> prepData();
 
 private slots:
     void applyFilters();

@@ -215,53 +215,183 @@ void IsomerAPI::clearFilters()
 
 void IsomerAPI::openDrawing()
 {
-  auto [levels, transitions] = prepData();
+  qDebug() << "[openDrawing: BEGIN]";
+  auto selectedIsotopes = prepData();
 
-  auto *mw = new LevelScheme(std::move(levels),
-                             std::move(transitions));
+  auto *mw = new LevelScheme(selectedIsotopes, this);
 
-  mw->setAttribute(Qt::WA_DeleteOnClose, true);
+  // mw->setAttribute(Qt::WA_DeleteOnClose, true);
   mw->show();
-  mw->raise();
+  // mw->raise();
   mw->activateWindow();
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-std::tuple<QVector<Level>,QVector<Transition>> IsomerAPI::prepData()
+// std::tuple<QVector<Level>,QVector<Transition>> IsomerAPI::prepData()
+// {
+
+//   QString fullQuery = "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
+//   QString filter = model->filter();
+//   if (!filter.isEmpty()) {
+//       fullQuery += " WHERE " + filter;
+//     }
+
+//   QVector<Level> prepLevel;
+//   QVector<Transition> prepTransition;
+//   query.exec(fullQuery);
+
+//   prepLevel.push_back({0,"",""});
+
+//   while (query.next())
+//     {
+//       double tmpLevel = query.value("LEVEL").toDouble();
+//       double tmpGamma = query.value("E_GAMMA").toDouble();
+//       double tmpFinal = tmpLevel - tmpGamma;
+//       QString tmpEmission = QString("%1 keV").arg(tmpGamma);
+//       qDebug() << "[prepData: isotope check]" << query.value("A_IT") << query.value("Z_IT");
+//       prepTransition.push_back({tmpLevel, tmpFinal, tmpEmission});
+//       prepLevel.push_back({tmpLevel,query.value("JPI").toString(),query.value("T12").toString()});
+
+//       // std::unordered_map<std::pair<int,int>,std::pair<QVector<Level>,QVector<Transition>>> hashPrepData;
+
+//     }
+
+//   for (const Transition &tr : prepTransition) {
+//       qDebug() << "[prepData: transition check]" << tr.lvlEnergy << tr.emission << tr.label;
+//       // qDebug() << "[prepData: isotope check]" << query.value;
+//     }
+//   qDebug();
+//   for (const Level &lvl : prepLevel) {
+//       qDebug() << "[prepData: level check]" << lvl.lvlEnergy << lvl.spin << lvl.halfLife;
+//     }
+
+//   return std::make_tuple(prepLevel, prepTransition);
+// }
+
+QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
 {
 
-  QString fullQuery = "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
+  qDebug() << "[prepData: BEGIN PREP]";
+  QString fullQuery =
+        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
+
   QString filter = model->filter();
   if (!filter.isEmpty()) {
       fullQuery += " WHERE " + filter;
     }
+  qDebug() << "[prepData: QUERY DRAFT]";
 
-  QVector<Level> prepLevel;
-  QVector<Transition> prepTransition;
+
+// ~~~~~ QPair<int,int> acts as isotope key with A,Z number
+  QHash<QPair<int,int>,Isotope> isotopeMap;
+
+  qDebug() << "[prepData: MAP INIT]";
+  // QVector<Level> prepLevel;
+  // QVector<Transition> prepTransition;
+
   query.exec(fullQuery);
+  qDebug() << "[prepData: QUERY EXEC]";
 
-  prepLevel.push_back({0,"",""});
+  // prepLevel.push_back({0,"",""});
 
   while (query.next())
     {
-      double tmpLevel = query.value("LEVEL").toDouble();
-      double tmpGamma = query.value("E_GAMMA").toDouble();
-      double tmpFinal = tmpLevel - tmpGamma;
-      QString tmpEmission = QString("%1 keV").arg(tmpGamma);
+      int A = query.value("A_IT").toInt();
+      int Z = query.value("Z_IT").toInt();
 
-      prepTransition.push_back({tmpLevel, tmpFinal, tmpEmission});
-      prepLevel.push_back({tmpLevel,query.value("JPI").toString(),query.value("T12").toString()});
+      // ~~~~~ isotope key established
+      QPair<int,int> key(A,Z);
+      qDebug() << "[prepData: KEY INIT]";
+
+      double tmpLevelE = query.value("LEVEL").toDouble();
+      double tmpGammaE = query.value("E_GAMMA").toDouble();
+
+      // double tmpFinal = tmpLevelE - tmpGammaE;
+      QString tmpEmission = QString("%1 keV").arg(tmpGammaE);
+
+      qDebug() << "[prepData: VALUES READ]";
+
+      Isotope& iso = isotopeMap[key];
+      iso.A = A;
+      iso.Z = Z;
+      qDebug() << "[prepData: ISO KEYING BEGIN]";
+
+      Level* levelPtr = nullptr;
+      qDebug() << "[prepData: levelPtr INIT]";
+
+      // ~~~~~ check for level nearness -- later include customization of plots based on diff
+      for (Level& lvl : iso.levels) {
+          if (qFuzzyCompare(lvl.lvlEnergy + 1.0, tmpLevelE + 1.0)) {
+              qDebug() << "[prepData: FUZZY COMPARING]";
+              levelPtr = &lvl;
+              break;
+          }
+      }
+
+      // ~~~~~ if no near levels, make new entry -- watch for level skipping!!
+      if (!levelPtr) {
+          qDebug() << "[prepData: NO PARENTS]";
+          Level newLevel;
+          newLevel.lvlEnergy = tmpLevelE;
+          newLevel.spin = query.value("JPI").toString();
+          newLevel.halfLife = query.value("T12").toString();
+
+          // qDebug() << "[prepData: check level skipping]";
+
+          iso.levels.append(newLevel);
+          levelPtr = &iso.levels.last();
+          qDebug() << "[prepData: LEVEL APPENDED]";
+      }
+
+
+      // ~~~~~ add transitions
+      Transition tr;
+
+      tr.lvlEnergy = tmpLevelE;
+      tr.emission = tmpGammaE;
+      tr.label = tmpEmission;
+
+      // ~~~~~ point to current level
+      levelPtr -> transitions.append(tr);
+
+
+      // qDebug() << "[prepData: isotope check]" << query.value("A_IT") << query.value("Z_IT");
+      // prepTransition.push_back({tmpLevel, tmpFinal, tmpEmission});
+      // prepLevel.push_back({tmpLevel,query.value("JPI").toString(),query.value("T12").toString()});
+
+      // std::unordered_map<std::pair<int,int>,std::pair<QVector<Level>,QVector<Transition>>> hashPrepData;
 
     }
 
-  for (const Transition &tr : prepTransition) {
-      qDebug() << "[prepData: transition check]" << tr.level << tr.emission << tr.label;
-    }
-  qDebug();
-  for (const Level &lvl : prepLevel) {
-      qDebug() << "[prepData: level check]" << lvl.lvlEnergy << lvl.spin << lvl.halfLife;
+    qDebug() << "[prepData: check isotope count]" << isotopeMap.count();
+
+
+
+    for (Isotope &storedIso : isotopeMap) {
+        qDebug() << "[prepData: check isotopes key]" << storedIso.A << storedIso.Z;
+        for (Level &lvl : storedIso.levels) {
+            qDebug() << "[prepData: check isotope levels]" << lvl.lvlEnergy;
+            for (Transition &tr : lvl.transitions) {
+                qDebug() << "[prepData: check level transitions]" << tr.label;
+
+            }
+        }
+        qDebug();
+
     }
 
-  return std::make_tuple(prepLevel, prepTransition);
+    return isotopeMap;
+
+
+  // for (const Transition &tr : prepTransition) {
+  //     qDebug() << "[prepData: transition check]" << tr.lvlEnergy << tr.emission << tr.label;
+  //     // qDebug() << "[prepData: isotope check]" << query.value;
+  //   }
+  // qDebug();
+  // for (const Level &lvl : prepLevel) {
+  //     qDebug() << "[prepData: level check]" << lvl.lvlEnergy << lvl.spin << lvl.halfLife;
+  //   }
+
+  // return std::make_tuple(prepLevel, prepTransition);
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
