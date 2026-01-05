@@ -1,13 +1,8 @@
 #include "w_graphicsView.h"
-//#include "vectorstructures.h"
 
 #include <QPainter>
 #include <QPen>
 #include <QPolygon>
-
-#include <sstream>
-#include <iomanip>
-#include <string>
 
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -22,19 +17,20 @@ graphicsView::graphicsView(const Isotope& iso,
     // L_Transitions(transitions)
 {
     maxEnergy = 0;
-    // ~~~~~ CONTINUE HERE
-    for (const Level& lvl : L_Levels) {
+    trCount = 0;
+    for (const Level& lvl : L_isotope.levels) {
         maxEnergy = std::max(maxEnergy, lvl.lvlEnergy);
+        // qDebug() << "[GRAPHIC VIEW: check transitions counts]" << lvl.transitions.count();
+        trCount += lvl.transitions.count();
     }
     scale = 1.;
 
     drawHeight = 600;
     scale = drawHeight/maxEnergy;
 
-    qDebug() << "[CONSTRUCT] drawheight, maxEnergy" << drawHeight << maxEnergy << drawHeight/maxEnergy;
-    // if (maxEnergy > drawHeight) {
-    //     scale = drawHeight/maxEnergy;
-    // } else scale = 1.;
+    // qDebug() << "[CONSTRUCT: transition count]" << trCount;
+
+    // qDebug() << "[CONSTRUCT: drawheight, maxEnergy]" << drawHeight << maxEnergy << drawHeight/maxEnergy;
 
 }
 
@@ -44,6 +40,7 @@ void graphicsView::paint(QPainter *painter,
                               const QStyleOptionGraphicsItem *,
                               QWidget *)
 {
+    // qDebug() << "[graphicsView: PAINTING]";
     painter->setRenderHint(QPainter::Antialiasing);
     extern QRect OutTextOleg(QPainter *painter, int x, int y, const char *s, int loc, int clip=0,
                              const QRectF* PlotRect=nullptr);
@@ -51,20 +48,16 @@ void graphicsView::paint(QPainter *painter,
     int trHOffset = 20;
 
     int lineLeft = 0;
-    int trCount = L_Transitions.size();
-    qDebug() << "[graphicsView: transition count]: "<< trCount;
     int lineRight = trCount*trHOffset + 25;
-    qDebug() << "[graphicsView: line left/right]" << lineLeft << lineRight;
     int indentation = 25;
-
-
-
+    // qDebug() << "[graphicsView: line left/right]" << lineLeft << lineRight;
+    // qDebug() << "[graphicsView: transition count]: "<< trCount;
 
 
     int titleOffset = 20;
-    int spinOffset = -40;
+    int spinOffset = -45;
     int infoHOffset = 10;
-    int textVOffset = -5;
+    // int textVOffset = -5;
     int arrowHeadSize = 6;
 
     QColor lineColor(0,0,0);
@@ -73,19 +66,65 @@ void graphicsView::paint(QPainter *painter,
 
     double yBase = drawHeight;
 
-    for (const Level &lvl : L_Levels)
+    int xOffset = 0;
+
+    painter->drawText((lineLeft+lineRight)/2,yBase + titleOffset,QString("A: %1 Z: %2")
+                                                                           .arg(L_isotope.A)
+                                                                           .arg(L_isotope.Z));
+    bool firstIt = true;
+
+    for (const Level &lvl : L_isotope.levels)
       {
         int y = static_cast<int>(yBase - lvl.lvlEnergy*scale);
         painter->setPen(QPen(lineColor, 2));
         painter->drawLine(lineLeft, y, lineRight, y);
+
+        if (firstIt) {
+            painter->drawLine(lineLeft,yBase,lineRight,yBase);
+
+            painter->setPen(levelTextColor);
+            painter->drawText(lineRight + infoHOffset, yBase, QString("0 keV    Stable"));
+            firstIt = false;
+
+        }
+
         painter->setPen(levelTextColor);
-        painter->drawText(spinOffset, y + textVOffset, lvl.spin);
-        QString text = QString("%1 keV    %2 us")
+        painter->drawText(spinOffset, y, lvl.spin);
+        QString text = QString("%1 keV    %2 \u03BCs")
                            .arg(lvl.lvlEnergy, 0, 'f', 0)
                            .arg(lvl.halfLife);
 
-        painter->drawText(lineRight + infoHOffset, y + textVOffset, text);
+        painter->drawText(lineRight + infoHOffset, y, text);
 
+        // ~~~~~ transition drawing
+        painter->setPen(QPen(transitionColor, 2));
+        painter->setBrush(transitionColor);
+
+        for (const Transition &tr : lvl.transitions) {
+            double Ei = tr.lvlEnergy;
+            double Ef = tr.lvlEnergy - tr.emission;
+
+            double y1 = static_cast<int>(yBase - Ei*scale);
+            double y2 = static_cast<int>(yBase - Ef*scale);
+
+            int x = lineLeft + indentation + xOffset;
+
+            painter->drawLine(x, y1, x, y2);
+
+            QPolygon arrowHead;
+            arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize)
+                      << QPoint(x + arrowHeadSize, y2 - arrowHeadSize)
+                      << QPoint(x, y2);
+            painter->drawPolygon(arrowHead);
+
+            painter->setPen(transitionColor);
+
+            painter->drawText(x + 8, (y1 + y2) / 2, tr.label);
+            painter->setPen(QPen(transitionColor, 2));
+
+            xOffset += 20;
+
+        }
         // ~~~~ ATTEMPT AT OUTOLEGTEXT STR FOR SUB
         // std::ostringstream oss;
         // oss << std::fixed << std::setprecision(0)
@@ -102,34 +141,29 @@ void graphicsView::paint(QPainter *painter,
     }
     // OutTextOleg(painter, 0,0,"This is a $test, up $1 and down ~1",1);
     //  draw title
-    painter->drawText((lineLeft+lineRight)/2,yBase + titleOffset,QString("##El"));
 
-    painter->setPen(QPen(transitionColor, 2));
-    painter->setBrush(transitionColor);
+    // for (const Transition &tr : L_Transitions)
+    //   {
+    //     int y1 = static_cast<int>(yBase - tr.lvlEnergy*scale);
+    //     int y2 = static_cast<int>(yBase - tr.emission*scale);
 
-    int xOffset = 0;
-    for (const Transition &tr : L_Transitions)
-      {
-        int y1 = static_cast<int>(yBase - tr.lvlEnergy*scale);
-        int y2 = static_cast<int>(yBase - tr.emission*scale);
+    //     int x = lineLeft + indentation + xOffset;
 
-        int x = lineLeft + indentation + xOffset;
+    //     painter->drawLine(x, y1, x, y2);
 
-        painter->drawLine(x, y1, x, y2);
+    //     QPolygon arrowHead;
+    //     arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize)
+    //               << QPoint(x + arrowHeadSize, y2 - arrowHeadSize)
+    //               << QPoint(x, y2);
+    //     painter->drawPolygon(arrowHead);
 
-        QPolygon arrowHead;
-        arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize)
-                  << QPoint(x + arrowHeadSize, y2 - arrowHeadSize)
-                  << QPoint(x, y2);
-        painter->drawPolygon(arrowHead);
+    //     painter->setPen(transitionColor);
 
-        painter->setPen(transitionColor);
+    //     painter->drawText(x + 8, (y1 + y2) / 2, tr.label);
+    //     painter->setPen(QPen(transitionColor, 2));
 
-        painter->drawText(x + 8, (y1 + y2) / 2, tr.label);
-        painter->setPen(QPen(transitionColor, 2));
-
-        xOffset += 20;
-    }
+    //     xOffset += 20;
+    // }
 }
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -138,7 +172,7 @@ QRectF graphicsView::boundingRect() const
 {
     // return QRectF(-105-50, 0, 500, 600);
     int trHOffset = 20;
-    int lineRight = L_Transitions.size() * trHOffset + 25;
+    int lineRight = trCount * trHOffset + 25;
 
     int infoPadding = 150;
 
@@ -148,3 +182,4 @@ QRectF graphicsView::boundingRect() const
     // return QRectF(-105-50, 0, 500, 600);
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+

@@ -35,7 +35,7 @@
     <string>toolBar</string>
    </property>
    <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+    <enum>RightToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -54,92 +54,34 @@
    <property name="layoutDirection">
     <enum>Qt::LayoutDirection::LeftToRight</enum>
    </property>
-   <widget class="QMenu" name="menuother_isotopes">
+   <widget class="QMenu" name="menu_other_isotopes">
     <property name="layoutDirection">
      <enum>Qt::LayoutDirection::LeftToRight</enum>
     </property>
     <property name="title">
-     <string>other isotopes</string>
+     <string>Scheme Selection</string>
     </property>
-    <addaction name="actioniso1"/>
-    <addaction name="actioniso2"/>
    </widget>
-   <widget class="QMenu" name="menuedit_levels">
+   <widget class="QMenu" name="menu_edit_levels">
     <property name="title">
-     <string>edit levels</string>
+     <string>edit levels (soon)</string>
     </property>
    </widget>
    <widget class="QMenu" name="menu_savePic">
     <property name="title">
-     <string>save picture</string>
+     <string>save picture (soon)</string>
     </property>
    </widget>
-   <addaction name="menuother_isotopes"/>
+   <addaction name="menu_other_isotopes"/>
    <addaction name="menu_savePic"/>
-   <addaction name="menuedit_levels"/>
+   <addaction name="menu_edit_levels"/>
   </widget>
-  <action name="actionss">
-   <property name="text">
-    <string>ss</string>
-   </property>
-  </action>
-  <action name="actiondd">
-   <property name="text">
-    <string>dd</string>
-   </property>
-  </action>
-  <action name="actiond">
-   <property name="text">
-    <string>d</string>
-   </property>
-  </action>
-  <action name="actionds">
-   <property name="text">
-    <string>ds</string>
-   </property>
-  </action>
-  <action name="actionfaf">
-   <property name="text">
-    <string>faf</string>
-   </property>
-  </action>
-  <action name="actioniso_1">
-   <property name="text">
-    <string>iso 1</string>
-   </property>
-  </action>
-  <action name="actioniso_2">
-   <property name="text">
-    <string>iso 2</string>
-   </property>
-  </action>
-  <action name="actioniso_3">
-   <property name="text">
-    <string>iso 3</string>
-   </property>
-  </action>
   <action name="action_savePic">
    <property name="text">
     <string>Save Picture</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actioniso1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>iso1</string>
-   </property>
-  </action>
-  <action name="actioniso2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>iso2</string>
    </property>
   </action>
  </widget>

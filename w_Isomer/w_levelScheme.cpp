@@ -22,22 +22,51 @@ LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
     resize(800,800);
     qDebug() << _filterQuery << _path;
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
 
     // ~~~~~ establsih graphics hashmap
-    QHash<QPair<int,int>, QGraphicsItem*> gphcStore;
+    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
 
     // make graphics
+    QPair<int,int> firstIso;
+    bool firstIt = true;
+
     for (const Isotope &iso : selectedIsotopes) {
+        qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
         QPair<int,int> gphcKey(iso.A, iso.Z);
         auto *item = new graphicsView(iso);
+        if (firstIt){
+            firstIso = gphcKey;
+            firstIt = false;
+        }
 
-        gphcStore.insert(gphcKey, item);
+        graphicStore.insert(gphcKey, item);
+
+        qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
 
 
-        // auto *item = new graphicsView(selectedIsotopes);
-        // scene->addItem(item);
+        // append isotopes
+        // ~~~ CONTINUE HERE
+        QAction *act_isotopeSelect = new QAction(QString("A: %1 Z: %2")
+                                                .arg(iso.A).arg(iso.Z),this);
+        ui->menu_other_isotopes->addAction(act_isotopeSelect);
+
+        currentItem = graphicStore.value(firstIso);
+
+        connect(act_isotopeSelect, &QAction::triggered,
+                this, [this, gphcKey]() {
+                    qDebug() << "[act_isotopeSelect: currentItem]" << currentItem;
+                    if (currentItem) scene->removeItem(currentItem);
+
+                    currentItem = graphicStore.value(gphcKey, nullptr);
+                    if (currentItem) scene->addItem(currentItem);
+
+                });
     }
+
+    qDebug() << "[levelScheme: check scene exists]" << graphicStore.value(QPair<int,int>(31,12));
+    scene->addItem(graphicStore.value(firstIso));
+
     /*QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);
     scene->addItem(item);
@@ -53,13 +82,6 @@ LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
     connect(ui->action_savePic, &QAction::triggered,this,&LevelScheme::saveImage);
 */
 }
-//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-
-LevelScheme::~LevelScheme()
-{
-    delete ui;
-}
-//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void LevelScheme::saveImage()
 {
@@ -78,6 +100,25 @@ void LevelScheme::saveImage()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
+
+void LevelScheme::selectIsoScheme()
+{
+    qDebug() << "[selectIsoScheme: ACTIVE]";
+    auto *isoScheme = graphicStore.value({31,12});
+
+}
+
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+LevelScheme::~LevelScheme()
+{
+    delete ui;
+}
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+
+// here lays the old static painter
 // void LevelScheme::paintEvent(QPaintEvent *)
 // {
 //     QPainter painter(this);

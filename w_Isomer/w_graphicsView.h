@@ -22,13 +22,15 @@ public:
 
 private:
     Isotope L_isotope;
+
+    int trCount;
     // QVector<Level> L_Levels;
     // QVector<Transition> L_Transitions;
 
     double maxEnergy;
     double scale;
     int drawHeight;
+
 };
 
 #endif // PAINTGRAPHICSVIEW_H
-
