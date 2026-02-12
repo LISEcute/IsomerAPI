@@ -66,7 +66,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   // Scientif notation
 
-  sumStatRefresh();
+  // sumStatRefresh();
   connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
@@ -83,7 +83,7 @@ IsomerAPI::~IsomerAPI()
 
 void IsomerAPI::sumStatRefresh()
 {
-  ui -> le_entryCounts->setText(QString::number(model->rowCount()));
+  // ui -> le_entryCounts->setText(QString::number(model->rowCount()));
 
   QString queryStr = "SELECT MAX(E_GAMMA) FROM Isomers";
   QVariant val = queryModel(queryStr);
@@ -136,6 +136,7 @@ void IsomerAPI::sourceFilter()
 void IsomerAPI::applyFilters()
 {
   sourceFilter();
+  sumStatRefresh();
   qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
 
 
