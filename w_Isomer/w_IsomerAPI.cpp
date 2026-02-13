@@ -46,6 +46,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   model->select();
 
   ui->tableView->setModel(model);
+  ui->tableView->horizontalHeader()->moveSection(0,20);
+  ui->tableView->setSortingEnabled(true);
   // ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter | (Qt::Alignment)Qt::TextWordWrap);
 
 
