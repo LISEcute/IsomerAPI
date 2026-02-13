@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QMessageBox>
+#include <QStringList>
 
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -45,6 +46,20 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   model->select();
 
   ui->tableView->setModel(model);
+  // ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter | (Qt::Alignment)Qt::TextWordWrap);
+
+
+  headerNames = {"\u03B3-ID", "A", "Z", "E\u1D67 (keV)", "dE\u1D67 (keV)",
+                 "I\u1D1B", "dI\u1D1B", "T\u00BD (\u03BCs)","dT\u2081\u2082 (\u03BCs)",
+                 "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
+                 "I\u1D67", "dI\u1D67", "M\u1D67"};
+  int headerIndex = 0;
+  for (QString header : headerNames) {
+      model->setHeaderData(headerIndex, Qt::Horizontal, header);
+      headerIndex++;
+  }
+  // QString("T\u2081\u2044\u2082");
+  // QString("E\u1D62\u1D63\u1D62 (keV)", "dE\u1D62\u1D63\u1D62 (keV)")
 
   // Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);

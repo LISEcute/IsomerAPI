@@ -2,9 +2,6 @@
 #define CPP_ISOMERAPI_H
 
 #include <QMainWindow>
-//#include <QWidget>
-#include <QApplication>
-//#include <QWidget>
 #include <QApplication>
 #include <QLineEdit>
 #include <QRegularExpression>
@@ -35,6 +32,8 @@ class IsomerAPI : public QMainWindow
 public:
     IsomerAPI(QWidget *parent = nullptr);
     ~IsomerAPI();
+
+    QStringList headerNames;
 
     QHash<QPair<int, int>, Isotope> prepData();
     // std::tuple<QVector<Level>, QVector<Transition>> prepData();
