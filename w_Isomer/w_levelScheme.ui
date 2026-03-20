@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>LevelSchemeWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="isomapi_resources.qrc">
+    <normaloff>:/icons/isomerAPI-Logo.png</normaloff>:/icons/isomerAPI-Logo.png</iconset>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonStyle::ToolButtonIconOnly</enum>
   </property>
@@ -85,6 +89,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="isomapi_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

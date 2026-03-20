@@ -60,3 +60,6 @@ DISTFILES += \
     _install/lisecfg/Isomer_DB_WIDGET.sqlite \
     mainstyle.qss
     mainstyle_light.qss
+
+RESOURCES += \
+    w_Isomer/isomapi_resources.qrc

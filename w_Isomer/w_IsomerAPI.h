@@ -36,12 +36,16 @@ public:
     QStringList headerNames;
 
     QHash<QPair<int, int>, Isotope> prepData();
+
+    // ~~~~~ QPair<int,int> acts as isotope key with A,Z number
+    QHash<QPair<int,int>,Isotope> selectedIsotopes;
+
     // std::tuple<QVector<Level>, QVector<Transition>> prepData();
 
 private slots:
     void applyFilters();
     void openDrawing();
-    void sumStatRefresh();
+    void statRefresh();
     void clearFilters();
 
 private:
@@ -49,12 +53,16 @@ private:
     void sourceFilter();
 
     QVariant queryModel(const QString &queryRequest);
+    QString queryStr;
+
     Ui::IsomerAPI *ui;
 
     QSqlDatabase dbIsomLevel;
     QSqlQuery query;
     QSqlTableModel *model;
+
     QList<QLineEdit*> filterBounds;
+    QList<QLineEdit*> summaryStats;
 
     QString dbPath;
     QStringList entrySources;
