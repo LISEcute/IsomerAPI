@@ -56,7 +56,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     refreshTableView();
 
     ui->tableView->setModel(model);
-    ui->tableView->setSortingEnabled(false);
+    ui->tableView->setSortingEnabled(true);
+
 
     // Columns: A, Z, Eγ, dEγ, IT, dIT, T½, dT½, E(level), dE(level), Jπ,
     //          Iγ, dIγ, Mγ, M-Ratio, dM-Ratio, Conv, dConv, Source, Name, γ-ID, Row
