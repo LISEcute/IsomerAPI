@@ -5,256 +5,346 @@
 #include "L_isomerAPIversion.h"
 
 #include <QSqlError>
+#include <QSqlQueryModel>
 #include <QFileInfo>
 #include <QDir>
 #include <QDebug>
 #include <QMessageBox>
+#include <QStringList>
 
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 IsomerAPI::IsomerAPI(QWidget *parent)
-  :
+    :
     QMainWindow(parent),
     ui(new Ui::IsomerAPI),
     model(nullptr)
 {
-  ui->setupUi(this);
+    ui->setupUi(this);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-  // Database initialization
+    // === Database initialization ======================================================
+    QString appDir;
+    const QStringList args = QCoreApplication::arguments();
+    int dirArgIdx = args.indexOf("--appdir");
+    if (dirArgIdx != -1 && dirArgIdx + 1 < args.size())
+        appDir = args.at(dirArgIdx + 1);
+    else
+        appDir = QCoreApplication::applicationDirPath();
 
-  // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
+    dbPathLevels = appDir + "/lisecfg/Isomer_Levels.sqlite";
+    dbPathGammas = appDir + "/lisecfg/Isomer_Gammas.sqlite";
 
-  // dbPath = QCoreApplication::applicationDirPath() + "/database_store/Isomer_DB_WIDGET.sqlite";
-  dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
-  qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath;
-  dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
-  // point to external IsomDb in LISE
-  dbIsomLevel.setDatabaseName(dbPath);
-  if(!dbIsomLevel.open()){
-      qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
+    qDebug() << "[IsomerAPI LEVELS DB:]" << dbPathLevels << QFile::exists(dbPathLevels);
+    qDebug() << "[IsomerAPI GAMMAS DB:]" << dbPathGammas << QFile::exists(dbPathGammas);
+
+    dbLevels = QSqlDatabase::addDatabase("QSQLITE", "LevelsDB");
+    dbLevels.setDatabaseName(dbPathLevels);
+    if (!dbLevels.open())
+        qCritical() << "Failed to open Levels DB:" << dbLevels.lastError().text();
+
+    dbGammas = QSqlDatabase::addDatabase("QSQLITE", "GammasDB");
+    dbGammas.setDatabaseName(dbPathGammas);
+    if (!dbGammas.open())
+        qCritical() << "Failed to open Gammas DB:" << dbGammas.lastError().text();
+
+    QSqlQuery attachQuery(dbGammas);
+    attachQuery.exec(QString("ATTACH DATABASE '%1' AS LevelsDB").arg(dbPathLevels));
+
+    model = new QSqlQueryModel(this);
+    query = QSqlQuery(dbGammas);
+    refreshTableView();
+
+    ui->tableView->setModel(model);
+    ui->tableView->setSortingEnabled(false);
+
+    // Columns: A, Z, Eγ, dEγ, IT, dIT, T½, dT½, E(level), dE(level), Jπ,
+    //          Iγ, dIγ, Mγ, M-Ratio, dM-Ratio, Conv, dConv, Source, Name, γ-ID, Row
+    headerNames = {"A", "Z",
+                   "E\u1D67 (keV)", "dE\u1D67 (keV)",
+                   "I\u1D1B", "dI\u1D1B",
+                   "T\u00BD (\u03BCs)", "dT\u2081\u2082 (\u03BCs)",
+                   "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
+                   "I\u1D67", "dI\u1D67",
+                   "M\u1D67", "M-Ratio", "dM-Ratio",
+                   "Conv", "dConv",
+                   "Source", "Name", "\u03B3-ID", "Row"};
+    int headerIndex = 0;
+    for (const QString &header : headerNames) {
+        model->setHeaderData(headerIndex, Qt::Horizontal, header);
+        headerIndex++;
     }
 
-  qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
-  model = new QSqlTableModel(this, dbIsomLevel);
-  model->setTable("Isomers");
-  model->select();
+    // Contained utility/attribute declaration
+    filterBounds = ui->gb_tableFilters->findChildren<QLineEdit*>();
 
-  ui->tableView->setModel(model);
+    // Source combo box config
+    ui->cb_sourceFilter->addItem("All Sources");
+    ui->cb_sourceFilter->addItem("Semicolon;List;Sources");
 
-  // Contained utility/attribute declaration
-  query = QSqlQuery(dbIsomLevel);
-  filterBounds = ui->gb_tableFilters->findChildren<QLineEdit*>();
-
-  // Source combo box config
-  ui->cb_sourceFilter->addItem("All Sources");
-  ui->cb_sourceFilter->addItem("Semicolon;List;Sources");
-
-  if(query.exec("SELECT DISTINCT SOURCE FROM Isomers"))
-    {
-      while (query.next()) {
-          QString src = query.value(0).toString();
-          entrySources.append(src);
+    QSqlQuery srcQuery(dbGammas);
+    if (srcQuery.exec("SELECT DISTINCT SOURCE FROM Gammas")) {
+        while (srcQuery.next()) {
+            QString src = srcQuery.value(0).toString();
+            entrySources.append(src);
         }
     }
-  // qDebug() << "[Init l41: Entry source check]: " << entrySources;
-  ui->cb_sourceFilter->addItems(entrySources);
+    ui->cb_sourceFilter->addItems(entrySources);
 
-  // Scientif notation
-
-  sumStatRefresh();
-  connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
-  connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
-  connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
-  // connect(ui->tableView, &QAbstractItemView::scrollToBottom,this,&IsomerAPI::sumStatRefresh);
+    connect(ui->pb_clearFilters,  &QPushButton::clicked, this, &IsomerAPI::clearFilters);
+    connect(ui->pb_applyFilters,  &QPushButton::clicked, this, &IsomerAPI::applyFilters);
+    connect(ui->pb_levelScheme,   &QPushButton::clicked, this, &IsomerAPI::openDrawing);
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 IsomerAPI::~IsomerAPI()
 {
-  dbIsomLevel.close();
-  delete ui;
+    dbLevels.close();
+    dbGammas.close();
+    delete ui;
+}
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void IsomerAPI::refreshTableView()
+{
+    // SQL column order must match headerNames exactly
+    QString sql =
+        "SELECT g.A_IT, g.Z_IT, "
+        "g.E_GAMMA, g.D_EG, "
+        "g.IT_RATIO, g.D_IT_RATIO, "
+        "l.T12, l.D_T12, "
+        "l.LEVEL, l.D_LEVEL, l.JPI, "
+        "g.I_GAMMA, g.D_IG, "
+        "g.M_GAMMA, g.M_RATIO, g.D_MRATIO, "
+        "g.CONV, g.D_CONV, "
+        "g.SOURCE, g.NAME, "
+        "g.INDEX_IT, g.ROW "
+        "FROM Gammas g "
+        "LEFT JOIN LevelsDB.Levels l ON g.LEVEL_ID = l.LEVEL_ID";
+
+    if (!activeFilter.isEmpty())
+        sql += " WHERE " + activeFilter;
+
+    model->setQuery(QSqlQuery(sql, dbGammas));
+
+    if (model->lastError().isValid())
+        qDebug() << "[refreshTableView ERROR]" << model->lastError().text();
+
+    int headerIndex = 0;
+    for (const QString &header : headerNames) {
+        model->setHeaderData(headerIndex, Qt::Horizontal, header);
+        headerIndex++;
+    }
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::sumStatRefresh()
 {
-  ui -> le_entryCounts->setText(QString::number(model->rowCount()));
-
-  QString queryStr = "SELECT MAX(E_GAMMA) FROM Isomers";
-  QVariant val = queryModel(queryStr);
-
-  qDebug() << "[IN sumStatRefresh(): val is] " << val;
-  // hellish bug breaks my table refresh
-  // ui -> le_maxGAMMA->setText(val.toString());
-  // dbIsomLevel.close();
+    QString queryStr = "SELECT MAX(E_GAMMA) FROM Gammas";
+    QVariant val = queryModel(queryStr);
+    qDebug() << "[sumStatRefresh(): max E_GAMMA]" << val;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 QVariant IsomerAPI::queryModel(const QString &queryRequest)
 {
-  QString fullQuery = queryRequest;
-  QString filter = model->filter();
-  if (!filter.isEmpty()) {
-      fullQuery += " WHERE " + filter;
+    QString fullQuery = queryRequest;
+    if (!activeFilter.isEmpty())
+        fullQuery += " WHERE " + activeFilter;
+
+    if (query.exec(fullQuery) && query.next()) {
+        qDebug() << "[queryModel -- query value]" << query.value(0);
+        return {query.value(0)};
     }
-  if (query.exec(fullQuery) && query.next()) {
-      qDebug() << "[queryModel -- query value]" << query.value(0);
-      return {query.value(0)};
-    }
-  return {};
+    return {};
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::sourceFilter()
 {
-  QString text = ui->cb_sourceFilter->currentText();
-  qDebug() << "[sourceFilter l70 TEXT]: " << text;
-  QStringList reqSources = text.split(';', Qt::SkipEmptyParts);
+    QString text = ui->cb_sourceFilter->currentText();
+    qDebug() << "[sourceFilter TEXT]:" << text;
+    QStringList reqSources = text.split(';', Qt::SkipEmptyParts);
 
-  if (reqSources.contains("All Sources")) {
-      model -> setFilter("");
+    if (reqSources.contains("All Sources")) {
+        activeFilter = "";
     } else {
-      QStringList quoted;
-      for (const QString &src : reqSources) {
-          quoted.append("'" + src + "'");
-
-        }
-      model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
-      qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
-      qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
+        QStringList quoted;
+        for (const QString &src : reqSources)
+            quoted.append("'" + src + "'");
+        activeFilter = QString("g.SOURCE IN (%1)").arg(quoted.join(','));
+        qDebug() << "[sourceFilter: filter set]" << quoted.join(',');
     }
-  qDebug() << "\n";
-
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::applyFilters()
 {
-  sourceFilter();
+    sourceFilter();
+    sumStatRefresh();
 
-  QMap<QString, QString> filterMap = {
-    {"le_T12", "T12"},
-    {"le_GE", "E_GAMMA"},
-    {"le_IGAM", "I_GAMMA"},
-    {"le_FINE", "LEVEL"},
-    {"le_numA", "A_IT"},
-    {"le_numZ", "Z_IT"}
-  };
+    QMap<QString, QString> filterMap = {
+        {"le_GE",   "g.E_GAMMA"},
+        {"le_IGAM", "g.I_GAMMA"},
+        {"le_numA", "g.A_IT"},
+        {"le_numZ", "g.Z_IT"},
+        {"le_T12",  "l.T12"},
+        {"le_FINE", "l.LEVEL"}
+    };
 
-  QString filterExpr = model->filter();
-  for (QLineEdit* le : std::as_const(filterBounds)) {
-      if (le->text().isEmpty()) {
-          continue;
-        }
+    QString filterExpr = activeFilter;
 
-      QString objName = le->objectName();
-      QString baseName = objName.left(objName.length() - 1);
-      QString suffix = objName.right(1);
+    for (QLineEdit *le : std::as_const(filterBounds)) {
+        if (le->text().isEmpty()) continue;
 
+        QString objName  = le->objectName();
+        QString baseName = objName.left(objName.length() - 1);
+        QString suffix   = objName.right(1);
 
-      qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
-      qDebug() << "[applyFilters l134: check filterExpr]" << filterExpr;
+        qDebug() << "[applyFilters: name parse]" << objName << baseName << suffix;
 
-      if (filterMap.contains(baseName)) {
-          QString col = filterMap[baseName];
-          QString value = le->text();
-          QString condition = (suffix == "1") ? QString("%1 > %2").arg(col,value)
-                                              : QString("%1 < %2").arg(col,value);
-          qDebug() << "[applyFilters l139: col check]" << col;
-          qDebug() << "[applyFilters l140: value check]" << value;
-          qDebug() << "[applyFilters l141: conditional check]" << condition;
+        if (filterMap.contains(baseName)) {
+            QString col   = filterMap[baseName];
+            QString value = le->text();
+            QString condition;
 
-          if (!filterExpr.isEmpty()) {
-              filterExpr += " AND ";
-            }
-          filterExpr += condition;
+            condition = (suffix == "1")
+                            ? QString("%1 > %2").arg(col, value)
+                            : QString("%1 < %2").arg(col, value);
 
-
+            if (!filterExpr.isEmpty()) filterExpr += " AND ";
+            filterExpr += condition;
 
         } else if (baseName == "le_num") {
-          QString col = (suffix == "A") ? "A_IT" : "Z_IT";
-          QString condition = QString("%1 IS %2").arg(col, le->text());
-
-
-          if (!filterExpr.isEmpty()) {
-              filterExpr += " AND ";
-            }
-          filterExpr += condition;
-          qDebug() << "[applyFilters l160: col check]" << col;
-          qDebug() << "[applyFilters l161: value check]" << le->text();
+            QString col = (suffix == "A") ? "g.A_IT" : "g.Z_IT";
+            QString condition = QString("%1 IS %2").arg(col, le->text());
+            if (!filterExpr.isEmpty()) filterExpr += " AND ";
+            filterExpr += condition;
+            qDebug() << "[applyFilters: A/Z filter]" << col << le->text();
         }
-      qDebug() << "[applyFilters l151: Check filterExpr]:" << filterExpr;
-      qDebug() << "\n";
+
+        qDebug() << "[applyFilters: filterExpr so far]" << filterExpr;
     }
 
-  model->setFilter(filterExpr);
-  model->select();
-  ui->tableView->setModel(model);
+    activeFilter = filterExpr;
+    refreshTableView();
+    ui->tableView->setModel(model);
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::clearFilters()
 {
-  for (QLineEdit* le : std::as_const(filterBounds)) {
-      QString objName = le->objectName();
-      qDebug() << "[clearFilters l170: Check object name]" << objName;
-      if (le->objectName() != "") {
-          le->setText("");
-        }
+    for (QLineEdit *le : std::as_const(filterBounds)) {
+        qDebug() << "[clearFilters: object]" << le->objectName();
+        if (!le->objectName().isEmpty())
+            le->setText("");
     }
-  applyFilters();
+    applyFilters();
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::openDrawing()
 {
-  auto [levels, transitions] = prepData();
-
-  auto *mw = new LevelScheme(std::move(levels),
-                             std::move(transitions));
-
-  mw->setAttribute(Qt::WA_DeleteOnClose, true);
-  mw->show();
-  mw->raise();
-  mw->activateWindow();
+    qDebug() << "[openDrawing: BEGIN]";
+    auto selectedIsotopes = prepData();
+    auto *mw = new LevelScheme(selectedIsotopes, this);
+    mw->show();
+    mw->activateWindow();
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-std::tuple<QVector<Level>,QVector<Transition>> IsomerAPI::prepData()
+QHash<QPair<int,int>, Isotope> IsomerAPI::prepData()
 {
+    qDebug() << "[prepData: BEGIN]";
 
-  QString fullQuery = "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
-  QString filter = model->filter();
-  if (!filter.isEmpty()) {
-      fullQuery += " WHERE " + filter;
+    QString gammaFilter = activeFilter;
+    QHash<QPair<int,int>, Isotope> isotopeMap;
+
+    // === collect INDEX_IT values ======================================================
+    QString indexQuery =
+        "SELECT DISTINCT g.INDEX_IT, g.A_IT, g.Z_IT, g.E_GAMMA "
+        "FROM Gammas g "
+        "LEFT JOIN LevelsDB.Levels l ON g.LEVEL_ID = l.LEVEL_ID";
+    if (!gammaFilter.isEmpty())
+        indexQuery += " WHERE " + gammaFilter;
+
+    QSqlQuery gQuery(dbGammas);
+    gQuery.exec(indexQuery);
+
+    QStringList indexKeys;
+    while (gQuery.next())
+        indexKeys.append(gQuery.value("INDEX_IT").toString());
+
+    if (indexKeys.isEmpty()) {
+        qDebug() << "[prepData: no rows in current filter]";
+        return isotopeMap;
     }
 
-  QVector<Level> prepLevel;
-  QVector<Transition> prepTransition;
-  query.exec(fullQuery);
+    // === get matching levels ======================================================
+    QHash<qint64, Level> levelCache;
+    QSqlQuery lQuery(dbLevels);
+    lQuery.exec(QString(
+                    "SELECT INDEX_IT, LEVEL, JPI, T12 "
+                    "FROM Levels WHERE INDEX_IT IN (%1)"
+                    ).arg(indexKeys.join(',')));
 
-  prepLevel.push_back({0,"",""});
-
-  while (query.next())
-    {
-      double tmpLevel = query.value("LEVEL").toDouble();
-      double tmpGamma = query.value("E_GAMMA").toDouble();
-      double tmpFinal = tmpLevel - tmpGamma;
-      QString tmpEmission = QString("%1 keV").arg(tmpGamma);
-
-      prepTransition.push_back({tmpLevel, tmpFinal, tmpEmission});
-      prepLevel.push_back({tmpLevel,query.value("JPI").toString(),query.value("T12").toString()});
-
+    while (lQuery.next()) {
+        qint64 idx = lQuery.value("INDEX_IT").toLongLong();
+        Level lvl;
+        lvl.lvlEnergy = lQuery.value("LEVEL").toDouble();
+        lvl.spin      = lQuery.value("JPI").toString();
+        lvl.halfLife  = lQuery.value("T12").toString();
+        levelCache.insert(idx, lvl);
     }
 
-  for (const Transition &tr : prepTransition) {
-      qDebug() << "[prepData: transition check]" << tr.level << tr.emission << tr.label;
-    }
-  qDebug();
-  for (const Level &lvl : prepLevel) {
-      qDebug() << "[prepData: level check]" << lvl.lvlEnergy << lvl.spin << lvl.halfLife;
+    // === full query ======================================================
+    QString fullGammaQuery =
+        "SELECT g.INDEX_IT, g.A_IT, g.Z_IT, g.E_GAMMA "
+        "FROM Gammas g "
+        "LEFT JOIN LevelsDB.Levels l ON g.LEVEL_ID = l.LEVEL_ID";
+    if (!gammaFilter.isEmpty())
+        fullGammaQuery += " WHERE " + gammaFilter;
+
+    QSqlQuery fullGQuery(dbGammas);
+    fullGQuery.exec(fullGammaQuery);
+
+    while (fullGQuery.next()) {
+        int    A      = fullGQuery.value("A_IT").toInt();
+        int    Z      = fullGQuery.value("Z_IT").toInt();
+        qint64 idx    = fullGQuery.value("INDEX_IT").toLongLong();
+        double eGamma = fullGQuery.value("E_GAMMA").toDouble();
+
+        QPair<int,int> key(A, Z);
+        Isotope &iso = isotopeMap[key];
+        iso.A = A;
+        iso.Z = Z;
+
+        Level *levelPtr = nullptr;
+        for (Level &lvl : iso.levels) {
+            if (qFuzzyCompare(lvl.lvlEnergy + 1.0, levelCache.value(idx).lvlEnergy + 1.0)) {
+                levelPtr = &lvl;
+                break;
+            }
+        }
+
+        if (!levelPtr) {
+            iso.levels.append(levelCache.value(idx));
+            levelPtr = &iso.levels.last();
+        }
+
+        Transition tr;
+        tr.lvlEnergy = levelPtr->lvlEnergy;
+        tr.emission  = eGamma;
+        tr.label     = QString("%1 keV").arg(eGamma);
+        levelPtr->transitions.append(tr);
     }
 
-  return std::make_tuple(prepLevel, prepTransition);
+    // qDebug() << "[prepData: isotope count]" << isotopeMap.count();
+    // for (const Isotope &iso : isotopeMap) {
+    //     qDebug() << "[prepData: isotope]" << iso.A << iso.Z
+    //              << "levels:" << iso.levels.count();
+    // }
+
+    return isotopeMap;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

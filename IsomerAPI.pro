@@ -5,13 +5,7 @@ CONFIG   += c++17 console
 CONFIG   -= app_bundle
 
 
-win32-g++ {
-DESTDIR = c:/IsomerAPI/_install
-}
-win32-msvc {
-DESTDIR = c:/IsomerAPI/_install_MSVC
-}
-
+DESTDIR = $$PWD/_install
 
 # Sources
 SOURCES += \
@@ -59,3 +53,4 @@ greaterThan(QT_MAJOR_VERSION, 5) {
 DISTFILES += \
     _install/lisecfg/Isomer_DB_WIDGET.sqlite \
     mainstyle.qss
+    mainstyle_light.qss

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QVector>
+#include <QHash>
+#include <QGraphicsScene>
 
 
 #include "w_graphicsView.h"
@@ -24,22 +26,28 @@ class LevelScheme : public QMainWindow
 
 public:
 
-    LevelScheme(const QVector<Level>& level,
-                const QVector<Transition>& transition,
+    LevelScheme(const QHash<QPair<int,int>,Isotope>& isotopeMap,
                 QWidget *parent=nullptr);
-
     ~LevelScheme();
 
-private:
+    QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
 
-    QVector<Level> m_levels;
-    QVector<Transition> m_transitions;
+
+private:
 
     QString _filterQuery;
     QString _path;
     Ui::LevelScheme *ui;
 
+    QGraphicsItem *currentItem = nullptr;
+    QGraphicsScene *scene = new QGraphicsScene(this);
+
+
+    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
+
+
     void saveImage();
+    void selectIsoScheme();
     // void paintEvent(QPaintEvent *event) override;
 };
 

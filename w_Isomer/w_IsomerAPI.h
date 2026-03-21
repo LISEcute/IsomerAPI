@@ -2,18 +2,16 @@
 #define CPP_ISOMERAPI_H
 
 #include <QMainWindow>
-//#include <QWidget>
-#include <QApplication>
-//#include <QWidget>
 #include <QApplication>
 #include <QLineEdit>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QSqlDatabase>
-#include <QSqlTableModel>
+#include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QList>
 #include <QVector>
+#include <QHash>
 
 #include "L_vectorStruct.h"
 
@@ -35,7 +33,9 @@ public:
     IsomerAPI(QWidget *parent = nullptr);
     ~IsomerAPI();
 
-    std::tuple<QVector<Level>, QVector<Transition>> prepData();
+    QStringList headerNames;
+
+    QHash<QPair<int, int>, Isotope> prepData();
 
 private slots:
     void applyFilters();
@@ -44,18 +44,21 @@ private slots:
     void clearFilters();
 
 private:
-
     void sourceFilter();
-
+    void refreshTableView();
     QVariant queryModel(const QString &queryRequest);
+
     Ui::IsomerAPI *ui;
 
-    QSqlDatabase dbIsomLevel;
+    QSqlDatabase dbLevels;
+    QSqlDatabase dbGammas;
     QSqlQuery query;
-    QSqlTableModel *model;
+    QSqlQueryModel *model;
     QList<QLineEdit*> filterBounds;
 
-    QString dbPath;
+    QString dbPathLevels;
+    QString dbPathGammas;
+    QString activeFilter;
     QStringList entrySources;
 };
 #endif // CPP_ISOMERAPI_H
