@@ -33,7 +33,7 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox">
-         <layout class="QGridLayout" name="gb_filterHouse1" columnstretch="3,2,1,2">
+         <layout class="QGridLayout" name="gb_filterHouse1" columnstretch="3,0,0,0">
           <property name="leftMargin">
            <number>10</number>
           </property>
@@ -49,87 +49,13 @@
           <property name="horizontalSpacing">
            <number>4</number>
           </property>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>to</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QLineEdit" name="le_IGAM2"/>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="le_T122"/>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>&amp;gamma;-energy (KeV) :</string>
+             <string>&amp;gamma;-energy (keV) :</string>
             </property>
             <property name="textFormat">
              <enum>Qt::TextFormat::RichText</enum>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLineEdit" name="le_GE2"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>I&lt;sub&gt;&amp;gamma;&lt;/sub&gt; transmission :</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::TextFormat::RichText</enum>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>to</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="le_FINE1"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="le_GE1"/>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>to</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignmentFlag::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QLineEdit" name="le_FINE2"/>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="le_IGAM1"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Final Levels :</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -143,6 +69,29 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Energy Level (keV):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QLineEdit" name="le_FINE2"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>to</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="2">
            <widget class="QLabel" name="label_8">
             <property name="text">
@@ -153,16 +102,38 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="le_GE1"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="le_FINE1"/>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="le_T122"/>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="le_GE2"/>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>T&lt;sub&gt;1/2&lt;/sub&gt; :</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;T&lt;span style=&quot; vertical-align:sub;&quot;&gt;1/2&lt;/span&gt; (μs):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::TextFormat::RichText</enum>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>to</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -420,6 +391,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QLineEdit" name="le_isomerCounts">
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -450,6 +424,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
               <widget class="QLineEdit" name="le_lowGammaSum">
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -464,6 +441,9 @@
              </item>
              <item>
               <widget class="QLineEdit" name="le_highGammaSum">
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -508,6 +488,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLineEdit" name="le_lowT12Sum">
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -522,6 +505,9 @@
              </item>
              <item>
               <widget class="QLineEdit" name="le_highT12Sum">
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -559,6 +545,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="le_isotopeCounts">
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -651,7 +640,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Download CSV</string>
+            <string>Download CSV (WIP)</string>
            </property>
           </widget>
          </item>
@@ -673,18 +662,30 @@
    </property>
    <widget class="QMenu" name="menumy_menu">
     <property name="title">
-     <string>my menu</string>
+     <string>Menu (WIP)</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuabout_page">
     <property name="title">
-     <string>about page</string>
+     <string>Help (WIP)</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions_WIP">
+    <property name="title">
+     <string>Options (WIP)</string>
     </property>
    </widget>
    <addaction name="menumy_menu"/>
    <addaction name="menuabout_page"/>
+   <addaction name="menuOptions_WIP"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About (WIP)</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>tableView</tabstop>
@@ -694,8 +695,6 @@
   <tabstop>le_GE2</tabstop>
   <tabstop>le_FINE1</tabstop>
   <tabstop>le_FINE2</tabstop>
-  <tabstop>le_IGAM1</tabstop>
-  <tabstop>le_IGAM2</tabstop>
   <tabstop>cb_sourceFilter</tabstop>
   <tabstop>le_numA1</tabstop>
   <tabstop>le_numA2</tabstop>

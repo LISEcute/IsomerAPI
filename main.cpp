@@ -38,12 +38,12 @@ int main(int argc, char *argv[])
 
     qDebug() << QDir::homePath();
     QString appDir = QDir::homePath() + "/locRepos/IsomerAPI";
-    QString qssFilePath(appDir + "/mainstyle_light.qss");
+    QString qssFilePath(appDir + "/mainstyle.qss");
     QFile file(qssFilePath);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         QString styleSheet = QLatin1String(file.readAll());
         app.setStyleSheet(styleSheet);  // SECOND
-        //qDebug() << qssFilePath << "QSS loaded successfully.";
+        qDebug() << qssFilePath << "QSS loaded successfully.";
     } else {
         qDebug() << qssFilePath << "QSS load failed!";
     }

@@ -25,7 +25,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
 
   // Database initialization
-
   // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
 
   dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
@@ -38,8 +37,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
 
-
-
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   model = new QSqlTableModel(this, dbIsomLevel);
   model->setTable("Isomers");
@@ -47,10 +44,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   ui->tableView->setModel(model);
   ui->tableView->horizontalHeader()->moveSection(0,20);
+  ui->tableView->hideColumn(model->fieldIndex("CONV"));
+  ui->tableView->hideColumn(model->fieldIndex("D_CONV"));
+
   ui->tableView->setSortingEnabled(true);
-  // ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter | (Qt::Alignment)Qt::TextWordWrap);
 
-
+  // Custom column header names
   headerNames = {"\u03B3-ID", "A", "Z", "E\u1D67 (keV)", "dE\u1D67 (keV)",
                  "I\u1D1B", "dI\u1D1B", "T\u2081\u2082 (\u03BCs)","dT\u2081\u2082 (\u03BCs)",
                  "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
@@ -61,8 +60,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       model->setHeaderData(headerIndex, Qt::Horizontal, header);
       headerIndex++;
   }
-  // QString("T\u2081\u2044\u2082");
-  // QString("E\u1D62\u1D63\u1D62 (keV)", "dE\u1D62\u1D63\u1D62 (keV)")
 
   // Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);
@@ -129,10 +126,6 @@ void IsomerAPI::statRefresh()
   ui->le_isomerCounts->setText(isomCount.toString());
   ui->le_isotopeCounts->setText(QString::number(selectedIsotopes.size()));
 
-  // if(!selectedIsotopes.empty()){
-  //   ui->le_isotopeCounts->setText(QString::number(selectedIsotopes.size()));
-  // }
-
   ui->le_lowGammaSum->setText(minGamma.toString());
   ui->le_highGammaSum->setText(maxGamma.toString());
 
@@ -140,12 +133,7 @@ void IsomerAPI::statRefresh()
   ui->le_highT12Sum->setText(maxT12.toString());
 
 
-
-  // ui -> le_maxGAMMA->setText(val.toString());
-
-  qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
-  // hellish bug breaks my table refresh
-  // dbIsomLevel.close();
+  // qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -198,7 +186,6 @@ void IsomerAPI::applyFilters()
   QMap<QString, QString> filterMap = {
     {"le_T12", "T12"},
     {"le_GE", "E_GAMMA"},
-    {"le_IGAM", "I_GAMMA"},
     {"le_FINE", "LEVEL"},
     {"le_numA", "A_IT"},
     {"le_numZ", "Z_IT"}
