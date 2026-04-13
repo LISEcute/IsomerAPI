@@ -27,6 +27,9 @@
       <property name="spacing">
        <number>10</number>
       </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+      </property>
       <item>
        <widget class="QGroupBox" name="gb_summaryStats">
         <property name="title">
@@ -625,7 +628,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_Full">
        <layout class="QHBoxLayout" name="horizontalLayout_5">

@@ -12,6 +12,7 @@
 #include <QList>
 #include <QVector>
 #include <QHash>
+#include <QTableView>
 
 #include "L_vectorStruct.h"
 
@@ -60,7 +61,14 @@ private:
 
     QSqlDatabase dbIsomLevel;
     QSqlQuery query;
-    QSqlTableModel *model;
+
+    QSqlTableModel *modelFull;
+    QSqlTableModel *modelLevels;
+    QSqlTableModel *modelEmissions;
+
+    QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
+    QVector<QSqlTableModel*> modelsVector;
+
 
     QList<QLineEdit*> filterBounds;
     QList<QLineEdit*> summaryStats;

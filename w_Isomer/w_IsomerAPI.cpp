@@ -17,7 +17,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   :
     QMainWindow(parent),
     ui(new Ui::IsomerAPI),
-    model(nullptr)
+    modelFull(nullptr),
+    modelLevels(nullptr),
+    modelEmissions(nullptr)
+
+
 {
   ui->setupUi(this);
     // table config
@@ -27,9 +31,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // Database initialization
   // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
 
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
+
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
@@ -37,29 +42,72 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
 
+  // Initialize the three models we will use
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
-  model = new QSqlTableModel(this, dbIsomLevel);
-  model->setTable("Isomers");
-  model->select();
+  modelFull = new QSqlTableModel(this, dbIsomLevel);
+  modelLevels = new QSqlTableModel(this, dbIsomLevel);
+  modelEmissions = new QSqlTableModel(this, dbIsomLevel);
 
-  ui->tableView_Full->setModel(model);
-  ui->tableView_Full->horizontalHeader()->moveSection(0,20);
-  ui->tableView_Full->hideColumn(model->fieldIndex("CONV"));
-  ui->tableView_Full->hideColumn(model->fieldIndex("D_CONV"));
+  // ~~~ Vectorize models?
+  modelsVector = {modelFull, modelLevels, modelEmissions};
 
-  ui->tableView_Full->setSortingEnabled(true);
+  modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Full));
+  modelTuples.push_back(std::make_tuple(modelLevels, "isomerLevels",ui->tableView_Levels));
+  modelTuples.push_back(std::make_tuple(modelEmissions, "gammaEmissions",ui->tableView_Emissions));
 
-  // Custom column header names
-  headerNames = {"\u03B3-ID", "A", "Z", "E\u1D67 (keV)", "dE\u1D67 (keV)",
-                 "I\u1D1B", "dI\u1D1B", "T\u2081\u2082 (\u03BCs)","dT\u2081\u2082 (\u03BCs)",
-                 "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
-                 "I\u1D67", "dI\u1D67", "M\u1D67"};
+  QMap<QString, QString> headerMap = {
+      {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
+      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","dE\u1D67 (keV)"},
+      {"IT_RATIO","I\u1D1B"}, {"D_IT_RATIO","dI\u1D1B"},
+      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","dT\u2081\u2082 (\u03BCs)"},
+      {"LEVEL","E(level) (keV)"}, {"D_LEVEL","dE(level) (keV)"},
+      {"JPI","J\u03C0"}, {"I_GAMMA","I\u1D67"}, {"D_IG","dI\u1D67"},
+      {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
+      {"SOURCE","SOURCE"}, {"ROW","ROW"}, {"NAME","NAME"}
+  };
 
-  int headerIndex = 0;
-  for (QString header : headerNames) {
-      model->setHeaderData(headerIndex, Qt::Horizontal, header);
-      headerIndex++;
+  // auto headerNames = {"\u03B3-ID", "A", "Z", "E\u1D67 (keV)", "dE\u1D67 (keV)",
+  //                     "I\u1D1B", "dI\u1D1B", "T\u2081\u2082 (\u03BCs)","dT\u2081\u2082 (\u03BCs)",
+  //                     "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
+  //                     "I\u1D67", "dI\u1D67", "M\u1D67"};
+
+
+  for (auto &tuple : modelTuples) {
+      auto [model, tableName, uiView] = tuple;
+      qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
+      model->setTable(tableName);
+      model->select();
+
+      uiView->setModel(model);
+      uiView->horizontalHeader()->moveSection(0,20);
+      uiView->hideColumn(model->fieldIndex("CONV"));
+      uiView->hideColumn(model->fieldIndex("D_CONV"));
+      uiView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+      uiView->setSortingEnabled(true);
+
+      // int headerIndex = 0;
+      for (int i = 0; i <= model->columnCount(); i++) {
+          QString headerKey = model->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString();
+          qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
+          model->setHeaderData(i, Qt::Horizontal, headerMap.value(headerKey));
+      };
+      // for (QString headerKey : headerMap.keys()) {
+      //     qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
+      //     model->setHeaderData(headerIndex, Qt::Horizontal, headerMap.value(headerKey));
+      //     headerIndex++;
+      // }
+
   }
+
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+  // int headerIndex = 0;
+  // for (QString header : headerNames) {
+  //     model->setHeaderData(headerIndex, Qt::Horizontal, header);
+  //     headerIndex++;
+  // }
 
   // Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);
@@ -148,7 +196,7 @@ void IsomerAPI::statRefresh()
 QVariant IsomerAPI::queryModel(const QString &queryRequest)
 {
   QString fullQuery = queryRequest;
-  QString filter = model->filter();
+  QString filter = modelFull->filter(); // ``` model full attempt
   // qDebug() << "[queryModel FILTER VALUE]" << filter;
   if (!filter.isEmpty()) {
       fullQuery += " WHERE " + filter;
@@ -167,18 +215,34 @@ void IsomerAPI::sourceFilter()
   qDebug() << "[sourceFilter l70 TEXT]: " << text;
   QStringList reqSources = text.split(';', Qt::SkipEmptyParts);
 
-  if (reqSources.contains("All Sources")) {
-      model -> setFilter("");
-    } else {
-      QStringList quoted;
-      for (const QString &src : reqSources) {
-          quoted.append("'" + src + "'");
+  for (auto &model : modelsVector) {
 
-        }
-      model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
-      qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
-      qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
-    }
+      if (reqSources.contains("All Sources")) {
+          model -> setFilter("");
+      } else {
+          QStringList quoted;
+          for (const QString &src : reqSources) {
+              quoted.append("'" + src + "'");
+
+          }
+          model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
+          qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
+          qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
+      }
+
+  }
+  // if (reqSources.contains("All Sources")) {
+  //     model -> setFilter("");
+  //   } else {
+  //     QStringList quoted;
+  //     for (const QString &src : reqSources) {
+  //         quoted.append("'" + src + "'");
+
+  //       }
+  //     model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
+  //     qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
+  //     qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
+  //   }
   qDebug() << "\n";
 
 }
@@ -189,7 +253,7 @@ void IsomerAPI::applyFilters()
   sourceFilter();
 
   qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
-  qDebug() << "[applyFilters: FILTER VALUE?]" << model->filter();
+  qDebug() << "[applyFilters: FILTER VALUE?]" << modelFull->filter();
 
   QMap<QString, QString> filterMap = {
     {"le_T12", "T12"},
@@ -199,7 +263,7 @@ void IsomerAPI::applyFilters()
     {"le_numZ", "Z_IT"}
   };
 
-  QString filterExpr = model->filter();
+  QString filterExpr = modelFull->filter(); // ~~~ treat modelFull first -- cut on T12, Egam later
   for (QLineEdit* le : std::as_const(filterBounds)) {
       if (le->text().isEmpty()) {
           continue;
@@ -245,10 +309,10 @@ void IsomerAPI::applyFilters()
 
     }
 
-  model->setFilter(filterExpr);
-  model->select();
-  ui->tableView_Full->setModel(model);
-  qDebug() << "[applyFilters: Check filterExpr]:" << filterExpr << model->filter();
+  modelFull->setFilter(filterExpr);
+  modelFull->select();
+  ui->tableView_Full->setModel(modelFull);
+  // qDebug() << "[applyFilters: Check filterExpr]:" << filterExpr << model->filter();
 
   selectedIsotopes = prepData();
   qDebug() << "[applyFilters: isotope count]" << selectedIsotopes.count() << selectedIsotopes.size();
@@ -344,7 +408,7 @@ QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
   QString fullQuery =
         "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
 
-  QString filter = model->filter();
+  QString filter = modelFull->filter();
   if (!filter.isEmpty()) {
       fullQuery += " WHERE " + filter;
     }
