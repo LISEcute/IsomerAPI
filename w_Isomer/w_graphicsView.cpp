@@ -90,11 +90,11 @@ void graphicsView::paint(QPainter *painter,
 
         painter->setPen(levelTextColor);
         painter->drawText(spinOffset, y, lvl.spin);
-        QString text = QString("%1 keV    %2 \u03BCs")
+        QString levelText = QString("%1 keV    %2 \u03BCs")
                            .arg(lvl.lvlEnergy, 0, 'f', 0)
                            .arg(lvl.halfLife);
 
-        painter->drawText(lineRight + infoHOffset, y, text);
+        painter->drawText(lineRight + infoHOffset, y, levelText);
 
         // ~~~~~ transition drawing
         painter->setPen(QPen(transitionColor, 2));
@@ -118,11 +118,14 @@ void graphicsView::paint(QPainter *painter,
             painter->drawPolygon(arrowHead);
 
             painter->setPen(transitionColor);
-
-            painter->drawText(x + 8, (y1 + y2) / 2, tr.label);
+            // make labels vertical for transition lines
+            painter->rotate(90);
+            painter->drawText((y1+y2)/2-25,-(x+5),tr.label);
             painter->setPen(QPen(transitionColor, 2));
+            painter->rotate(-90);
 
-            xOffset += 20;
+            xOffset += 20; // iterate xOffset for next transition line
+
 
         }
         // ~~~~ ATTEMPT AT OUTOLEGTEXT STR FOR SUB

@@ -47,6 +47,7 @@ private slots:
     void openDrawing();
     void statRefresh();
     void clearFilters();
+    void viewSelect();
 
 private:
 

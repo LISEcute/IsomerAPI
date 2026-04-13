@@ -21,7 +21,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 {
   ui->setupUi(this);
     // table config
-  ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 
   // Database initialization
@@ -42,12 +42,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   model->setTable("Isomers");
   model->select();
 
-  ui->tableView->setModel(model);
-  ui->tableView->horizontalHeader()->moveSection(0,20);
-  ui->tableView->hideColumn(model->fieldIndex("CONV"));
-  ui->tableView->hideColumn(model->fieldIndex("D_CONV"));
+  ui->tableView_Full->setModel(model);
+  ui->tableView_Full->horizontalHeader()->moveSection(0,20);
+  ui->tableView_Full->hideColumn(model->fieldIndex("CONV"));
+  ui->tableView_Full->hideColumn(model->fieldIndex("D_CONV"));
 
-  ui->tableView->setSortingEnabled(true);
+  ui->tableView_Full->setSortingEnabled(true);
 
   // Custom column header names
   headerNames = {"\u03B3-ID", "A", "Z", "E\u1D67 (keV)", "dE\u1D67 (keV)",
@@ -90,7 +90,15 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
-  // connect(ui->tableView, &QAbstractItemView::scrollToBottom,this,&IsomerAPI::sumStatRefresh);
+
+  connect(ui->actionFull_Data_View,&QAction::triggered,this,[this](){
+      qDebug() << "actionFullDataView Connected";
+      ui->stackedWidget->setCurrentIndex(0);
+  });
+
+  connect(ui->actionLevel_Emission_View,&QAction::triggered,this,[this](){
+      ui->stackedWidget->setCurrentIndex(1);
+  });
 
   qDebug();
 }
@@ -239,7 +247,7 @@ void IsomerAPI::applyFilters()
 
   model->setFilter(filterExpr);
   model->select();
-  ui->tableView->setModel(model);
+  ui->tableView_Full->setModel(model);
   qDebug() << "[applyFilters: Check filterExpr]:" << filterExpr << model->filter();
 
   selectedIsotopes = prepData();
@@ -279,6 +287,13 @@ void IsomerAPI::openDrawing()
   // mw->raise();
   levelScheme->activateWindow();
 }
+
+void IsomerAPI::viewSelect()
+{
+
+    ui->stackedWidget->currentIndex();
+}
+
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 // std::tuple<QVector<Level>,QVector<Transition>> IsomerAPI::prepData()

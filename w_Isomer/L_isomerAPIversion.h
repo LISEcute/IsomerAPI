@@ -15,3 +15,11 @@
 // reformatting, summary statistics,
 // level scheme improvements, isotope
 // hashmap storage system, etc.
+
+
+//-----------------------------
+// 1.3.0          3/20/26
+// Major updates including column
+// reformatting, summary statistics,
+// level scheme improvements, isotope
+// hashmap storage system, etc.
