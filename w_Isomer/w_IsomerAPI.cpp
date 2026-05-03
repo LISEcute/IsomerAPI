@@ -18,14 +18,14 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     QMainWindow(parent),
     ui(new Ui::IsomerAPI),
     modelFull(nullptr),
-    modelLevels(nullptr),
-    modelEmissions(nullptr)
+    modelIsomers(nullptr),
+    modelGammas(nullptr)
 
 
 {
   ui->setupUi(this);
     // table config
-  ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 
   // Database initialization
@@ -45,15 +45,24 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // Initialize the three models we will use
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   modelFull = new QSqlTableModel(this, dbIsomLevel);
-  modelLevels = new QSqlTableModel(this, dbIsomLevel);
-  modelEmissions = new QSqlTableModel(this, dbIsomLevel);
+  modelIsomers = new QSqlTableModel(this, dbIsomLevel);
+  modelGammas = new QSqlTableModel(this, dbIsomLevel);
 
+  modelIsomers->setTable("isomerLevels");
+  modelIsomers->select();
+
+  modelGammas->setTable("gammaEmissions");
+  modelGammas->select();
   // ~~~ Vectorize models?
-  modelsVector = {modelFull, modelLevels, modelEmissions};
+  // modelsVector = {modelFull, modelIsomers, modelGammas};
 
-  modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Full));
-  modelTuples.push_back(std::make_tuple(modelLevels, "isomerLevels",ui->tableView_Levels));
-  modelTuples.push_back(std::make_tuple(modelEmissions, "gammaEmissions",ui->tableView_Emissions));
+  modelsVector = {modelIsomers, modelGammas};
+
+  // modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_GammaSolo));
+  modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
+  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
+  modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
+  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
@@ -75,14 +84,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   for (auto &tuple : modelTuples) {
       auto [model, tableName, uiView] = tuple;
       qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
-      model->setTable(tableName);
-      model->select();
 
       uiView->setModel(model);
       uiView->horizontalHeader()->moveSection(0,20);
       uiView->hideColumn(model->fieldIndex("CONV"));
       uiView->hideColumn(model->fieldIndex("D_CONV"));
-      uiView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      uiView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
       uiView->setSortingEnabled(true);
 
@@ -90,7 +97,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       for (int i = 0; i <= model->columnCount(); i++) {
           QString headerKey = model->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString();
           qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
-          model->setHeaderData(i, Qt::Horizontal, headerMap.value(headerKey));
+          if (!headerMap.contains(headerKey)) {
+              model->setHeaderData(i, Qt::Horizontal, headerMap.value(headerKey));
+          }
+
       };
       // for (QString headerKey : headerMap.keys()) {
       //     qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
@@ -139,13 +149,17 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
 
-  connect(ui->actionFull_Data_View,&QAction::triggered,this,[this](){
+  connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
       qDebug() << "actionFullDataView Connected";
-      ui->stackedWidget->setCurrentIndex(0);
+      ui->stackedWidget->setCurrentIndex(2);
   });
 
-  connect(ui->actionLevel_Emission_View,&QAction::triggered,this,[this](){
+  connect(ui->actionIsomers,&QAction::triggered,this,[this](){
       ui->stackedWidget->setCurrentIndex(1);
+  });
+
+  connect(ui->actionGammas,&QAction::triggered,this,[this](){
+      ui->stackedWidget->setCurrentIndex(0);
   });
 
   qDebug();
@@ -247,7 +261,8 @@ void IsomerAPI::sourceFilter()
 
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-
+// ```` OKAY i need to come back and fix the filtering methods for the new two stable split
+// ```` lord have mercy.
 void IsomerAPI::applyFilters()
 {
   sourceFilter();
@@ -311,7 +326,7 @@ void IsomerAPI::applyFilters()
 
   modelFull->setFilter(filterExpr);
   modelFull->select();
-  ui->tableView_Full->setModel(modelFull);
+  ui->tableView_GammaSolo->setModel(modelFull);
   // qDebug() << "[applyFilters: Check filterExpr]:" << filterExpr << model->filter();
 
   selectedIsotopes = prepData();

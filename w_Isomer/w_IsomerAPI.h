@@ -63,8 +63,8 @@ private:
     QSqlQuery query;
 
     QSqlTableModel *modelFull;
-    QSqlTableModel *modelLevels;
-    QSqlTableModel *modelEmissions;
+    QSqlTableModel *modelIsomers;
+    QSqlTableModel *modelGammas;
 
     QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
