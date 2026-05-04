@@ -56,9 +56,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // ~~~ Vectorize models?
   // modelsVector = {modelFull, modelIsomers, modelGammas};
 
-  modelsVector = {modelIsomers, modelGammas};
+  modelFull->setTable("Isomers");
+  modelFull->select();
 
-  // modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_GammaSolo));
+  modelsVector = {modelIsomers, modelGammas, modelFull};
+
+  modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Dev));
   modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
   modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
   modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
@@ -149,6 +152,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
 
+  // stacked widget setup
+  ui->stackedWidget->setCurrentIndex(2);
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
       qDebug() << "actionFullDataView Connected";
       ui->stackedWidget->setCurrentIndex(2);
@@ -160,6 +165,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   connect(ui->actionGammas,&QAction::triggered,this,[this](){
       ui->stackedWidget->setCurrentIndex(0);
+  });
+
+  connect(ui->actionDevelopment_View,&QAction::triggered,this,[this](){
+      ui->stackedWidget->setCurrentIndex(3);
   });
 
   qDebug();
@@ -233,6 +242,7 @@ void IsomerAPI::sourceFilter()
 
       if (reqSources.contains("All Sources")) {
           model -> setFilter("");
+          qDebug() << "[sourceFilter: All sources triggered - clear filters]";
       } else {
           QStringList quoted;
           for (const QString &src : reqSources) {
@@ -267,7 +277,7 @@ void IsomerAPI::applyFilters()
 {
   sourceFilter();
 
-  qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
+  // qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
   qDebug() << "[applyFilters: FILTER VALUE?]" << modelFull->filter();
 
   QMap<QString, QString> filterMap = {
@@ -279,6 +289,7 @@ void IsomerAPI::applyFilters()
   };
 
   QString filterExpr = modelFull->filter(); // ~~~ treat modelFull first -- cut on T12, Egam later
+
   for (QLineEdit* le : std::as_const(filterBounds)) {
       if (le->text().isEmpty()) {
           continue;
@@ -305,6 +316,7 @@ void IsomerAPI::applyFilters()
               filterExpr += " AND ";
             }
           filterExpr += condition;
+          qDebug() << "[applyFilters: check filterexpr]" << filterExpr;
 
 
 
@@ -326,7 +338,7 @@ void IsomerAPI::applyFilters()
 
   modelFull->setFilter(filterExpr);
   modelFull->select();
-  ui->tableView_GammaSolo->setModel(modelFull);
+  ui->tableView_Dev->setModel(modelFull);
   // qDebug() << "[applyFilters: Check filterExpr]:" << filterExpr << model->filter();
 
   selectedIsotopes = prepData();
@@ -341,6 +353,7 @@ void IsomerAPI::clearFilters()
 {
     // ~~~ Define sumamryStats groupbox lines for easy clearing
     summaryStats = ui->gb_summaryStats->findChildren<QLineEdit*>();
+    qDebug() << "[clearFilters CHECK FULL FILTER - before]" << modelFull->filter();
 
     // qDebug() << "[clearFilters: groupbox type?]" << std::as_const(filterBounds) + std::as_const(summaryStats);
     for (QLineEdit* le : std::as_const(filterBounds) + (std::as_const(summaryStats))) {
@@ -352,6 +365,7 @@ void IsomerAPI::clearFilters()
     }
 
     applyFilters();
+    qDebug() << "[clearFilters CHECK FULL FILTER - after]" << modelFull->filter();
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 

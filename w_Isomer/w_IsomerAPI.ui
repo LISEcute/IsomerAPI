@@ -25,7 +25,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_Gamma">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -211,6 +211,50 @@
           <property name="text">
            <string>Gamma Table</string>
           </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_Dev">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>Dev Table</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="tableView_Dev">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="mouseTracking">
+           <bool>true</bool>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
        </layout>
@@ -1037,6 +1081,7 @@
      <addaction name="actionIsomer_Emission_Split"/>
      <addaction name="actionIsomers"/>
      <addaction name="actionGammas"/>
+     <addaction name="actionDevelopment_View"/>
     </widget>
     <addaction name="menuView_Select"/>
    </widget>
@@ -1063,6 +1108,11 @@
   <action name="actionGammas">
    <property name="text">
     <string>Gammas</string>
+   </property>
+  </action>
+  <action name="actionDevelopment_View">
+   <property name="text">
+    <string>Development View</string>
    </property>
   </action>
  </widget>
