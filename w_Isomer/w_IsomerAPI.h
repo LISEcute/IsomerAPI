@@ -34,47 +34,43 @@ public:
     IsomerAPI(QWidget *parent = nullptr);
     ~IsomerAPI();
 
-    QStringList headerNames;
 
     QHash<QPair<int, int>, Isotope> prepData();
 
-    // ~~~~~ QPair<int,int> acts as isotope key with A,Z number
-    QHash<QPair<int,int>,Isotope> selectedIsotopes;
-
-    // std::tuple<QVector<Level>, QVector<Transition>> prepData();
-
 private slots:
+
+    void on_action_About_triggered();
+
     void applyFilters();
+    void sourceFilter();
     void openDrawing();
-    void statRefresh();
     void clearFilters();
     void viewSelect();
 
 private:
 
-    void sourceFilter();
-
+    void statRefresh();
     QVariant queryModel(const QString &queryRequest);
-    QString queryStr;
 
     Ui::IsomerAPI *ui;
-
     QSqlDatabase dbIsomLevel;
-    QSqlQuery query;
+    QString dbPath;
+    QStringList headerNames;
 
     QSqlTableModel *modelFull;
     QSqlTableModel *modelIsomers;
     QSqlTableModel *modelGammas;
-
     QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
+    QHash<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
 
 
     QList<QLineEdit*> filterBounds;
-    QList<QLineEdit*> summaryStats;
-
-    QString dbPath;
     QStringList entrySources;
+    QList<QLineEdit*> summaryStats;
+    QString queryStr;
+    QSqlQuery query;
+
 };
 #endif // CPP_ISOMERAPI_H
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

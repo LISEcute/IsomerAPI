@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
         <file>isomerAPI-Logo.png</file>
+        <file>emblem_little_plus.png</file>
     </qresource>
 </RCC>

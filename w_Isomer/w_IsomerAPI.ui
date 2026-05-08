@@ -25,7 +25,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page_Gamma">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -391,13 +391,13 @@
              <item>
               <widget class="QLabel" name="label_19">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string> to </string>
+                <string>  to  </string>
                </property>
               </widget>
              </item>
@@ -497,13 +497,13 @@
              <item>
               <widget class="QLabel" name="label_21">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="text">
-                <string> to </string>
+                <string>  to  </string>
                </property>
               </widget>
              </item>
@@ -743,6 +743,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::LeftToRight</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
          <layout class="QGridLayout" name="gb_filterHouse1" columnstretch="3,0,0,0">
           <property name="leftMargin">
            <number>10</number>
@@ -777,6 +783,9 @@
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhNone</set>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -790,7 +799,11 @@
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QLineEdit" name="le_FINE2"/>
+           <widget class="QLineEdit" name="le_FINE2">
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="label_3">
@@ -813,16 +826,32 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="le_GE1"/>
+           <widget class="QLineEdit" name="le_GE1">
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="le_FINE1"/>
+           <widget class="QLineEdit" name="le_FINE1">
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QLineEdit" name="le_T122"/>
+           <widget class="QLineEdit" name="le_T122">
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QLineEdit" name="le_GE2"/>
+           <widget class="QLineEdit" name="le_GE2">
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_18">
@@ -1086,8 +1115,8 @@
     <addaction name="menuView_Select"/>
    </widget>
    <addaction name="menumy_menu"/>
-   <addaction name="menuabout_page"/>
    <addaction name="menuOptions_WIP"/>
+   <addaction name="menuabout_page"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAbout">

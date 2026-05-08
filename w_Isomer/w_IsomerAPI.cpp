@@ -3,6 +3,7 @@
 
 #include "w_levelScheme.h"
 #include "L_isomerAPIversion.h"
+#include "w_about.h"
 
 #include <QSqlError>
 #include <QFileInfo>
@@ -24,6 +25,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
 {
   ui->setupUi(this);
+
+  setMinimumSize(800, 600);
+  resize(1200,600);
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -99,8 +103,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       // int headerIndex = 0;
       for (int i = 0; i <= model->columnCount(); i++) {
           QString headerKey = model->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString();
-          qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
-          if (!headerMap.contains(headerKey)) {
+          // qDebug() << "[IsomerAPI header check]" << headerKey << headerMap.value(headerKey);
+          if (headerMap.contains(headerKey)) {
+              // qDebug() << "[IsomerAPI Header check] replace header triggered";
               model->setHeaderData(i, Qt::Horizontal, headerMap.value(headerKey));
           }
 
@@ -181,6 +186,16 @@ IsomerAPI::~IsomerAPI()
   delete ui;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void IsomerAPI::on_action_About_triggered(){
+    About *about_page = new About;
+    about_page->setWindowFlags(Qt::CustomizeWindowHint |
+                               Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+
+    about_page->show();
+
+}
+
 
 void IsomerAPI::statRefresh()
 {

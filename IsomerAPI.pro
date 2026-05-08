@@ -20,7 +20,8 @@ SOURCES += \
     w_Isomer/w_levelScheme.cpp \
     w_Isomer/w_graphicsView.cpp \
     w_Stuff/win_utilPlot.cpp \
-    w_Stuff/win_utilString.cpp
+    w_Stuff/win_utilString.cpp \
+    w_about.cpp
 
 # Headers
 HEADERS += \
@@ -29,12 +30,14 @@ HEADERS += \
     w_Isomer/w_graphicsView.h \
     w_Isomer/L_vectorStruct.h \
     w_Isomer/L_isomerAPIversion.h \
-    w_Stuff/liseStrcpyOS.h
+    w_Stuff/liseStrcpyOS.h \
+    w_about.h
 
 # UI forms
 FORMS += \
     w_Isomer/w_IsomerAPI.ui \
-    w_Isomer/w_levelScheme.ui
+    w_Isomer/w_levelScheme.ui \
+    w_about.ui
 
 # Include path
 INCLUDEPATH += $$PWD
