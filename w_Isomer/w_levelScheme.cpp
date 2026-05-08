@@ -46,22 +46,53 @@ LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
 
 
         // append isotopes
-        // ~~~ CONTINUE HERE
         QAction *act_isotopeSelect = new QAction(QString("A: %1 Z: %2")
                                                 .arg(iso.A).arg(iso.Z),this);
+
         ui->menu_other_isotopes->addAction(act_isotopeSelect);
+
 
         currentItem = graphicStore.value(firstIso);
 
         connect(act_isotopeSelect, &QAction::triggered,
-                this, [this, gphcKey]() {
-                    qDebug() << "[act_isotopeSelect: currentItem]" << currentItem;
-                    if (currentItem) scene->removeItem(currentItem);
+                this, [this, act_isotopeSelect, gphcKey]() {
+            QFont f = act_isotopeSelect->font();
 
-                    currentItem = graphicStore.value(gphcKey, nullptr);
-                    if (currentItem) scene->addItem(currentItem);
+            for (QAction *act : ui->menu_other_isotopes->actions()) {
 
-                });
+                QFont f = act->font();
+                QString txt = act->text();
+
+                if (txt.startsWith("> ")) {
+                    txt.remove(0, 2);
+                    f.setBold(false);
+                    act->setFont(f);
+                }
+
+
+                act->setText(txt);
+            }
+
+            f.setBold(true);
+            act_isotopeSelect->setFont(f);
+            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+
+            if (currentItem)
+                scene->removeItem(currentItem);
+
+            currentItem = graphicStore.value(gphcKey, nullptr);
+
+            if (currentItem)
+                scene->addItem(currentItem);
+        });
+
+        if (gphcKey == firstIso) {
+            QFont fFirst = act_isotopeSelect->font();
+            fFirst.setBold(true);
+            act_isotopeSelect->setFont(fFirst);
+            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+        }
+
     }
 
     qDebug() << "[levelScheme: check scene exists]" << graphicStore.value(QPair<int,int>(31,12));

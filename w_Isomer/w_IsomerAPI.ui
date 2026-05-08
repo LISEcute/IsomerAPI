@@ -32,7 +32,7 @@
         <item>
          <widget class="QLabel" name="label_22">
           <property name="text">
-           <string>Gamma Table</string>
+           <string>Emissions</string>
           </property>
          </widget>
         </item>
@@ -76,7 +76,7 @@
         <item>
          <widget class="QLabel" name="label_23">
           <property name="text">
-           <string>Isomer Level</string>
+           <string>Isomers</string>
           </property>
          </widget>
         </item>
@@ -202,14 +202,14 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Isomer Table</string>
+           <string>Isomers</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
          <widget class="QLabel" name="label_10">
           <property name="text">
-           <string>Gamma Table</string>
+           <string>Emissions</string>
           </property>
          </widget>
         </item>
@@ -1095,13 +1095,13 @@
    </widget>
    <widget class="QMenu" name="menuabout_page">
     <property name="title">
-     <string>Help (WIP)</string>
+     <string>Help</string>
     </property>
-    <addaction name="actionAbout"/>
+    <addaction name="action_About"/>
    </widget>
    <widget class="QMenu" name="menuOptions_WIP">
     <property name="title">
-     <string>Options (WIP)</string>
+     <string>Options</string>
     </property>
     <widget class="QMenu" name="menuView_Select">
      <property name="title">
@@ -1119,9 +1119,13 @@
    <addaction name="menuabout_page"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionAbout">
+  <action name="action_About">
+   <property name="icon">
+    <iconset resource="isomapi_resources.qrc">
+     <normaloff>:/icons/lisepp_small.bmp</normaloff>:/icons/lisepp_small.bmp</iconset>
+   </property>
    <property name="text">
-    <string>About (WIP)</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionIsomer_Emission_Split">
