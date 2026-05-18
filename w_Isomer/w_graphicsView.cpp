@@ -1,8 +1,10 @@
 #include "w_graphicsView.h"
+#include "L_element.h"
 
 #include <QPainter>
 #include <QPen>
 #include <QPolygon>
+#include <QStaticText>
 
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -68,9 +70,16 @@ void graphicsView::paint(QPainter *painter,
 
     int xOffset = 0;
 
-    painter->drawText((lineLeft+lineRight)/2,yBase + titleOffset,QString("A: %1 Z: %2")
-                                                                           .arg(L_isotope.A)
-                                                                           .arg(L_isotope.Z));
+    // QPainter painter(this);
+    // QStaticText staticText("TESTTEST<sup>3</sup>");
+    // painter->drawStaticText(10, 10, staticText);
+    QString title = QString("<h1><b><sup>%1</sup>%2</b></h1>")
+                        .arg(L_isotope.A)
+                        .arg(atomicSymbol(L_isotope.Z));
+
+    QStaticText staticText(title);
+
+    painter->drawStaticText((lineLeft+lineRight)/2 - 25,yBase + titleOffset,staticText);
     bool firstIt = true;
 
     for (const Level &lvl : L_isotope.levels)

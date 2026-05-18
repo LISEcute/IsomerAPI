@@ -1,6 +1,7 @@
 #include "w_levelScheme.h"
 #include "ui_w_levelScheme.h"
 #include "L_vectorStruct.h"
+#include "L_element.h"
 
 
 #include <QPainter>
@@ -46,14 +47,15 @@ LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
 
 
         // append isotopes
-        QAction *act_isotopeSelect = new QAction(QString("A: %1 Z: %2")
-                                                .arg(iso.A).arg(iso.Z),this);
+        QAction *act_isotopeSelect = new QAction(QString("%1%2")
+                                                .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
 
         ui->menu_other_isotopes->addAction(act_isotopeSelect);
 
 
         currentItem = graphicStore.value(firstIso);
-
+        // make actions for isotope selection -- dynamic construction requires lambda function, "on_action..."
+        // private slot method is not applicable
         connect(act_isotopeSelect, &QAction::triggered,
                 this, [this, act_isotopeSelect, gphcKey]() {
             QFont f = act_isotopeSelect->font();
@@ -147,7 +149,9 @@ LevelScheme::~LevelScheme()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-
+void LevelScheme::on_action_act_isotopeSelect_triggered(){
+    qDebug() << "[action_isotopeSelect TRIGGERED]";
+}
 
 // here lays the old static painter
 // void LevelScheme::paintEvent(QPaintEvent *)

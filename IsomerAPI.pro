@@ -25,6 +25,7 @@ SOURCES += \
 
 # Headers
 HEADERS += \
+    L_element.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \

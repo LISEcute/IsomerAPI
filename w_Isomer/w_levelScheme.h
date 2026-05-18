@@ -33,6 +33,10 @@ public:
     QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
 
 
+
+private slots:
+    void on_action_act_isotopeSelect_triggered();
+
 private:
 
     QString _filterQuery;

@@ -4,6 +4,7 @@
 #include "w_levelScheme.h"
 #include "L_isomerAPIversion.h"
 #include "w_about.h"
+#include "L_element.h"
 
 #include <QSqlError>
 #include <QFileInfo>
@@ -30,7 +31,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   resize(1200,600);
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
+  qDebug() << "Element Test: " << atomicSymbol(7);
 
   // Database initialization
   // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
