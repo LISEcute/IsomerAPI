@@ -92,14 +92,14 @@ void graphicsView::paint(QPainter *painter,
             painter->drawLine(lineLeft,yBase,lineRight,yBase);
 
             painter->setPen(levelTextColor);
-            painter->drawText(lineRight + infoHOffset, yBase, QString("0 keV    Stable"));
+            painter->drawText(lineRight + infoHOffset, yBase, QString("0.0       Stable"));
             firstIt = false;
 
         }
 
         painter->setPen(levelTextColor);
         painter->drawText(spinOffset, y, lvl.spin);
-        QString levelText = QString("%1 keV    %2 \u03BCs")
+        QString levelText = QString("%1        %2 \u03BCs")
                            .arg(lvl.lvlEnergy, 0, 'f', 0)
                            .arg(lvl.halfLife);
 
@@ -126,10 +126,15 @@ void graphicsView::paint(QPainter *painter,
                       << QPoint(x, y2);
             painter->drawPolygon(arrowHead);
 
+            QFont pFont = painter->font();
+            QFontMetrics metrics(pFont);
+            int width = metrics.horizontalAdvance(tr.label);
+            qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
+
             painter->setPen(transitionColor);
             // make labels vertical for transition lines
             painter->rotate(90);
-            painter->drawText((y1+y2)/2-25,-(x+5),tr.label);
+            painter->drawText((y1+y2 - width)/2,-(x+5),tr.label);
             painter->setPen(QPen(transitionColor, 2));
             painter->rotate(-90);
 
@@ -137,6 +142,7 @@ void graphicsView::paint(QPainter *painter,
 
 
         }
+
         // ~~~~ ATTEMPT AT OUTOLEGTEXT STR FOR SUB
         // std::ostringstream oss;
         // oss << std::fixed << std::setprecision(0)

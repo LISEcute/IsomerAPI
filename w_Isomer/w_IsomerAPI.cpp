@@ -1,6 +1,7 @@
 #include "w_IsomerAPI.h"
 #include "ui_w_IsomerAPI.h"
 
+#include "w_downloaddialog.h"
 #include "w_levelScheme.h"
 #include "L_isomerAPIversion.h"
 #include "w_about.h"
@@ -31,7 +32,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   resize(1200,600);
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-  qDebug() << "Element Test: " << atomicSymbol(7);
+  qDebug() << "Element Test: " << atomicSymbol(7) << atomicSymbol("N") << atomicSymbol("n") << atomicSymbol("mg");
 
   // Database initialization
   // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
@@ -184,7 +185,16 @@ void IsomerAPI::on_action_About_triggered(){
                                Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
 
     about_page->show();
+}
 
+void IsomerAPI::on_pb_downloadCSV_clicked(){
+    qDebug() << "[downloadCSV TRIGGERED]";
+    DownloadDialog downlaodDlg(this);
+    // downlaodDlg->setWindowFlags(Qt::CustomizeWindowHint |
+    //                            Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+    if (downlaodDlg.exec() != QDialog::Accepted)
+        return;
+    // downlaodDlg->show();
 }
 
 
@@ -312,6 +322,7 @@ void IsomerAPI::applyFilters()
       if (filterMap.contains(baseName)) {
           QString col = filterMap[baseName];
           QString value = le->text();
+
           QString condition = (suffix == "1") ? QString("%1 > %2").arg(col,value)
                                               : QString("%1 < %2").arg(col,value);
           // qDebug() << "[applyFilters l139: col check]" << col;
@@ -327,17 +338,46 @@ void IsomerAPI::applyFilters()
 
 
         } else if (baseName == "le_num") {
-          QString col = (suffix == "A") ? "A_IT" : "Z_IT";
-          QString condition = QString("%1 IS %2").arg(col, le->text());
+          // QString col = (suffix == "A") ? "A_IT" : "Z_IT";
+          // QString condition = QString("%1 IS %2").arg(col, le->text());
+            QString col = (suffix == "A") ? "A_IT" : "Z_IT";
+            QString textValue = le->text();
+            QString finalValue;
 
+            // ~~~~ .toInt ONLY CHECKS FIRST CHARACTER!!!!!
+            bool isInt;
+            textValue.toInt(&isInt);
+            qDebug() << "[applyFilters: le_num case, check isInt, testValue]" <<  isInt << textValue;
 
-          if (!filterExpr.isEmpty()) {
-              filterExpr += " AND ";
+            if (isInt) {
+                // It's already a number (e.g., "6")
+                finalValue = textValue;
+            } else {
+
+                // It's a string (e.g., "C"), get the atomic number
+                // Note: Ensure atomicSymbol() returns a QString or use QString::number()
+                finalValue = QString::number(atomicSymbol(textValue));
+                qDebug() << "[applyFilters: le_num string entered, check atomicSymobls output]" << atomicSymbol(textValue);
             }
-          filterExpr += condition;
+            qDebug() << "[applyFilters: le_num case, check finalValue]" << finalValue;
+
+            QString condition = QString("%1 IS %2").arg(col, finalValue);
+
+            if (!filterExpr.isEmpty()) {
+                filterExpr += " AND ";
+            }
+            filterExpr += condition;
+        }
+
+
+
+          // if (!filterExpr.isEmpty()) {
+          //     filterExpr += " AND ";
+          //   }
+          // filterExpr += condition;
           // qDebug() << "[applyFilters l160: col check]" << col;
           // qDebug() << "[applyFilters l161: value check]" << le->text();
-        }
+        // }
       qDebug();
 
     }
@@ -377,10 +417,10 @@ void IsomerAPI::clearFilters()
 
 void IsomerAPI::openDrawing()
 {
-  auto *levelScheme = new LevelScheme(selectedIsotopes);
+  auto *levelScheme = new LevelScheme(selectedIsotopes, this);
 
   levelScheme->show();
-  levelScheme->activateWindow();
+  // levelScheme->activateWindow();
 }
 
 
@@ -428,7 +468,7 @@ QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
       double tmpGammaE = query.value("E_GAMMA").toDouble();
 
       // double tmpFinal = tmpLevelE - tmpGammaE;
-      QString tmpEmission = QString("%1 keV").arg(tmpGammaE);
+      QString tmpEmission = QString("%1").arg(tmpGammaE);
 
       Isotope& iso = isotopeMap[key];
       iso.A = A;

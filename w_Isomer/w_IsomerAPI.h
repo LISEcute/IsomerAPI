@@ -40,6 +40,7 @@ public:
 private slots:
 
     void on_action_About_triggered();
+    void on_pb_downloadCSV_clicked();
 
     void applyFilters();
     void sourceFilter();

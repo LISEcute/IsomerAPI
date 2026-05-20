@@ -21,7 +21,8 @@ SOURCES += \
     w_Isomer/w_graphicsView.cpp \
     w_Stuff/win_utilPlot.cpp \
     w_Stuff/win_utilString.cpp \
-    w_about.cpp
+    w_about.cpp \
+    w_downloaddialog.cpp
 
 # Headers
 HEADERS += \
@@ -32,13 +33,15 @@ HEADERS += \
     w_Isomer/L_vectorStruct.h \
     w_Isomer/L_isomerAPIversion.h \
     w_Stuff/liseStrcpyOS.h \
-    w_about.h
+    w_about.h \
+    w_downloaddialog.h
 
 # UI forms
 FORMS += \
     w_Isomer/w_IsomerAPI.ui \
     w_Isomer/w_levelScheme.ui \
-    w_about.ui
+    w_about.ui \
+    w_downloaddialog.ui
 
 # Include path
 INCLUDEPATH += $$PWD

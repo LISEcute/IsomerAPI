@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About Charge</string>
+   <string>About IsomerAPI</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/icons/charge1.png</normaloff>:/icons/charge1.png</iconset>
+   <iconset resource="w_Isomer/isomapi_resources.qrc">
+    <normaloff>:/icons/isomerAPI-Logo.png</normaloff>:/icons/isomerAPI-Logo.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(85, 85, 225);</string>
@@ -290,7 +290,7 @@ color: rgb(210, 210, 210);</string>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QLabel" name="label_Charge">
+       <widget class="QLabel" name="label_IsomerAPI">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
