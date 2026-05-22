@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QHash>
 #include <QGraphicsScene>
+#include <QMap>
 
 
 #include "w_graphicsView.h"
@@ -26,7 +27,7 @@ class LevelScheme : public QMainWindow
 
 public:
 
-    LevelScheme(const QHash<QPair<int,int>,Isotope>& isotopeMap,
+    LevelScheme(const QMap<QPair<int,int>,Isotope>& isotopeMap,
                 QWidget *parent=nullptr);
     ~LevelScheme();
 

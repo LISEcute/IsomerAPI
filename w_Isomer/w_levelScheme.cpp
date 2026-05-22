@@ -11,7 +11,7 @@
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-LevelScheme::LevelScheme(const QHash<QPair<int,int>,Isotope>& selectedIsotopes,
+LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
                          QWidget *parent)
     :
     QMainWindow(parent),

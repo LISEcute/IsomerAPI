@@ -32,10 +32,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   resize(1200,600);
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-  qDebug() << "Element Test: " << atomicSymbol(7) << atomicSymbol("N") << atomicSymbol("n") << atomicSymbol("mg");
 
   // Database initialization
-  // there is a smarter way to write this path with QDir() but I do not know how to escape the builder.
 
   dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
@@ -316,15 +314,27 @@ void IsomerAPI::applyFilters()
       QString suffix = objName.right(1);
 
 
-      // qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
+      qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
       // qDebug() << "[applyFilters l134: check filterExpr]" << filterExpr;
 
       if (filterMap.contains(baseName)) {
           QString col = filterMap[baseName];
-          QString value = le->text();
+          QString textValue = le->text();
+          QString finalValue;
 
-          QString condition = (suffix == "1") ? QString("%1 > %2").arg(col,value)
-                                              : QString("%1 < %2").arg(col,value);
+          bool isInt;
+          textValue.toInt(&isInt);
+
+          if (isInt) {
+              finalValue = textValue;
+          } else {
+              qDebug() << "[applyFilters: le_num range, check atomicSymobls output]" << atomicSymbol(textValue);
+              // qDebug() << "[applyFilters: le_num string entered, check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
+              finalValue = QString::number(atomicSymbol(textValue));
+          }
+          // construct error bars as iterating
+          QString condition = (suffix == "1") ? QString("%1 >= %2").arg(col,finalValue)
+                                              : QString("%1 <= %2").arg(col,finalValue);
           // qDebug() << "[applyFilters l139: col check]" << col;
           // qDebug() << "[applyFilters l140: value check]" << value;
           // qDebug() << "[applyFilters l141: conditional check]" << condition;
@@ -338,13 +348,10 @@ void IsomerAPI::applyFilters()
 
 
         } else if (baseName == "le_num") {
-          // QString col = (suffix == "A") ? "A_IT" : "Z_IT";
-          // QString condition = QString("%1 IS %2").arg(col, le->text());
             QString col = (suffix == "A") ? "A_IT" : "Z_IT";
             QString textValue = le->text();
             QString finalValue;
 
-            // ~~~~ .toInt ONLY CHECKS FIRST CHARACTER!!!!!
             bool isInt;
             textValue.toInt(&isInt);
             qDebug() << "[applyFilters: le_num case, check isInt, testValue]" <<  isInt << textValue;
@@ -358,6 +365,8 @@ void IsomerAPI::applyFilters()
                 // Note: Ensure atomicSymbol() returns a QString or use QString::number()
                 finalValue = QString::number(atomicSymbol(textValue));
                 qDebug() << "[applyFilters: le_num string entered, check atomicSymobls output]" << atomicSymbol(textValue);
+                qDebug() << "[applyFilters: le_num string entered, check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
+
             }
             qDebug() << "[applyFilters: le_num case, check finalValue]" << finalValue;
 
@@ -417,7 +426,7 @@ void IsomerAPI::clearFilters()
 
 void IsomerAPI::openDrawing()
 {
-  auto *levelScheme = new LevelScheme(selectedIsotopes, this);
+  auto *levelScheme = new LevelScheme(selectedIsotopes);
 
   levelScheme->show();
   // levelScheme->activateWindow();
@@ -433,7 +442,7 @@ void IsomerAPI::viewSelect()
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
+QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 {
 
   qDebug() << "[prepData: BEGIN PREP]";
@@ -446,8 +455,8 @@ QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
     }
 
 
-// ~~~~~ QPair<int,int> acts as isotope key with A,Z number
-  QHash<QPair<int,int>,Isotope> isotopeMap;
+// QPair<int,int> acts as isotope key with A,Z number
+  QMap<QPair<int,int>,Isotope> isotopeMap;
 
   // QVector<Level> prepLevel;
   // QVector<Transition> prepTransition;
@@ -462,7 +471,7 @@ QHash<QPair<int,int>,Isotope> IsomerAPI::prepData()
       int Z = query.value("Z_IT").toInt();
 
       // ~~~~~ isotope key established
-      QPair<int,int> key(A,Z);
+      QPair<int,int> key(Z,A);
 
       double tmpLevelE = query.value("LEVEL").toDouble();
       double tmpGammaE = query.value("E_GAMMA").toDouble();

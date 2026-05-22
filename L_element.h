@@ -179,7 +179,11 @@ inline int atomicSymbol(const QString& symbol)
     };
 
     // Case-insensitive lookup (e.g., "mg" or "MG" also works for Magnesium)
-    auto it = symbolMap.find(symbol.toUpper());
+    QString normalized = symbol.toLower();
+    normalized[0] = normalized[0].toUpper();
+
+    auto it = symbolMap.find(normalized);
+
     // qDebug() << "[L_element: check 'it']" << it;
     if (it != symbolMap.end()) {
         return it.value();

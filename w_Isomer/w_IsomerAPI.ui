@@ -781,7 +781,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="le_T121">
             <property name="inputMethodHints">
-             <set>Qt::InputMethodHint::ImhNone</set>
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -800,6 +800,9 @@
           </item>
           <item row="2" column="3">
            <widget class="QLineEdit" name="le_FINE2">
+            <property name="inputMethodHints">
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
@@ -827,6 +830,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="le_GE1">
+            <property name="inputMethodHints">
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
@@ -834,6 +840,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="le_FINE1">
+            <property name="inputMethodHints">
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
@@ -841,6 +850,9 @@
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="le_T122">
+            <property name="inputMethodHints">
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
@@ -848,6 +860,9 @@
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="le_GE2">
+            <property name="inputMethodHints">
+             <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
@@ -952,6 +967,9 @@
               <property name="enabled">
                <bool>true</bool>
               </property>
+              <property name="inputMethodHints">
+               <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+              </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
@@ -969,6 +987,9 @@
             </item>
             <item row="1" column="4">
              <widget class="QLineEdit" name="le_numA2">
+              <property name="inputMethodHints">
+               <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+              </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
@@ -1047,6 +1068,9 @@
             </item>
             <item row="1" column="2">
              <widget class="QLineEdit" name="le_numA1">
+              <property name="inputMethodHints">
+               <set>Qt::InputMethodHint::ImhPreferNumbers</set>
+              </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>

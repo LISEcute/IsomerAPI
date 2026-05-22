@@ -13,6 +13,7 @@
 #include <QVector>
 #include <QHash>
 #include <QTableView>
+#include <QMap>
 
 #include "L_vectorStruct.h"
 
@@ -35,7 +36,7 @@ public:
     ~IsomerAPI();
 
 
-    QHash<QPair<int, int>, Isotope> prepData();
+    QMap<QPair<int, int>, Isotope> prepData();
 
 private slots:
 
@@ -63,7 +64,7 @@ private:
     QSqlTableModel *modelGammas;
     QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
-    QHash<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
+    QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
 
 
     QList<QLineEdit*> filterBounds;
