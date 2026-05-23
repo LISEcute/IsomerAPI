@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.1"
-#define isomerAPI_date         "8-MAY-2026"
+#define isomerAPI_version      "1.3.2"
+#define isomerAPI_date         "23-MAY-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -22,3 +22,6 @@
 // and split view) but filters not visualized,
 // about page created and attached to
 // about button within help drop down.
+
+//-----------------------------
+// 1.3.2          5/23/26  Oleg

@@ -6,7 +6,7 @@ CONFIG   -= app_bundle
 
 
 win32-g++ {
-DESTDIR = C:\Users\hudso\locRepos\IsomerAPI\_install
+DESTDIR = c:/IsomerAPI/_install
 }
 win32-msvc {
 DESTDIR = c:/IsomerAPI/_install_MSVC
@@ -15,33 +15,33 @@ DESTDIR = c:/IsomerAPI/_install_MSVC
 
 # Sources
 SOURCES += \
-    main.cpp \
+    w_Isomer/iso_main.cpp \
     w_Isomer/w_IsomerAPI.cpp \
     w_Isomer/w_levelScheme.cpp \
     w_Isomer/w_graphicsView.cpp \
+    w_Isomer/w_about.cpp \
+    w_Isomer/d_Download.cpp \
     w_Stuff/win_utilPlot.cpp \
-    w_Stuff/win_utilString.cpp \
-    w_about.cpp \
-    w_downloaddialog.cpp
+    w_Stuff/win_utilString.cpp
 
 # Headers
 HEADERS += \
-    L_element.h \
+    w_Isomer/L_element.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
     w_Isomer/L_vectorStruct.h \
     w_Isomer/L_isomerAPIversion.h \
-    w_Stuff/liseStrcpyOS.h \
-    w_about.h \
-    w_downloaddialog.h
+    w_Isomer/w_about.h \
+    w_Isomer/d_Download.h \
+    w_Stuff/liseStrcpyOS.h
 
 # UI forms
 FORMS += \
     w_Isomer/w_IsomerAPI.ui \
     w_Isomer/w_levelScheme.ui \
-    w_about.ui \
-    w_downloaddialog.ui
+    w_Isomer/w_about.ui \
+    w_Isomer/d_Download.ui
 
 # Include path
 INCLUDEPATH += $$PWD
@@ -71,3 +71,12 @@ DISTFILES += \
 
 RESOURCES += \
     w_Isomer/isomapi_resources.qrc
+
+DISTFILES += \
+       w_Isomer/Icons/IsomerAPI_icon.ico
+
+RC_ICONS +=  \
+       w_Isomer/Icons/IsomerAPI_icon.ico
+
+
+

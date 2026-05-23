@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="isomapi_resources.qrc">
-    <normaloff>:/icons/isomerAPI-Logo.png</normaloff>:/icons/isomerAPI-Logo.png</iconset>
+    <normaloff>:/icons/Icons/isomerAPI-Logo.png</normaloff>:/icons/Icons/isomerAPI-Logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2" rowstretch="2,0,0">
@@ -1116,6 +1116,7 @@
     <property name="title">
      <string>Menu (WIP)</string>
     </property>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuabout_page">
     <property name="title">
@@ -1146,7 +1147,7 @@
   <action name="action_About">
    <property name="icon">
     <iconset resource="isomapi_resources.qrc">
-     <normaloff>:/icons/lisepp_small.bmp</normaloff>:/icons/lisepp_small.bmp</iconset>
+     <normaloff>:/icons/Icons/lisepp_small.bmp</normaloff>:/icons/Icons/lisepp_small.bmp</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -1170,6 +1171,11 @@
   <action name="actionDevelopment_View">
    <property name="text">
     <string>Development View</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
    </property>
   </action>
  </widget>

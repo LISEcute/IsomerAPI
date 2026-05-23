@@ -18,7 +18,6 @@
 #include "L_vectorStruct.h"
 
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class IsomerAPI;
@@ -48,6 +47,8 @@ private slots:
     void openDrawing();
     void clearFilters();
     void viewSelect();
+
+    void on_actionExit_triggered();
 
 private:
 

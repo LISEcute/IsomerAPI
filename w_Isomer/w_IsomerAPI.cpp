@@ -1,10 +1,10 @@
 #include "w_IsomerAPI.h"
 #include "ui_w_IsomerAPI.h"
 
-#include "w_downloaddialog.h"
+#include "d_Download.h"
 #include "w_levelScheme.h"
-#include "L_isomerAPIversion.h"
 #include "w_about.h"
+#include "L_isomerAPIversion.h"
 #include "L_element.h"
 
 #include <QSqlError>
@@ -23,8 +23,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     modelFull(nullptr),
     modelIsomers(nullptr),
     modelGammas(nullptr)
-
-
 {
   ui->setupUi(this);
 
@@ -172,18 +170,38 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
 IsomerAPI::~IsomerAPI()
 {
+  query.finish();
+  query.clear();
+
+  ui->tableView_Dev->setModel(nullptr);
+  ui->tableView_Isomer->setModel(nullptr);
+  ui->tableView_Gammas->setModel(nullptr);
+  ui->tableView_IsomerSolo->setModel(nullptr);
+  ui->tableView_GammaSolo->setModel(nullptr);
+
+  delete modelFull;
+  delete modelIsomers;
+  delete modelGammas;
+
+  modelFull = nullptr;
+  modelIsomers = nullptr;
+  modelGammas = nullptr;
+
   dbIsomLevel.close();
+
   delete ui;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void IsomerAPI::on_action_About_triggered(){
+void IsomerAPI::on_action_About_triggered()
+{
     About *about_page = new About;
     about_page->setWindowFlags(Qt::CustomizeWindowHint |
                                Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
 
     about_page->show();
 }
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void IsomerAPI::on_pb_downloadCSV_clicked(){
     qDebug() << "[downloadCSV TRIGGERED]";
@@ -194,6 +212,7 @@ void IsomerAPI::on_pb_downloadCSV_clicked(){
         return;
     // downlaodDlg->show();
 }
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 
 void IsomerAPI::statRefresh()
@@ -432,6 +451,7 @@ void IsomerAPI::openDrawing()
   // levelScheme->activateWindow();
 }
 
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 // ~~~~ this is doing nothing
 void IsomerAPI::viewSelect()
@@ -540,3 +560,9 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void IsomerAPI::on_actionExit_triggered()
+{
+  exit(2);
+}
+
