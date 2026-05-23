@@ -6,10 +6,10 @@ CONFIG   -= app_bundle
 
 
 win32-g++ {
-DESTDIR = c:/IsomerAPI/_install
+DESTDIR = C:/Users/hudso/locRepos/IsomerAPI/_install
 }
 win32-msvc {
-DESTDIR = c:/IsomerAPI/_install_MSVC
+DESTDIR = c:/Users/hudso/locRepos/IsomerAPI/_install_MSVC
 }
 
 

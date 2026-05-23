@@ -88,7 +88,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   for (auto &tuple : modelTuples) {
       auto [model, tableName, uiView] = tuple;
-      qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
+      // qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
 
       uiView->setModel(model);
       uiView->horizontalHeader()->moveSection(0,20);
@@ -147,7 +147,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // stacked widget setup
   ui->stackedWidget->setCurrentIndex(2);
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
-      qDebug() << "actionFullDataView Connected";
       ui->stackedWidget->setCurrentIndex(2);
   });
 
@@ -465,7 +464,7 @@ void IsomerAPI::viewSelect()
 QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 {
 
-  qDebug() << "[prepData: BEGIN PREP]";
+  // qDebug() << "[prepData: BEGIN PREP]";
   QString fullQuery =
         "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
 

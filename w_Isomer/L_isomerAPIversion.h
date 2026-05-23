@@ -10,14 +10,14 @@
 // project re-organization
 
 //-----------------------------
-// 1.3.0          3/20/26
+// 1.3.0          3/20/26  Hudson
 // Major updates including column
 // reformatting, summary statistics,
 // level scheme improvements, isotope
 // hashmap storage system, etc.
 
 //-----------------------------
-// 1.3.1          5/8/26
+// 1.3.1          5/8/26  Hudson
 // Multiple views included (Isomer/Gamma solo
 // and split view) but filters not visualized,
 // about page created and attached to
