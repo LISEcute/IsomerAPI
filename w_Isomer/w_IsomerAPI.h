@@ -2,9 +2,6 @@
 #define CPP_ISOMERAPI_H
 
 #include <QMainWindow>
-//#include <QWidget>
-#include <QApplication>
-//#include <QWidget>
 #include <QApplication>
 #include <QLineEdit>
 #include <QRegularExpression>
@@ -14,9 +11,11 @@
 #include <QSqlQuery>
 #include <QList>
 #include <QVector>
+#include <QHash>
+#include <QTableView>
+#include <QMap>
 
 #include "L_vectorStruct.h"
-
 
 
 QT_BEGIN_NAMESPACE
@@ -35,28 +34,46 @@ public:
     IsomerAPI(QWidget *parent = nullptr);
     ~IsomerAPI();
 
-    std::tuple<QVector<Level>, QVector<Transition>> prepData();
+
+    QMap<QPair<int, int>, Isotope> prepData();
 
 private slots:
+
+    void on_action_About_triggered();
+    void on_pb_downloadCSV_clicked();
+
     void applyFilters();
+    void sourceFilter();
     void openDrawing();
-    void sumStatRefresh();
     void clearFilters();
+    void viewSelect();
+
+    void on_actionExit_triggered();
 
 private:
 
-    void sourceFilter();
-
+    void statRefresh();
     QVariant queryModel(const QString &queryRequest);
+
     Ui::IsomerAPI *ui;
-
     QSqlDatabase dbIsomLevel;
-    QSqlQuery query;
-    QSqlTableModel *model;
-    QList<QLineEdit*> filterBounds;
-
     QString dbPath;
+    QStringList headerNames;
+
+    QSqlTableModel *modelFull;
+    QSqlTableModel *modelIsomers;
+    QSqlTableModel *modelGammas;
+    QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
+    QVector<QSqlTableModel*> modelsVector;
+    QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
+
+
+    QList<QLineEdit*> filterBounds;
     QStringList entrySources;
+    QList<QLineEdit*> summaryStats;
+    QString queryStr;
+    QSqlQuery query;
+
 };
 #endif // CPP_ISOMERAPI_H
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

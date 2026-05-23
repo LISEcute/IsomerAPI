@@ -15,26 +15,33 @@ DESTDIR = c:/IsomerAPI/_install_MSVC
 
 # Sources
 SOURCES += \
-    main.cpp \
+    w_Isomer/iso_main.cpp \
     w_Isomer/w_IsomerAPI.cpp \
     w_Isomer/w_levelScheme.cpp \
     w_Isomer/w_graphicsView.cpp \
+    w_Isomer/w_about.cpp \
+    w_Isomer/d_Download.cpp \
     w_Stuff/win_utilPlot.cpp \
     w_Stuff/win_utilString.cpp
 
 # Headers
 HEADERS += \
+    w_Isomer/L_element.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
     w_Isomer/L_vectorStruct.h \
     w_Isomer/L_isomerAPIversion.h \
+    w_Isomer/w_about.h \
+    w_Isomer/d_Download.h \
     w_Stuff/liseStrcpyOS.h
 
 # UI forms
 FORMS += \
     w_Isomer/w_IsomerAPI.ui \
-    w_Isomer/w_levelScheme.ui
+    w_Isomer/w_levelScheme.ui \
+    w_Isomer/w_about.ui \
+    w_Isomer/d_Download.ui
 
 # Include path
 INCLUDEPATH += $$PWD
@@ -57,5 +64,19 @@ greaterThan(QT_MAJOR_VERSION, 5) {
 }
 
 DISTFILES += \
+    _install/lisecfg/IsomerDB_Split.sqlite \
     _install/lisecfg/Isomer_DB_WIDGET.sqlite \
     mainstyle.qss
+    mainstyle_light.qss
+
+RESOURCES += \
+    w_Isomer/isomapi_resources.qrc
+
+DISTFILES += \
+       w_Isomer/Icons/IsomerAPI_icon.ico
+
+RC_ICONS +=  \
+       w_Isomer/Icons/IsomerAPI_icon.ico
+
+
+

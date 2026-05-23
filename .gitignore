@@ -2,6 +2,7 @@
 *.pdb
 *.user
 *.user*
+*.pro.user
 /build/
 /certs/
 /t/

@@ -1,45 +1,120 @@
 #include "w_levelScheme.h"
 #include "ui_w_levelScheme.h"
+#include "L_vectorStruct.h"
+#include "L_element.h"
 
 
 #include <QPainter>
 #include <QPaintEvent>
 #include <QGraphicsScene>
+#include <QHash>
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-LevelScheme::LevelScheme(const QVector<Level>& levels,
-                         const QVector<Transition>& transitions,
+LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
                          QWidget *parent)
     :
     QMainWindow(parent),
-    m_levels(std::move(levels)),
-    m_transitions(std::move(transitions)),
     ui(new Ui::LevelScheme)
 
 {
     ui->setupUi(this);
-    setMinimumSize(500, 500);
-    resize(800,400);
+    setMinimumSize(500, 600);
+    resize(800,800);
     qDebug() << _filterQuery << _path;
 
-    //
-    QGraphicsScene *scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
+
+    // ~~~~~ establsih graphics hashmap
+    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
+
+    // make graphics
+    QPair<int,int> firstIso;
+    bool firstIt = true;
+
+    for (const Isotope &iso : selectedIsotopes) {
+        qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
+        QPair<int,int> gphcKey(iso.A, iso.Z);
+        auto *item = new graphicsView(iso);
+        if (firstIt){
+            firstIso = gphcKey;
+            firstIt = false;
+        }
+
+        graphicStore.insert(gphcKey, item);
+
+        qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
+
+
+        // append isotopes
+        QAction *act_isotopeSelect = new QAction(QString("%1%2")
+                                                .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
+
+        ui->menu_other_isotopes->addAction(act_isotopeSelect);
+
+
+        currentItem = graphicStore.value(firstIso);
+        // make actions for isotope selection -- dynamic construction requires lambda function, "on_action..."
+        // private slot method is not applicable
+        connect(act_isotopeSelect, &QAction::triggered,
+                this, [this, act_isotopeSelect, gphcKey]() {
+            QFont f = act_isotopeSelect->font();
+
+            for (QAction *act : ui->menu_other_isotopes->actions()) {
+
+                QFont f = act->font();
+                QString txt = act->text();
+
+                if (txt.startsWith("> ")) {
+                    txt.remove(0, 2);
+                    f.setBold(false);
+                    act->setFont(f);
+                }
+
+
+                act->setText(txt);
+            }
+
+            f.setBold(true);
+            act_isotopeSelect->setFont(f);
+            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+
+            if (currentItem)
+                scene->removeItem(currentItem);
+
+            currentItem = graphicStore.value(gphcKey, nullptr);
+
+            if (currentItem)
+                scene->addItem(currentItem);
+        });
+
+        if (gphcKey == firstIso) {
+            QFont fFirst = act_isotopeSelect->font();
+            fFirst.setBold(true);
+            act_isotopeSelect->setFont(fFirst);
+            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+        }
+
+    }
+
+    qDebug() << "[levelScheme: check scene exists]" << graphicStore.value(QPair<int,int>(31,12));
+    scene->addItem(graphicStore.value(firstIso));
+
+    /*QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);
     scene->addItem(item);
     ui->graphicsView->setScene(scene);
 
+    // display policies
+    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
     QAction *action_savePic2 = new QAction("TEST SAVE", this);
     ui->toolBar->addAction(action_savePic2);
     connect(ui->action_savePic, &QAction::triggered,this,&LevelScheme::saveImage);
+*/
 }
-//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-
-LevelScheme::~LevelScheme()
-{
-    delete ui;
-}
-//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 void LevelScheme::saveImage()
 {
@@ -58,6 +133,27 @@ void LevelScheme::saveImage()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
+
+void LevelScheme::selectIsoScheme()
+{
+    qDebug() << "[selectIsoScheme: ACTIVE]";
+    auto *isoScheme = graphicStore.value({31,12});
+
+}
+
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+LevelScheme::~LevelScheme()
+{
+    delete ui;
+}
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void LevelScheme::on_action_act_isotopeSelect_triggered(){
+    qDebug() << "[action_isotopeSelect TRIGGERED]";
+}
+
+// here lays the old static painter
 // void LevelScheme::paintEvent(QPaintEvent *)
 // {
 //     QPainter painter(this);
