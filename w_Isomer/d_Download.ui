@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>184</width>
-    <height>233</height>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,23 +27,16 @@
        <number>20</number>
       </property>
       <item>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QRadioButton" name="rb_sqlite">
         <property name="text">
          <string>.SQLite</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="rb_csv">
         <property name="text">
          <string>.CSV</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButton_2">
-        <property name="text">
-         <string>.xlsx</string>
         </property>
        </widget>
       </item>

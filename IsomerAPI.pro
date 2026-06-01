@@ -6,10 +6,10 @@ CONFIG   -= app_bundle
 
 
 win32-g++ {
-DESTDIR = C:/Users/hudso/locRepos/IsomerAPI/_install
+DESTDIR = C:/IsomerAPI/_install
 }
 win32-msvc {
-DESTDIR = c:/Users/hudso/locRepos/IsomerAPI/_install_MSVC
+DESTDIR = c:/IsomerAPI/_install_MSVC
 }
 
 
@@ -21,6 +21,7 @@ SOURCES += \
     w_Isomer/w_graphicsView.cpp \
     w_Isomer/w_about.cpp \
     w_Isomer/d_Download.cpp \
+    w_Stuff/w_Label_clickable.cpp \
     w_Stuff/win_utilPlot.cpp \
     w_Stuff/win_utilString.cpp
 
@@ -34,7 +35,8 @@ HEADERS += \
     w_Isomer/L_isomerAPIversion.h \
     w_Isomer/w_about.h \
     w_Isomer/d_Download.h \
-    w_Stuff/liseStrcpyOS.h
+    w_Stuff/liseStrcpyOS.h \
+    w_Stuff/w_Label_clickable.h
 
 # UI forms
 FORMS += \

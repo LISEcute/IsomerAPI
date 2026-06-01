@@ -60,7 +60,8 @@ void graphicsView::paint(QPainter *painter,
     int spinOffset = -45;
     int infoHOffset = 10;
     // int textVOffset = -5;
-    int arrowHeadSize = 6;
+    int arrowHeadSize = 5;
+    int arrowPointiness = 5;
 
     QColor lineColor(0,0,0);
     QColor levelTextColor(0,0,0);
@@ -97,17 +98,26 @@ void graphicsView::paint(QPainter *painter,
 
         }
 
+        QFont f = painter->font();
+        f.setBold(true);
+        painter->setFont(f);
         painter->setPen(levelTextColor);
         painter->drawText(spinOffset, y, lvl.spin);
+        f.setBold(false);
+        painter->setFont(f);
+
         QString levelText = QString("%1        %2 \u03BCs")
                            .arg(lvl.lvlEnergy, 0, 'f', 0)
                            .arg(lvl.halfLife);
 
         painter->drawText(lineRight + infoHOffset, y, levelText);
 
+
         // ~~~~~ transition drawing
         painter->setPen(QPen(transitionColor, 2));
         painter->setBrush(transitionColor);
+
+
 
         for (const Transition &tr : lvl.transitions) {
             double Ei = tr.lvlEnergy;
@@ -121,15 +131,15 @@ void graphicsView::paint(QPainter *painter,
             painter->drawLine(x, y1, x, y2);
 
             QPolygon arrowHead;
-            arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize)
-                      << QPoint(x + arrowHeadSize, y2 - arrowHeadSize)
+            arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize - arrowPointiness)
+                      << QPoint(x + arrowHeadSize, y2 - arrowHeadSize - arrowPointiness)
                       << QPoint(x, y2);
             painter->drawPolygon(arrowHead);
 
             QFont pFont = painter->font();
             QFontMetrics metrics(pFont);
             int width = metrics.horizontalAdvance(tr.label);
-            qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
+            // qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
 
             painter->setPen(transitionColor);
             // make labels vertical for transition lines

@@ -160,11 +160,14 @@ margin: 0px;</string>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_14">
+    <widget class="ClickableLabel" name="label_Contact">
      <property name="font">
       <font>
        <pointsize>9</pointsize>
       </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(222, 226, 197); background-color: rgb(0, 90, 255);</string>
@@ -226,7 +229,7 @@ margin: 0px;</string>
    <item>
     <widget class="QLabel" name="label_mail">
      <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
+      <cursorShape>ArrowCursor</cursorShape>
      </property>
      <property name="toolTip">
       <string>send mail to:</string>
@@ -236,13 +239,16 @@ margin: 0px;</string>
 color: rgb(210, 210, 210);</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IsomerAPI has been developed by Hudson Miltner within the framework of the program LISE&lt;span style=&quot; vertical-align:super;&quot;&gt;++&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;This program will also operates as a standalone application for user convenience.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IsomerAPI has been developed by Hudson Miltner within the framework of the program LISE&lt;span style=&quot; vertical-align:super;&quot;&gt;++&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;This program also operates as a standalone application for user convenience.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::TextInteractionFlag::NoTextInteraction</set>
      </property>
     </widget>
    </item>
@@ -290,7 +296,7 @@ color: rgb(210, 210, 210);</string>
        </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QLabel" name="label_IsomerAPI">
+       <widget class="ClickableLabel" name="label_IsomerAPI">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
@@ -301,7 +307,7 @@ color: rgb(210, 210, 210);</string>
          <string notr="true">color: rgb(222, 226, 197);</string>
         </property>
         <property name="text">
-         <string>no website yet</string>
+         <string>Project Summary Presentation (Jan. 2026)</string>
         </property>
         <property name="textFormat">
          <enum>Qt::TextFormat::AutoText</enum>
@@ -328,18 +334,18 @@ color: rgb(210, 210, 210);</string>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="label_LISE">
+       <widget class="ClickableLabel" name="label_LISE">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;link to LISE++&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Link to LISE++&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(222, 226, 197);</string>
         </property>
         <property name="text">
-         <string>http://lise.frib.msu.edu</string>
+         <string>https://lise.frib.msu.edu/lise.html</string>
         </property>
         <property name="textFormat">
          <enum>Qt::TextFormat::AutoText</enum>
@@ -377,11 +383,18 @@ color: rgb(210, 210, 210);</string>
   </layout>
   <zorder>frame</zorder>
   <zorder>label_8</zorder>
-  <zorder>label_14</zorder>
+  <zorder>label_Contact</zorder>
   <zorder>label_Version</zorder>
   <zorder>label_mail</zorder>
   <zorder>label_Date</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>w_Stuff/w_Label_clickable.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="isomapi_resources.qrc"/>
  </resources>

@@ -6,6 +6,10 @@
 #include <QStyleFactory>
 #include <QFile>
 #include <QDir>
+#include <QPalette>
+#include <QColor>
+#include <QApplication>
+#include <QFont>
 
 int fontsizeGlobal=9;
 
@@ -36,8 +40,7 @@ int main(int argc, char *argv[])
 
     app.setPalette(palette);
 
-    qDebug() << QDir::homePath();
-    QString appDir = QDir::homePath() + "/locRepos/IsomerAPI";
+    qDebug() << "[iso_main.cpp Home Path:]" << QDir::homePath();
 
     QString qssFilePath(":/w_Isomer/styles/mainstyle.qss");
     QFile file(qssFilePath);
