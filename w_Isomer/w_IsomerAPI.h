@@ -38,8 +38,8 @@ public:
 
 private slots:
 
-    void on_action_About_triggered();
-    void on_pb_downloadCSV_clicked();
+    void on_actionAbout_triggered();
+    void on_actionSave_As_triggered();
 
     void applyFilters();
     void sourceFilter();

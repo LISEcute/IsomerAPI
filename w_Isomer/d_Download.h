@@ -15,6 +15,9 @@ public:
     explicit DownloadDialog(QWidget *parent = nullptr);
     ~DownloadDialog();
 
+public slots:
+    QString getSelection();
+
 private:
     Ui::DownloadDialog *ui;
 };

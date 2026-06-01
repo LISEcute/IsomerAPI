@@ -15,6 +15,11 @@ public:
     explicit About(QWidget *parent = nullptr);
     ~About();
 
+private slots:
+    void CmLISE();
+    void CmIsomerAPI();
+    void CmMail();
+
 private:
     Ui::About *ui;
 };

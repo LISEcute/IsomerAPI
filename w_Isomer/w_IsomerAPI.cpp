@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QStringList>
+#include <QFileDialog>
 
 #include "L_Init/declare_IsomerAPI.h"
 
@@ -27,8 +28,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 {
   ui->setupUi(this);
 
-  setMinimumSize(800, 600);
-  resize(1200,600);
+  setMinimumSize(800, 650);
+  resize(1200,650);
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -72,11 +73,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
-      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","dE\u1D67 (keV)"},
-      {"IT_RATIO","I\u1D1B"}, {"D_IT_RATIO","dI\u1D1B"},
-      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","dT\u2081\u2082 (\u03BCs)"},
-      {"LEVEL","E(level) (keV)"}, {"D_LEVEL","dE(level) (keV)"},
-      {"JPI","J\u03C0"}, {"I_GAMMA","I\u1D67"}, {"D_IG","dI\u1D67"},
+      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
+      {"IT_RATIO","I\u1D1B"}, {"D_IT_RATIO","\u03B4I\u1D1B"},
+      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
+      {"LEVEL","E(level) (keV)"}, {"D_LEVEL","\u03B4E(level) (keV)"},
+      {"JPI","J\u03C0"}, {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
       {"SOURCE","SOURCE"}, {"ROW","ROW"}, {"NAME","NAME"}
   };
@@ -145,8 +146,13 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
 
+  connect(ui->pb_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(0);});
+  connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
+  connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
   // stacked widget setup
   ui->stackedWidget->setCurrentIndex(2);
+  ui->pb_isomers_gammas_view->setChecked(true);
+
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
       ui->stackedWidget->setCurrentIndex(2);
   });
@@ -193,7 +199,7 @@ IsomerAPI::~IsomerAPI()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void IsomerAPI::on_action_About_triggered()
+void IsomerAPI::on_actionAbout_triggered()
 {
     About *about_page = new About;
     about_page->setWindowFlags(Qt::CustomizeWindowHint |
@@ -203,14 +209,29 @@ void IsomerAPI::on_action_About_triggered()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void IsomerAPI::on_pb_downloadCSV_clicked(){
+void IsomerAPI::on_actionSave_As_triggered(){
     qDebug() << "[downloadCSV TRIGGERED]";
-    DownloadDialog downlaodDlg(this);
+    DownloadDialog downloadDlg(this);
     // downlaodDlg->setWindowFlags(Qt::CustomizeWindowHint |
     //                            Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
-    if (downlaodDlg.exec() != QDialog::Accepted)
-        return;
     // downlaodDlg->show();
+
+    if (downloadDlg.exec() == QDialog::Accepted) {
+        qDebug() << "[downloadDlg: dlg result]" << downloadDlg.getSelection();
+
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Save CSV File"), "untitled_isomer_table", tr("CSV Files (*.csv);;Text Files (*.txt);;All Files (*)"));
+        QString textData = QString("this is the line i write");
+        // 2. Check if the user didn't cancel
+        if (!fileName.isEmpty()) {
+            QFile csvFile(fileName);
+            if (csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                QTextStream out(&csvFile);
+                out << textData;
+                csvFile.close();
+            }
+        }
+    }
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -218,10 +239,15 @@ void IsomerAPI::on_pb_downloadCSV_clicked(){
 void IsomerAPI::statRefresh()
 {
   // qDebug() << "[IN sumStatRefresh(): val is] " << val;
+  qDebug();
+  // ~~~~
+  queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.001";
+  // queryStr = "SELECT COUNT(A_IT) FROM Isomers";
 
-  queryStr = "SELECT COUNT(A_IT) FROM Isomers";
   QVariant isomCount = queryModel(queryStr);
-
+  qDebug() << "[statRefresh: check isomer query result, string]" << isomCount << queryStr;
+  // ~~~~
+  qDebug();
   queryStr = "SELECT MIN(E_GAMMA) FROM Isomers";
   QVariant minGamma = queryModel(queryStr);
 
@@ -253,14 +279,21 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
 {
   QString fullQuery = queryRequest;
   QString filter = modelFull->filter(); // ``` model full attempt
-  // qDebug() << "[queryModel FILTER VALUE]" << filter;
+  qDebug() << "[queryModel FILTER VALUE]" << filter;
   if (!filter.isEmpty()) {
-      fullQuery += " WHERE " + filter;
+      if (fullQuery.contains("WHERE", Qt::CaseInsensitive))
+          fullQuery += " AND " + filter;
+      else
+          fullQuery += " WHERE " + filter;
+      qDebug() << "[queryModel: TRIGGERED empty query]";
     }
   if (query.exec(fullQuery) && query.next()) {
+        qDebug() << "[queryModel: exec, fullQuery value]" << fullQuery;
       // qDebug() << "[queryModel -- query value]" << query.value(0);
       return {query.value(0)};
-    }
+  } else {
+      qDebug() << "[queryModel: NO EXECUTION]" << query.lastError().text();
+  }
   return {};
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -373,11 +406,12 @@ void IsomerAPI::applyFilters()
 
             bool isInt;
             textValue.toInt(&isInt);
-            qDebug() << "[applyFilters: le_num case, check isInt, testValue]" <<  isInt << textValue;
+            qDebug() << "[applyFilters: le_num case, check isInt, testValue, symbol]" <<  isInt << textValue;
 
             if (isInt) {
                 // It's already a number (e.g., "6")
                 finalValue = textValue;
+                qDebug() << "[appltFilters: le_num case, isInt==True check symbol]" << atomicSymbol(textValue);
             } else {
 
                 // It's a string (e.g., "C"), get the atomic number
@@ -396,16 +430,8 @@ void IsomerAPI::applyFilters()
             }
             filterExpr += condition;
         }
+      qDebug() << "[applyFilters: check filterexpr]" << filterExpr;
 
-
-
-          // if (!filterExpr.isEmpty()) {
-          //     filterExpr += " AND ";
-          //   }
-          // filterExpr += condition;
-          // qDebug() << "[applyFilters l160: col check]" << col;
-          // qDebug() << "[applyFilters l161: value check]" << le->text();
-        // }
       qDebug();
 
     }
