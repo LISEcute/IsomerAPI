@@ -27,3 +27,7 @@
 // 1.3.2          5/23/26  Oleg
 // Reorganized IsomerAPI as a cleaner w_Isomer Qt/SQLite module, added icon/QSS/resource support,
 // improved split-database filtering/statistics/level-scheme tools, and prepared Windows deployment files.
+
+//-----------------------------
+// 1.3.3          6/8/26  Hudson
+//
