@@ -1,5 +1,5 @@
 #define isomerAPI_version      "1.3.3"
-#define isomerAPI_date         "1-JUNE-2026"
+#define isomerAPI_date         "8-JUNE-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -30,4 +30,5 @@
 
 //-----------------------------
 // 1.3.3          6/8/26  Hudson
-//
+// Updates to table-view header formatting and view toggling buttons, included clickable labels in about page,
+// developing file saving feature.
