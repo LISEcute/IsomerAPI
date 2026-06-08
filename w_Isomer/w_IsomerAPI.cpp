@@ -74,7 +74,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
       {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
-      {"IT_RATIO","I\u1D1B"}, {"D_IT_RATIO","\u03B4I\u1D1B"},
+      {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
       {"LEVEL","E(level) (keV)"}, {"D_LEVEL","\u03B4E(level) (keV)"},
       {"JPI","J\u03C0"}, {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
