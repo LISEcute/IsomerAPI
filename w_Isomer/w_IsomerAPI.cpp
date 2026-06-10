@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QStringList>
 
+#include "L_Init/declare_IsomerAPI.h"
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 IsomerAPI::IsomerAPI(QWidget *parent)

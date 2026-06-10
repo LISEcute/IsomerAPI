@@ -4,7 +4,17 @@
         <file>Icons/isomerAPI-Logo.png</file>
         <file>Icons/lisepp_small.bmp</file>
         <file>Icons/IsomerAPI_icon.ico</file>
+        <file>Icons/clear.gif</file>
+        <file>Icons/clear.png</file>
+        <file>Icons/plot.png</file>
+        <file>Icons/trans.gif</file>
     </qresource>
+
+    <qresource prefix="/cursor">
+        <file alias="finger.cur">Icons/cursor/finger.cur</file>
+        <file alias="lise.cur">Icons/cursor/lise.cur</file>
+    </qresource>
+
     <qresource prefix="/w_Isomer">
         <file>styles/mainstyle.qss</file>
     </qresource>

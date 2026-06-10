@@ -17,7 +17,6 @@
 
 #include "L_vectorStruct.h"
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class IsomerAPI;
