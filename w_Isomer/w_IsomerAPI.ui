@@ -591,6 +591,9 @@
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
+            <property name="placeholderText">
+             <string>0</string>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -610,6 +613,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>4000</string>
             </property>
            </widget>
           </item>
@@ -641,6 +647,9 @@
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
+            <property name="placeholderText">
+             <string>0</string>
+            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -650,6 +659,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -661,6 +673,9 @@
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
+            <property name="placeholderText">
+             <string>100</string>
+            </property>
            </widget>
           </item>
           <item row="1" column="3">
@@ -668,8 +683,14 @@
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
+            <property name="text">
+             <string/>
+            </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>2000</string>
             </property>
            </widget>
           </item>
@@ -723,6 +744,9 @@
                <bool>true</bool>
               </property>
               <property name="currentText">
+               <string/>
+              </property>
+              <property name="placeholderText">
                <string/>
               </property>
              </widget>
@@ -1268,6 +1292,7 @@
      <addaction name="actionDevelopment_View"/>
     </widget>
     <addaction name="menuView_Select"/>
+    <addaction name="actionPreferences_WIP"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -1318,6 +1343,11 @@
   <action name="actionSave_As">
    <property name="text">
     <string>Save As...</string>
+   </property>
+  </action>
+  <action name="actionPreferences_WIP">
+   <property name="text">
+    <string>Preferences (WIP)</string>
    </property>
   </action>
  </widget>

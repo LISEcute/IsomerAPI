@@ -299,15 +299,27 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
 
 void IsomerAPI::sourceFilter()
 {
+  // empty entry safety net
+  if (ui->cb_sourceFilter->currentText() == "") ui->cb_sourceFilter->setCurrentText("All Sources");
+
   QString text = ui->cb_sourceFilter->currentText();
   qDebug() << "[sourceFilter l70 TEXT]: " << text;
   QStringList reqSources = text.split(';', Qt::SkipEmptyParts);
 
+  bool validSearch = std::any_of(reqSources.begin(), reqSources.end(), [&](QString item) {
+      qDebug() << "[sourceFilter: check item]" << item;
+      return entrySources.contains(item);
+  });
+
+  qDebug() << "[sourceFilter: available entrySources]" << entrySources;
   for (auto &model : modelsVector) {
 
       if (reqSources.contains("All Sources")) {
           model -> setFilter("");
           qDebug() << "[sourceFilter: All sources triggered - clear filters]";
+      } else if (!validSearch) {
+          QMessageBox::critical(this,"Error!","Check the source entry is a possible source!");
+          qDebug() << "[sourceFilter: INVALID SEARCH]" << reqSources;
       } else {
           QStringList quoted;
           for (const QString &src : reqSources) {
@@ -320,24 +332,12 @@ void IsomerAPI::sourceFilter()
       }
 
   }
-  // if (reqSources.contains("All Sources")) {
-  //     model -> setFilter("");
-  //   } else {
-  //     QStringList quoted;
-  //     for (const QString &src : reqSources) {
-  //         quoted.append("'" + src + "'");
-
-  //       }
-  //     model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
-  //     qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
-  //     qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
-  //   }
   qDebug() << "\n";
 
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-// ```` OKAY i need to come back and fix the filtering methods for the new two stable split
-// ```` lord have mercy.
+// ~~~~ OKAY i need to come back and fix the filtering methods for the new two stable split
+// ~~~~ lord have mercy.
 void IsomerAPI::applyFilters()
 {
   sourceFilter();
@@ -462,7 +462,6 @@ void IsomerAPI::clearFilters()
           le->setText("");
         }
     }
-
     applyFilters();
     qDebug() << "[clearFilters CHECK FULL FILTER - after]" << modelFull->filter();
 }
@@ -585,6 +584,8 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+// void IsomerAPI::raiseError
 
 void IsomerAPI::on_actionExit_triggered()
 {

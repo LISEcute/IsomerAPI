@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
     palette.setColor(QPalette::Disabled, QPalette::Text, QColor(145, 150, 145));
     palette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(145, 150, 145));
     palette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(145, 150, 145));
+    palette.setColor(QPalette::PlaceholderText, QColor(128, 128, 128));
+
 
     app.setPalette(palette);
 
