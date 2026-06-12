@@ -40,6 +40,7 @@ private slots:
 
     void on_actionAbout_triggered();
     void on_actionSave_As_triggered();
+    void on_actionExit_triggered();
 
     void applyFilters();
     void sourceFilter();
@@ -47,7 +48,6 @@ private slots:
     void clearFilters();
     void viewSelect();
 
-    void on_actionExit_triggered();
 
 private:
 
