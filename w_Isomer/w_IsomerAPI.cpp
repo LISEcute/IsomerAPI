@@ -35,7 +35,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   // Database initialization
 
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
+  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_scan_DB.sqlite";
+
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
 
@@ -94,6 +96,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
       uiView->setModel(model);
       uiView->horizontalHeader()->moveSection(0,20);
+      uiView->hideColumn(model->fieldIndex("M_RATIO"));
+      uiView->hideColumn(model->fieldIndex("D_MRATIO"));
       uiView->hideColumn(model->fieldIndex("CONV"));
       uiView->hideColumn(model->fieldIndex("D_CONV"));
       uiView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -543,7 +547,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
           Level newLevel;
           newLevel.lvlEnergy = tmpLevelE;
           newLevel.spin = query.value("JPI").toString();
-          newLevel.halfLife = query.value("T12").toString();
+          newLevel.halfLife = query.value("T12").toDouble();
 
           // qDebug() << "[prepData: check level skipping]";
 

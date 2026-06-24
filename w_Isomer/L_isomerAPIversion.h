@@ -45,3 +45,10 @@
 // 1.3.6          6/10/26  Oleg
 // cursor icons update
 
+
+//-----------------------------
+// 1.3.7          6/24/26  Hudson
+// included updated DB from ENSDF parse as "nndc_scan_DB.sqlite", fixed arising errors from including new database,
+// fixed column formatting issues withs scientific notation, fixed datatype assignment and filtering bugs,
+// currently split tables (Isomers & Gammas) are not updating -- navigate to Options->View Select->Development View
+

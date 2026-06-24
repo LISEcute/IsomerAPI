@@ -5,6 +5,7 @@
 #include <QPen>
 #include <QPolygon>
 #include <QStaticText>
+#include <QTextDocument>
 
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -44,8 +45,8 @@ void graphicsView::paint(QPainter *painter,
 {
     // qDebug() << "[graphicsView: PAINTING]";
     painter->setRenderHint(QPainter::Antialiasing);
-    extern QRect OutTextOleg(QPainter *painter, int x, int y, const char *s, int loc, int clip=0,
-                             const QRectF* PlotRect=nullptr);
+    // extern QRect OutTextOleg(QPainter *painter, int x, int y, const char *s, int loc, int clip=0,
+    //                          const QRectF* PlotRect=nullptr);
 
     int trHOffset = 20;
 
@@ -59,6 +60,7 @@ void graphicsView::paint(QPainter *painter,
     int titleOffset = 20;
     int spinOffset = -45;
     int infoHOffset = 10;
+    int halfLifeOffset = 80;
     // int textVOffset = -5;
     int arrowHeadSize = 5;
     int arrowPointiness = 5;
@@ -83,6 +85,18 @@ void graphicsView::paint(QPainter *painter,
     painter->drawStaticText((lineLeft+lineRight)/2 - 25,yBase + titleOffset,staticText);
     bool firstIt = true;
 
+
+    // ~~~~ painter method with filled background!!!
+    // QTextDocument doc;
+    // // Use a span with a background-color style
+    // doc.setHtml("<span style=\"background-color: yellow;\">Hello World</span>");
+    // doc.setTextWidth(200); // Optional: define a fixed width for wrapping
+
+    // painter->translate(50, 50); // Move painter to position
+    // doc.drawContents(painter);
+    // painter->translate(-50,-50);
+
+
     for (const Level &lvl : L_isotope.levels)
       {
         int y = static_cast<int>(yBase - lvl.lvlEnergy*scale);
@@ -93,7 +107,7 @@ void graphicsView::paint(QPainter *painter,
             painter->drawLine(lineLeft,yBase,lineRight,yBase);
 
             painter->setPen(levelTextColor);
-            painter->drawText(lineRight + infoHOffset, yBase, QString("0.0       Stable"));
+            painter->drawText(lineRight + infoHOffset, yBase, QString(""));
             firstIt = false;
 
         }
@@ -106,11 +120,21 @@ void graphicsView::paint(QPainter *painter,
         f.setBold(false);
         painter->setFont(f);
 
-        QString levelText = QString("%1        %2 \u03BCs")
-                           .arg(lvl.lvlEnergy, 0, 'f', 0)
-                           .arg(lvl.halfLife);
+        QString levelText = QString("%1 keV")
+                                .arg(lvl.lvlEnergy, 0, 'f', 0);
+
+
+        QString halfLifeText = QString("%2 \u03BCs")
+                                .arg(lvl.halfLife, 0, 'e',2);
 
         painter->drawText(lineRight + infoHOffset, y, levelText);
+        if (lvl.halfLife != 0.0) {
+            painter->drawText(lineRight + infoHOffset + halfLifeOffset, y, halfLifeText);
+        }
+
+        // else if (lvl.halfLife == 0.0) {
+        //     painter->drawText(lineRight + infoHOffset, y, "STABLE");
+        // }
 
 
         // ~~~~~ transition drawing
@@ -121,6 +145,7 @@ void graphicsView::paint(QPainter *painter,
 
         for (const Transition &tr : lvl.transitions) {
             double Ei = tr.lvlEnergy;
+            if (Ei == 0.) continue;
             double Ef = tr.lvlEnergy - tr.emission;
 
             double y1 = static_cast<int>(yBase - Ei*scale);
@@ -142,9 +167,13 @@ void graphicsView::paint(QPainter *painter,
             // qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
 
             painter->setPen(transitionColor);
+            f.setBold(true);
+            painter->setFont(f);
             // make labels vertical for transition lines
             painter->rotate(90);
             painter->drawText((y1+y2 - width)/2,-(x+5),tr.label);
+            f.setBold(false);
+            painter->setFont(f);
             painter->setPen(QPen(transitionColor, 2));
             painter->rotate(-90);
 

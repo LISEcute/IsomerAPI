@@ -28,7 +28,7 @@ struct Level {
     // QString AZ;
     double lvlEnergy;
     QString spin;
-    QString halfLife;
+    double halfLife;
     QVector<Transition> transitions;
 };
 
