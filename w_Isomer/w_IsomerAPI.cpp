@@ -33,10 +33,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-  // Database initialization
+  /// Database initialization
 
-  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_scan_DB.sqlite";
+        // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
+
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB.sqlite";
 
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
@@ -44,6 +45,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
+
   if(!dbIsomLevel.open()){
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
@@ -153,8 +155,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(0);});
   connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
+
   // stacked widget setup
-  ui->stackedWidget->setCurrentIndex(2);
+  // temporary we call Development
+  ui->stackedWidget->setCurrentIndex(3);
   ui->pb_isomers_gammas_view->setChecked(true);
 
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
