@@ -52,4 +52,11 @@
 // fixed column formatting issues withs scientific notation, fixed datatype assignment and filtering bugs,
 // currently split tables (Isomers & Gammas) are not updating -- navigate to Options->View Select->Development View
 
-// 1.3.8   squezzing DB folder, reanming
+//-----------------------------
+// 1.3.8          6/24/26  Oleg
+// squezzing DB folder, reanming
+
+
+//-----------------------------
+// 1.3.9          6/25/26  Hudson
+// fix major bugs with filters not working, restructure filter query method, add keystroke shortcut
