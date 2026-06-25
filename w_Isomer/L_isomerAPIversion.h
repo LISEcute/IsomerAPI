@@ -1,4 +1,4 @@
-#define isomerAPI_version      "1.3.67"
+#define isomerAPI_version      "1.3.8"
 #define isomerAPI_date         "24-JUN-2026"
 
 //-----------------------------
@@ -52,3 +52,4 @@
 // fixed column formatting issues withs scientific notation, fixed datatype assignment and filtering bugs,
 // currently split tables (Isomers & Gammas) are not updating -- navigate to Options->View Select->Development View
 
+// 1.3.8   squezzing DB folder, reanming

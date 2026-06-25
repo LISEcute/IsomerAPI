@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QFileDialog>
+#include <QShortcut>
 
 #include "L_Init/declare_IsomerAPI.h"
 
@@ -33,10 +34,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
     // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-  // Database initialization
+  /// Database initialization
 
   // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_scan_DB.sqlite";
+
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB.sqlite";
 
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
@@ -44,11 +46,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
+
   if(!dbIsomLevel.open()){
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
 
-  // Initialize the three models we will use
+  /// Initialize the three models we will use
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   modelFull = new QSqlTableModel(this, dbIsomLevel);
   modelIsomers = new QSqlTableModel(this, dbIsomLevel);
@@ -59,8 +62,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   modelGammas->setTable("gammaEmissions");
   modelGammas->select();
-  // ~~~ Vectorize models?
-  // modelsVector = {modelFull, modelIsomers, modelGammas};
 
   modelFull->setTable("Isomers");
   modelFull->select();
@@ -68,10 +69,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   modelsVector = {modelIsomers, modelGammas, modelFull};
 
   modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Dev));
-  modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
-  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
-  modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
-  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
+  // modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
+  // modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
+  // modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
+  // modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
@@ -122,11 +123,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   }
 
-  // Contained utility/attribute declaration
+  /// Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);
   filterBounds = ui->gb_tableFilters->findChildren<QLineEdit*>();
 
-  // Source combo box config
+  /// Source combo box config
   ui->cb_sourceFilter->addItem("All Sources");
   ui->cb_sourceFilter->addItem("Semicolon;List;Sources");
 
@@ -146,15 +147,20 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   // Scientif notation
 
-  connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
+  connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
   connect(ui->pb_levelScheme, &QPushButton::clicked, this, &IsomerAPI::openDrawing);
 
   connect(ui->pb_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(0);});
   connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
-  // stacked widget setup
-  ui->stackedWidget->setCurrentIndex(2);
+
+  /// Shortcut intialization
+  QShortcut *enterShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+  connect(enterShortcut, &QShortcut::activated, ui->pb_applyFilters, &QPushButton::click);
+
+  /// Stacked widget setup
+  ui->stackedWidget->setCurrentIndex(3); // currently set for DEV VIEW
   ui->pb_isomers_gammas_view->setChecked(true);
 
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
@@ -249,9 +255,8 @@ void IsomerAPI::statRefresh()
   // queryStr = "SELECT COUNT(A_IT) FROM Isomers";
 
   QVariant isomCount = queryModel(queryStr);
-  qDebug() << "[statRefresh: check isomer query result, string]" << isomCount << queryStr;
-  // ~~~~
-  qDebug();
+  // qDebug() << "[statRefresh: check isomer query result, string]" << isomCount << queryStr;
+  // qDebug();
   queryStr = "SELECT MIN(E_GAMMA) FROM Isomers";
   QVariant minGamma = queryModel(queryStr);
 
@@ -275,7 +280,7 @@ void IsomerAPI::statRefresh()
   ui->le_highT12Sum->setText(maxT12.toString());
 
 
-  // qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
+  qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -283,16 +288,16 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
 {
   QString fullQuery = queryRequest;
   QString filter = modelFull->filter(); // ``` model full attempt
-  qDebug() << "[queryModel FILTER VALUE]" << filter;
+  // qDebug() << "[queryModel FILTER VALUE]" << filter;
   if (!filter.isEmpty()) {
       if (fullQuery.contains("WHERE", Qt::CaseInsensitive))
           fullQuery += " AND " + filter;
       else
           fullQuery += " WHERE " + filter;
-      qDebug() << "[queryModel: TRIGGERED empty query]";
+      // qDebug() << "[queryModel: TRIGGERED empty query]";
     }
   if (query.exec(fullQuery) && query.next()) {
-        qDebug() << "[queryModel: exec, fullQuery value]" << fullQuery;
+      // qDebug() << "[queryModel: exec, fullQuery value]" << fullQuery;
       // qDebug() << "[queryModel -- query value]" << query.value(0);
       return {query.value(0)};
   } else {
@@ -369,7 +374,6 @@ void IsomerAPI::applyFilters()
       QString baseName = objName.left(objName.length() - 1);
       QString suffix = objName.right(1);
 
-
       qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
       // qDebug() << "[applyFilters l134: check filterExpr]" << filterExpr;
 
@@ -377,65 +381,53 @@ void IsomerAPI::applyFilters()
           QString col = filterMap[baseName];
           QString textValue = le->text();
           QString finalValue;
-
-          bool isInt;
-          textValue.toInt(&isInt);
-
-          if (isInt) {
+          qDebug() << "[applyFilters: check col assignment]" << col;
+          if (baseName != "le_numZ") {
               finalValue = textValue;
-          } else {
-              qDebug() << "[applyFilters: le_num range, check atomicSymobls output]" << atomicSymbol(textValue);
-              // qDebug() << "[applyFilters: le_num string entered, check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
-              finalValue = QString::number(atomicSymbol(textValue));
           }
-          // construct error bars as iterating
-          QString condition = (suffix == "1") ? QString("%1 >= %2").arg(col,finalValue)
-                                              : QString("%1 <= %2").arg(col,finalValue);
+
+          else if (baseName == "le_numZ") {
+              bool isInt;
+              textValue.toInt(&isInt);
+              qDebug() << "[applyFilters: le_num case, check isInt, testValue, symbol]" <<  isInt << textValue;
+
+              if (isInt) {
+                  // It's already a number (e.g., "6")
+                  finalValue = textValue;
+                  qDebug() << "[applyFilters: le_num case, isInt==True check symbol]" << atomicSymbol(textValue);
+              } else {
+                  finalValue = QString::number(atomicSymbol(textValue));
+                  qDebug() << "[applyFilters: le_num string entered, "
+                              "check atomicSymobls output]" << atomicSymbol(textValue);
+                  qDebug() << "[applyFilters: le_num string entered, "
+                              "check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
+              }
+              qDebug() << "[applyFilters: le_num case, check finalValue]" << finalValue;
+
+          }
+
+          /// Construct condition
+          QString condition;
+          if (suffix != "0") {
+              condition = (suffix == "1") ? QString("%1 >= %2").arg(col,finalValue)
+                                          : QString("%1 <= %2").arg(col,finalValue);
+          } else if (suffix == "0") {
+              condition = QString("%1 IS %2").arg(col, finalValue);
+          }
+
+
+
+          if (!filterExpr.isEmpty()) {
+              filterExpr += " AND ";
+          }
+          filterExpr += condition;
+
           // qDebug() << "[applyFilters l139: col check]" << col;
           // qDebug() << "[applyFilters l140: value check]" << value;
           // qDebug() << "[applyFilters l141: conditional check]" << condition;
 
-          if (!filterExpr.isEmpty()) {
-              filterExpr += " AND ";
-            }
-          filterExpr += condition;
           qDebug() << "[applyFilters: check filterexpr]" << filterExpr;
-
-
-
-        } else if (baseName == "le_num") {
-            QString col = (suffix == "A") ? "A_IT" : "Z_IT";
-            QString textValue = le->text();
-            QString finalValue;
-
-            bool isInt;
-            textValue.toInt(&isInt);
-            qDebug() << "[applyFilters: le_num case, check isInt, testValue, symbol]" <<  isInt << textValue;
-
-            if (isInt) {
-                // It's already a number (e.g., "6")
-                finalValue = textValue;
-                qDebug() << "[appltFilters: le_num case, isInt==True check symbol]" << atomicSymbol(textValue);
-            } else {
-
-                // It's a string (e.g., "C"), get the atomic number
-                // Note: Ensure atomicSymbol() returns a QString or use QString::number()
-                finalValue = QString::number(atomicSymbol(textValue));
-                qDebug() << "[applyFilters: le_num string entered, check atomicSymobls output]" << atomicSymbol(textValue);
-                qDebug() << "[applyFilters: le_num string entered, check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
-
-            }
-            qDebug() << "[applyFilters: le_num case, check finalValue]" << finalValue;
-
-            QString condition = QString("%1 IS %2").arg(col, finalValue);
-
-            if (!filterExpr.isEmpty()) {
-                filterExpr += " AND ";
-            }
-            filterExpr += condition;
         }
-      qDebug() << "[applyFilters: check filterexpr]" << filterExpr;
-
       qDebug();
 
     }
