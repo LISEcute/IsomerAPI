@@ -18,6 +18,7 @@ DEFINES += IsomerAPI_case
 # Sources
 SOURCES += \
     L_Element/o_Element.cpp \
+    w_Isomer/d_Columns.cpp \
     w_Isomer/iso_main.cpp \
     w_Isomer/w_IsomerAPI.cpp \
     w_Isomer/w_levelScheme.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     L_Init/myextern_IsomerAPI.h \
     L_Init/mytypes_IsomerAPI.h \
     w_Isomer/L_element.h \
+    w_Isomer/d_Columns.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
@@ -51,6 +53,7 @@ HEADERS += \
 
 # UI forms
 FORMS += \
+    w_Isomer/d_Columns.ui \
     w_Isomer/w_IsomerAPI.ui \
     w_Isomer/w_levelScheme.ui \
     w_Isomer/w_about.ui \
