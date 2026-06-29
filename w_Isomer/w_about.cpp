@@ -1,6 +1,6 @@
 #include "w_about.h"
 #include "ui_w_about.h"
-#include "w_Isomer/L_isomerAPIversion.h"
+#include "w_Isomer/L_isomerAPI_version.h"
 
 #include <QDesktopServices>
 
@@ -10,13 +10,13 @@ About::About(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->label_Version->setText(isomerAPI_version);
+    ui->label_Version->setText(QStringLiteral("Version ") + isomerAPI_version);
     ui->label_Date->setText(isomerAPI_date);
 
 
     connect(ui->label_LISE, SIGNAL(clicked()), this, SLOT(CmLISE()));
     connect(ui->label_IsomerAPI, SIGNAL(clicked()), this, SLOT(CmIsomerAPI()));
-    connect(ui->label_Contact, SIGNAL(clicked()), this, SLOT(CmMail()));
+    connect(ui->label_contact, SIGNAL(clicked()), this, SLOT(CmMail()));
     // connect(ui->)
 
 }

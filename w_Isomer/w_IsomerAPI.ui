@@ -1405,7 +1405,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="isomapi_resources.qrc">
-     <normaloff>:/icons/Icons/lisepp_small.bmp</normaloff>:/icons/Icons/lisepp_small.bmp</iconset>
+     <normaloff>:/icons/Icons/IsomerAPI_icon.ico</normaloff>:/icons/Icons/IsomerAPI_icon.ico</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>

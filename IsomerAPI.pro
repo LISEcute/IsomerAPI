@@ -12,6 +12,16 @@ win32-msvc {
 DESTDIR = c:/IsomerAPI/_install_MSVC
 }
 
+win32:VERSION = 1.3.10.0 # major.minor.patch.build
+else:VERSION  = 1.3.10   # major.minor.patch
+VERSION_STR = $$section(VERSION, ., 0, 2)
+
+win32 {
+    QMAKE_TARGET_COPYRIGHT = "LISE group at FRIB/MSU"
+    QMAKE_TARGET_COMPANY   = "LISE group at FRIB/MSU"
+}
+
+
 # important to eliminate some LISEcute functions in IsomerAPI project
 DEFINES += IsomerAPI_case
 
@@ -39,12 +49,12 @@ HEADERS += \
     L_Init/myextern_IsomerAPI.h \
     L_Init/mytypes_IsomerAPI.h \
     w_Isomer/L_element.h \
+    w_Isomer/L_isomerAPI_version.h \
     w_Isomer/d_Columns.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
     w_Isomer/L_vectorStruct.h \
-    w_Isomer/L_isomerAPIversion.h \
     w_Isomer/w_about.h \
     w_Isomer/d_Download.h \
     w_Stuff/liseStrcpyOS.h \
