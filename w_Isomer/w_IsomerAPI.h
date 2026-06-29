@@ -14,6 +14,7 @@
 #include <QHash>
 #include <QTableView>
 #include <QMap>
+#include <QSortFilterProxyModel>
 
 #include "L_vectorStruct.h"
 
@@ -44,15 +45,16 @@ private slots:
 
     void applyFilters();
     void sourceFilter();
+    QVariant queryModel(const QString &queryRequest);
+
+    void statRefresh();
     void openDrawing();
     void clearFilters();
-    void viewSelect();
+    void onRowSelected();
+
 
 
 private:
-
-    void statRefresh();
-    QVariant queryModel(const QString &queryRequest);
 
     Ui::IsomerAPI *ui;
     QSqlDatabase dbIsomLevel;
@@ -64,6 +66,7 @@ private:
     QSqlTableModel *modelGammas;
     QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
+    QSortFilterProxyModel *proxyModel;
     QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
 
 

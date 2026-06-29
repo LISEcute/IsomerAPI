@@ -256,6 +256,9 @@
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
           <property name="sortingEnabled">
            <bool>true</bool>
           </property>
@@ -1039,7 +1042,7 @@
           <item>
            <layout class="QGridLayout" name="gridLayout" columnstretch="4,0,2,1,2,0,3">
             <item row="1" column="6">
-             <widget class="QLineEdit" name="le_numA">
+             <widget class="QLineEdit" name="le_numA0">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -1133,7 +1136,7 @@
              </widget>
             </item>
             <item row="2" column="6">
-             <widget class="QLineEdit" name="le_numZ">
+             <widget class="QLineEdit" name="le_numZ0">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -1451,8 +1454,8 @@
   <tabstop>le_numA2</tabstop>
   <tabstop>le_numZ1</tabstop>
   <tabstop>le_numZ2</tabstop>
-  <tabstop>le_numA</tabstop>
-  <tabstop>le_numZ</tabstop>
+  <tabstop>le_numA0</tabstop>
+  <tabstop>le_numZ0</tabstop>
   <tabstop>le_isomerCounts</tabstop>
   <tabstop>le_isotopeCounts</tabstop>
   <tabstop>pb_applyFilters</tabstop>
