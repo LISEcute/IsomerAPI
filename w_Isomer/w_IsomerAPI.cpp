@@ -145,7 +145,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   selectedIsotopes = prepData();
   statRefresh();
 
-  // Scientif notation
+  /// Establish connections
 
   connect(ui->pb_applyFilters, &QPushButton::clicked, this, &IsomerAPI::applyFilters);
   connect(ui->pb_clearFilters, &QPushButton::clicked, this, &IsomerAPI::clearFilters);
@@ -155,9 +155,19 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
 
+  // connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &IsomerAPI::onRowSelected);
+  connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::selectionChanged,
+          this, [this](const QItemSelection &selected, const QItemSelection &deselected) {
+              // Unused parameters are fine here.
+              // Call your slot directly:
+              onRowSelected();
+          });
   /// Shortcut intialization
   QShortcut *enterShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
   connect(enterShortcut, &QShortcut::activated, ui->pb_applyFilters, &QPushButton::click);
+
+  QShortcut *escapeShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
+  connect(escapeShortcut, &QShortcut::activated, ui->tableView_Dev->selectionModel(), &QItemSelectionModel::clearSelection);
 
   /// Stacked widget setup
   ui->stackedWidget->setCurrentIndex(3); // currently set for DEV VIEW
@@ -230,7 +240,8 @@ void IsomerAPI::on_actionSave_As_triggered(){
         qDebug() << "[downloadDlg: dlg result]" << downloadDlg.getSelection();
 
         QString fileName = QFileDialog::getSaveFileName(this,
-                                                        tr("Save CSV File"), "untitled_isomer_table", tr("CSV Files (*.csv);;Text Files (*.txt);;All Files (*)"));
+                                                        tr("Save CSV File"), "untitled_isomer_table",
+                                                        tr("CSV Files (*.csv);;Text Files (*.txt);;All Files (*)"));
         QString textData = QString("this is the line i write");
         // 2. Check if the user didn't cancel
         if (!fileName.isEmpty()) {
@@ -244,6 +255,32 @@ void IsomerAPI::on_actionSave_As_triggered(){
     }
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void IsomerAPI::onRowSelected()
+{
+
+    QList<QModelIndex> indexList = ui->tableView_Dev->selectionModel()->selectedRows();
+    int columnCount = ui->tableView_Dev->model()->columnCount();
+
+    qDebug() << "Selected Rows:" << indexList;
+
+    for (QModelIndex &index : indexList)  {
+        QStringList rowData;
+
+        for (int col = 0; col < columnCount; ++col)
+        {
+            // Move horizontally across the same row to read each column
+            QModelIndex cellIndex = index.siblingAtColumn(col);
+            rowData.append(cellIndex.data().toString());
+        }
+        qDebug() << "Index:" << index.row();
+        qDebug() << "Row Data:" << rowData;
+    }
+
+    qDebug();
+
+}
+
 
 
 void IsomerAPI::statRefresh()
@@ -278,7 +315,6 @@ void IsomerAPI::statRefresh()
 
   ui->le_lowT12Sum->setText(minT12.toString());
   ui->le_highT12Sum->setText(maxT12.toString());
-
 
   qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
 }
@@ -470,15 +506,6 @@ void IsomerAPI::openDrawing()
 
   levelScheme->show();
   // levelScheme->activateWindow();
-}
-
-//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-
-// ~~~~ this is doing nothing
-void IsomerAPI::viewSelect()
-{
-    qDebug() << "[viewSelect: triggered]";
-    ui->stackedWidget->currentIndex();
 }
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
