@@ -161,6 +161,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
               // Unused parameters are fine here.
               // Call your slot directly:
               onRowSelected();
+              // qDebug() << "[SELECTION MODEL: what is &selected]" << selected << "\n[FIN]";
+
           });
   /// Shortcut intialization
   QShortcut *enterShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
@@ -187,6 +189,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   connect(ui->actionDevelopment_View,&QAction::triggered,this,[this](){
       ui->stackedWidget->setCurrentIndex(3);
+  });
+
+  connect(ui->actionClear_Selection,&QAction::triggered,this,[this](){
+      ui->tableView_Dev->selectionModel()->clearSelection();
   });
 
   qDebug();
@@ -503,7 +509,6 @@ void IsomerAPI::clearFilters()
 void IsomerAPI::openDrawing()
 {
   auto *levelScheme = new LevelScheme(selectedIsotopes);
-
   levelScheme->show();
   // levelScheme->activateWindow();
 }
@@ -611,8 +616,12 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
 // void IsomerAPI::raiseError
 
+void IsomerAPI::treatSelected()
+{
+    qDebug();
+}
+
 void IsomerAPI::on_actionExit_triggered()
 {
   exit(2);
 }
-

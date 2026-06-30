@@ -51,6 +51,7 @@ private slots:
     void openDrawing();
     void clearFilters();
     void onRowSelected();
+    void treatSelected();
 
 
 

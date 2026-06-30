@@ -41,6 +41,12 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
             firstIt = false;
         }
 
+        for (const Level &lvl : iso.levels) {
+            if (lvl.lvlEnergy <= 400 && lvl.lvlEnergy > 600) {
+
+            }
+        }
+
         graphicStore.insert(gphcKey, item);
 
         qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
