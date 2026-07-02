@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
+    <width>417</width>
     <height>557</height>
    </rect>
   </property>
@@ -160,7 +160,7 @@ margin: 0px;</string>
     </widget>
    </item>
    <item>
-    <widget class="ClickableLabel" name="label_Contact">
+    <widget class="ClickableLabel" name="label_authors">
      <property name="font">
       <font>
        <pointsize>9</pointsize>
@@ -176,7 +176,7 @@ margin: 0px;</string>
       <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;Hudson Miltner&lt;br/&gt;FRIB &amp;amp; Michigan State University&lt;br/&gt;Contact: miltner@frib.msu.edu&lt;/p&gt;&lt;hr/&gt;&lt;p&gt;No paper yet&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;Hudson Miltner, Oleg B. Tarasov, Daniel Kaloyanov&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;FRIB, MSU&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -239,7 +239,7 @@ margin: 0px;</string>
 color: rgb(210, 210, 210);</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IsomerAPI has been developed by Hudson Miltner within the framework of the program LISE&lt;span style=&quot; vertical-align:super;&quot;&gt;++&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;This program also operates as a standalone application for user convenience.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;IsomerAPI application has been developed by Hudson Miltner within the framework of the program LISE&lt;span style=&quot; vertical-align:super;&quot;&gt;++&lt;/span&gt;. This program also operates as a standalone application for user convenience.&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;National Science Foundation under Grants No. 23-10078 “Windows on the Universe: Open Quantum Systems in Atomic Nuclei at FRIB”.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -279,6 +279,66 @@ color: rgb(210, 210, 210);</string>
       <property name="verticalSpacing">
        <number>12</number>
       </property>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(170, 170, 255);</string>
+        </property>
+        <property name="text">
+         <string>LISE&lt;sup&gt;++&lt;/sup&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_9">
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="isomapi_resources.qrc">:/icons/Icons/emblem_little_plus.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="ClickableLabel" name="label_LISE">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Link to LISE++&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(222, 226, 197);</string>
+        </property>
+        <property name="text">
+         <string>https://lise.frib.msu.edu/lise.html</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::TextFormat::AutoText</enum>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="font">
@@ -318,7 +378,7 @@ color: rgb(210, 210, 210);</string>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_3">
         <property name="font">
          <font>
           <pointsize>9</pointsize>
@@ -329,23 +389,23 @@ color: rgb(210, 210, 210);</string>
          <string notr="true">color: rgb(170, 170, 255);</string>
         </property>
         <property name="text">
-         <string>LISE&lt;sup&gt;++&lt;/sup&gt;</string>
+         <string>e-mail</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="ClickableLabel" name="label_LISE">
+       <widget class="ClickableLabel" name="label_contact">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Link to LISE++&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Link to Charge&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">color: rgb(222, 226, 197);</string>
         </property>
         <property name="text">
-         <string>https://lise.frib.msu.edu/lise.html</string>
+         <string>miltner@frib.msu.edu</string>
         </property>
         <property name="textFormat">
          <enum>Qt::TextFormat::AutoText</enum>
@@ -355,35 +415,13 @@ color: rgb(210, 210, 210);</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_9">
-        <property name="maximumSize">
-         <size>
-          <width>125</width>
-          <height>45</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="isomapi_resources.qrc">:/icons/Icons/emblem_little_plus.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>false</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
   </layout>
   <zorder>frame</zorder>
   <zorder>label_8</zorder>
-  <zorder>label_Contact</zorder>
+  <zorder>label_authors</zorder>
   <zorder>label_Version</zorder>
   <zorder>label_mail</zorder>
   <zorder>label_Date</zorder>

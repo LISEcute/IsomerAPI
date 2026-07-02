@@ -4,7 +4,7 @@
 #include "d_Download.h"
 #include "w_levelScheme.h"
 #include "w_about.h"
-#include "L_isomerAPIversion.h"
+#include "L_isomerAPI_version.h"
 #include "L_element.h"
 
 #include <QSqlError>
@@ -173,6 +173,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   /// Stacked widget setup
   ui->stackedWidget->setCurrentIndex(3); // currently set for DEV VIEW
+
   ui->pb_isomers_gammas_view->setChecked(true);
 
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){

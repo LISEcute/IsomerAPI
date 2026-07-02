@@ -8,7 +8,6 @@ ClickableLabel::ClickableLabel(QWidget* parent, Qt::WindowFlags f)
 {
     QCursor cursorb(QPixmap(":/cursor/finger.cur"),0,0);   //  position left top
     setCursor(cursorb);
-
 }
 //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 ClickableLabel::~ClickableLabel() {}

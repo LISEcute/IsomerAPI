@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.8"
-#define isomerAPI_date         "24-JUN-2026"
+#define isomerAPI_version      "1.3.10"
+#define isomerAPI_date         "29-JUN-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -60,3 +60,8 @@
 //-----------------------------
 // 1.3.9          6/25/26  Hudson
 // fix major bugs with filters not working, restructure filter query method, add keystroke shortcut
+
+//-----------------------------
+// 1.3.10          6/29/26  Oleg
+// About dialog modifications
+// MSVC config update
