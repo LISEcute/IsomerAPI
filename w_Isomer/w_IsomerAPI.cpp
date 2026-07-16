@@ -36,9 +36,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   /// Database initialization
 
-  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/IsomerDB_Split.sqlite";
+  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/others/IsomerDB_Split.sqlite";
 
   dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB.sqlite";
+
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_attempt2.sqlite";
+
 
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
@@ -57,6 +60,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   modelIsomers = new QSqlTableModel(this, dbIsomLevel);
   modelGammas = new QSqlTableModel(this, dbIsomLevel);
 
+
   modelIsomers->setTable("isomerLevels");
   modelIsomers->select();
 
@@ -69,10 +73,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   modelsVector = {modelIsomers, modelGammas, modelFull};
 
   modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Dev));
-  // modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
-  // modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
-  // modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
-  // modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
+  modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
+  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
+  modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
+  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
@@ -393,10 +397,18 @@ void IsomerAPI::sourceFilter()
 // ~~~~ lord have mercy.
 void IsomerAPI::applyFilters()
 {
+    bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
+    qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();
+
+
   sourceFilter();
 
+    if (rowSelected){
+      qDebug() << "[applyFilters: SELECTION DETECTED]" << rowSelected;
+    } else {qDebug() << "[applyFilters: SELECTION SKIPPED]" << rowSelected;}
+
   // qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
-  qDebug() << "[applyFilters: FILTER VALUE?]" << modelFull->filter();
+  qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();
 
   QMap<QString, QString> filterMap = {
     {"le_T12", "T12"},
@@ -417,14 +429,14 @@ void IsomerAPI::applyFilters()
       QString baseName = objName.left(objName.length() - 1);
       QString suffix = objName.right(1);
 
-      qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
+      // qDebug() << "[applyFilters l133: name parse check]" << objName << baseName << suffix;
       // qDebug() << "[applyFilters l134: check filterExpr]" << filterExpr;
 
       if (filterMap.contains(baseName)) {
           QString col = filterMap[baseName];
           QString textValue = le->text();
           QString finalValue;
-          qDebug() << "[applyFilters: check col assignment]" << col;
+          // qDebug() << "[applyFilters: check col assignment]" << col;
           if (baseName != "le_numZ") {
               finalValue = textValue;
           }
@@ -432,18 +444,16 @@ void IsomerAPI::applyFilters()
           else if (baseName == "le_numZ") {
               bool isInt;
               textValue.toInt(&isInt);
-              qDebug() << "[applyFilters: le_num case, check isInt, testValue, symbol]" <<  isInt << textValue;
+              // qDebug() << "[applyFilters: le_num case, check isInt, testValue, symbol]" <<  isInt << textValue;
 
               if (isInt) {
                   // It's already a number (e.g., "6")
                   finalValue = textValue;
-                  qDebug() << "[applyFilters: le_num case, isInt==True check symbol]" << atomicSymbol(textValue);
+                  // qDebug() << "[applyFilters: le_num case, isInt==True check symbol]" << atomicSymbol(textValue);
               } else {
                   finalValue = QString::number(atomicSymbol(textValue));
-                  qDebug() << "[applyFilters: le_num string entered, "
-                              "check atomicSymobls output]" << atomicSymbol(textValue);
-                  qDebug() << "[applyFilters: le_num string entered, "
-                              "check Mg output]" << atomicSymbol("Mg") << atomicSymbol(12);
+                  // qDebug() << "[applyFilters: le_num string entered, "
+                              // "check atomicSymobls output]" << atomicSymbol(textValue);
               }
               qDebug() << "[applyFilters: le_num case, check finalValue]" << finalValue;
 

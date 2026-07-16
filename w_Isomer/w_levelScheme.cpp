@@ -49,7 +49,7 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
 
         graphicStore.insert(gphcKey, item);
 
-        qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
+        // qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
 
 
         // append isotopes

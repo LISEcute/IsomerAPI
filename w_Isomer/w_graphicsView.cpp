@@ -44,23 +44,26 @@ void graphicsView::paint(QPainter *painter,
                               QWidget *)
 {
     // qDebug() << "[graphicsView: PAINTING]";
+    QRect textRect;
+    int textWidth;
+    int textHeight;
     painter->setRenderHint(QPainter::Antialiasing);
     // extern QRect OutTextOleg(QPainter *painter, int x, int y, const char *s, int loc, int clip=0,
     //                          const QRectF* PlotRect=nullptr);
 
-    int trHOffset = 20;
-
-    int lineLeft = 0;
-    int lineRight = trCount*trHOffset + 25;
-    int indentation = 25;
     // qDebug() << "[graphicsView: line left/right]" << lineLeft << lineRight;
     // qDebug() << "[graphicsView: transition count]: "<< trCount;
 
 
     int titleOffset = 20;
-    int spinOffset = -45;
-    int infoHOffset = 10;
+    int spinOffset = -35;
+    int infoHOffset = 20;
     int halfLifeOffset = 80;
+    int trHOffset = 20;
+
+    int lineLeft = 0;
+    int lineRight = trCount*trHOffset + 25;
+    int indentation = 25;
     // int textVOffset = -5;
     int arrowHeadSize = 5;
     int arrowPointiness = 5;
@@ -68,6 +71,7 @@ void graphicsView::paint(QPainter *painter,
     QColor lineColor(0,0,0);
     QColor levelTextColor(0,0,0);
     QColor transitionColor(34, 139, 34);
+    QColor testColor(255,0,0);
 
     double yBase = drawHeight;
 
@@ -83,7 +87,7 @@ void graphicsView::paint(QPainter *painter,
     QStaticText staticText(title);
 
     painter->drawStaticText((lineLeft+lineRight)/2 - 25,yBase + titleOffset,staticText);
-    bool firstIt = true;
+    // bool firstIt = true;
 
 
     // ~~~~ painter method with filled background!!!
@@ -97,39 +101,65 @@ void graphicsView::paint(QPainter *painter,
     // painter->translate(-50,-50);
 
 
+    // painter->setPen(QPen(transitionColor,5));
+    // painter->drawPoint(0,0);
+
+    // painter->setPen(QPen(testColor,2));
+    // QRect testRect(0,0,30,40);
+    // painter->drawRect(testRect);
+
+
     for (const Level &lvl : L_isotope.levels)
       {
         int y = static_cast<int>(yBase - lvl.lvlEnergy*scale);
         painter->setPen(QPen(lineColor, 2));
         painter->drawLine(lineLeft, y, lineRight, y);
 
-        if (firstIt) {
-            painter->drawLine(lineLeft,yBase,lineRight,yBase);
+        /// OLD DRAW GROUND STATE
+        // if (firstIt) {
+        //     painter->drawLine(lineLeft,yBase,lineRight,yBase);
 
-            painter->setPen(levelTextColor);
-            painter->drawText(lineRight + infoHOffset, yBase, QString(""));
-            firstIt = false;
+        //     painter->setPen(levelTextColor);
+        //     painter->drawText(lineRight + infoHOffset, yBase, QString(""));
+        //     firstIt = false;
 
-        }
+        // }
 
         QFont f = painter->font();
         f.setBold(true);
+
+        QFontMetrics metrics(f);
+        textHeight = metrics.height();
+
         painter->setFont(f);
         painter->setPen(levelTextColor);
-        painter->drawText(spinOffset, y, lvl.spin);
+
+        QString spinText = lvl.spin;
+
+        /// This is the new text drawing block with rectangle method
+        textWidth = metrics.horizontalAdvance(spinText);
+        textRect.setRect(spinOffset - textWidth, y - textHeight/2, textWidth, textHeight);
+        painter->drawText(textRect, Qt::AlignRight | Qt::AlignBaseline, spinText);
+
         f.setBold(false);
         painter->setFont(f);
+
 
         QString levelText = QString("%1 keV")
                                 .arg(lvl.lvlEnergy, 0, 'f', 0);
 
-
         QString halfLifeText = QString("%2 \u03BCs")
                                 .arg(lvl.halfLife, 0, 'e',2);
 
-        painter->drawText(lineRight + infoHOffset, y, levelText);
+        textWidth = metrics.horizontalAdvance(levelText);
+        textRect.setRect(lineRight + infoHOffset, y - textHeight/2, textWidth, textHeight);
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline,levelText);
+
         if (lvl.halfLife != 0.0) {
-            painter->drawText(lineRight + infoHOffset + halfLifeOffset, y, halfLifeText);
+
+            textWidth = metrics.horizontalAdvance(halfLifeText);
+            textRect.setRect(lineRight + infoHOffset + halfLifeOffset, y - textHeight/2, textWidth, textHeight);
+            painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline, halfLifeText);
         }
 
         // else if (lvl.halfLife == 0.0) {
@@ -140,8 +170,6 @@ void graphicsView::paint(QPainter *painter,
         // ~~~~~ transition drawing
         painter->setPen(QPen(transitionColor, 2));
         painter->setBrush(transitionColor);
-
-
 
         for (const Transition &tr : lvl.transitions) {
             double Ei = tr.lvlEnergy;
@@ -161,8 +189,8 @@ void graphicsView::paint(QPainter *painter,
                       << QPoint(x, y2);
             painter->drawPolygon(arrowHead);
 
-            QFont pFont = painter->font();
-            QFontMetrics metrics(pFont);
+            QFont trFont = painter->font();
+            QFontMetrics metrics(trFont);
             int width = metrics.horizontalAdvance(tr.label);
             // qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
 
