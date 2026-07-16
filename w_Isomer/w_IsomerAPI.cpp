@@ -38,9 +38,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/others/IsomerDB_Split.sqlite";
 
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB.sqlite";
+  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_fullScan.sqlite"; // Full scan of original IsomerDB.sqlite file (all old isotopes with updated entries)
 
-  dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_attempt2.sqlite";
+  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_attempt2.sqlite";
 
 
   // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";

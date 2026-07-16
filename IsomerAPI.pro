@@ -92,7 +92,7 @@ greaterThan(QT_MAJOR_VERSION, 5) {
 DISTFILES += \
     _install/lisecfg/IsomerDB_Split.sqlite \
     _install/lisecfg/Isomer_DB_WIDGET.sqlite \
-    _install/lisecfg/nndc_DB.sqlite \
+    _install/lisecfg/nndc_DB_fullScan.sqlite \
     mainstyle.qss
     mainstyle_light.qss
 

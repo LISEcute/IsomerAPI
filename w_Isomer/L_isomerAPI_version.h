@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.10"
-#define isomerAPI_date         "29-JUN-2026"
+#define isomerAPI_version      "1.3.11"
+#define isomerAPI_date         "16-JUL-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -65,3 +65,9 @@
 // 1.3.10          6/29/26  Oleg
 // About dialog modifications
 // MSVC config update
+
+
+//-----------------------------
+// 1.3.11          7/16/26  Hudson
+// Updated database to all NNDC values for isotopes in original LISE++ database
+// Fixed about page clickable label tool tips
