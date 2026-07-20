@@ -582,7 +582,9 @@ void IsomerAPI::clearFilters()
 
 void IsomerAPI::openDrawing()
 {
-    bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
+    currentPage = ui->stackedWidget->currentIndex();
+
+    bool rowSelected = checkSelection(currentPage);
     int drawSelection = 3;
     if (rowSelected){
         qDebug() << "[openDrawing: SELECTION DETECTED]" << rowSelected;
@@ -714,16 +716,30 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void IsomerAPI::clearSelection(int wIdx){
-    if (wIdx == 0) {
+void IsomerAPI::clearSelection(int page){
+    if (page == 0) {
         ui->tableView_GammaSolo->selectionModel()->clearSelection();
-    } else if (wIdx == 1) {
+    } else if (page == 1) {
         ui->tableView_IsomerSolo->selectionModel()->clearSelection();
-    } else if (wIdx == 2) {
+    } else if (page == 2) {
         ui->tableView_Isomer->selectionModel()->clearSelection();
         ui->tableView_Gammas->selectionModel()->clearSelection();
-    } else if (wIdx == 3) {
+    } else if (page == 3) {
         ui->tableView_Dev->selectionModel()->clearSelection();
+    }
+}
+
+bool IsomerAPI::checkSelection(int page){
+    if (page == 0) {
+        return ui->tableView_GammaSolo->selectionModel()->hasSelection();
+
+    } else if (page == 1) {
+        return ui->tableView_IsomerSolo->selectionModel()->hasSelection();
+    } else if (page == 2) {
+        return (ui->tableView_Isomer->selectionModel()->hasSelection() or
+                ui->tableView_Gammas->selectionModel()->hasSelection());
+    } else if (page == 3) {
+        return(ui->tableView_Dev->selectionModel()->hasSelection());
     }
 }
 

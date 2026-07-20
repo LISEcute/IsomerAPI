@@ -52,8 +52,11 @@ private slots:
     void statRefresh();
     void openDrawing();
     void clearFilters();
+
     void onRowSelected(QTableView *view);
     void clearSelection(int widgetIndex);
+    bool checkSelection(int widgetIndex);
+
 
 
 
@@ -81,6 +84,7 @@ private:
     QList<QLineEdit*> summaryStats;
     QString queryStr;
     QSqlQuery query;
+    int currentPage;
 
 };
 #endif // CPP_ISOMERAPI_H
