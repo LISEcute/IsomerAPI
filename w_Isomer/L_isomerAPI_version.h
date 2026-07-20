@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.11"
-#define isomerAPI_date         "16-JUL-2026"
+#define isomerAPI_version      "1.3.12"
+#define isomerAPI_date         "20-JUL-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -71,3 +71,9 @@
 // 1.3.11          7/16/26  Hudson
 // Updated database to all NNDC values for isotopes in original LISE++ database
 // Fixed about page clickable label tool tips
+
+//-----------------------------
+// 1.3.12          7/20/26  Hudson
+// Split database view is working with full filtering capabilities
+// Working on dialogues/algorithm to plot only selected gammas/levels selected in the view
+// Fixed escape shortcut for deselecting (takes current page, clears selection from page), and minor UI tweaks

@@ -20,7 +20,7 @@
    <string>LevelSchemeWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="isomapi_resources.qrc">
+   <iconset>
     <normaloff>:/icons/isomerAPI-Logo.png</normaloff>:/icons/isomerAPI-Logo.png</iconset>
   </property>
   <property name="toolButtonStyle">
@@ -77,8 +77,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="isomapi_resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

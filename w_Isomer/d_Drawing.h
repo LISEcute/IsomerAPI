@@ -1,0 +1,24 @@
+#ifndef D_DRAWING_H
+#define D_DRAWING_H
+
+#include <QDialog>
+
+namespace Ui {
+class drawingChoiceDlg;
+}
+
+class drawingChoiceDlg : public QDialog
+{
+    Q_OBJECT
+
+public:
+    explicit drawingChoiceDlg(QWidget *parent = nullptr);
+    ~drawingChoiceDlg();
+
+    int getDrawChoice();
+
+private:
+    Ui::drawingChoiceDlg *ui;
+};
+
+#endif // D_DRAWING_H

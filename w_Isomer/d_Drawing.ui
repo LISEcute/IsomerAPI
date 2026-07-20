@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DownloadDialog</class>
- <widget class="QDialog" name="DownloadDialog">
+ <class>drawingChoiceDlg</class>
+ <widget class="QDialog" name="drawingChoiceDlg">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>184</width>
-    <height>160</height>
+    <width>305</width>
+    <height>169</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save As...</string>
+   <string>Drawing Options</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
-   <property name="spacing">
-    <number>25</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Choose table format</string>
+      <string>Choose what you want to draw:</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="leftMargin">
-       <number>20</number>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QRadioButton" name="rb_sqlite">
+       <widget class="QRadioButton" name="rb_filtered">
         <property name="text">
-         <string>.SQLite</string>
+         <string>Results from filtering</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="rb_csv">
+       <widget class="QRadioButton" name="rb_lvlSelected">
         <property name="text">
-         <string>.CSV</string>
+         <string>Decays from selected level (WIP)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rb_gamSelected">
+        <property name="text">
+         <string>Emissions in coincidence with selection (WIP)</string>
         </property>
        </widget>
       </item>
@@ -63,7 +67,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>DownloadDialog</receiver>
+   <receiver>drawingChoiceDlg</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -79,7 +83,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DownloadDialog</receiver>
+   <receiver>drawingChoiceDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

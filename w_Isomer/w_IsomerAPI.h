@@ -16,6 +16,8 @@
 #include <QMap>
 #include <QSortFilterProxyModel>
 
+#include "L_gammaProxyModel.h"
+#include "L_levelProxyModel.h"
 #include "L_vectorStruct.h"
 
 QT_BEGIN_NAMESPACE
@@ -50,8 +52,8 @@ private slots:
     void statRefresh();
     void openDrawing();
     void clearFilters();
-    void onRowSelected();
-    void treatSelected();
+    void onRowSelected(QTableView *view);
+    void clearSelection(int widgetIndex);
 
 
 
@@ -63,9 +65,12 @@ private:
     QStringList headerNames;
 
     QSqlTableModel *modelFull;
+    LevelProxyModel *levelProxy;
+    GammaProxyModel *gammaProxy;
+
     QSqlTableModel *modelIsomers;
     QSqlTableModel *modelGammas;
-    QVector<std::tuple<QSqlTableModel*, QString, QTableView*>> modelTuples;
+    QVector<std::tuple<QAbstractItemModel*, QString, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
     QSortFilterProxyModel *proxyModel;
     QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number

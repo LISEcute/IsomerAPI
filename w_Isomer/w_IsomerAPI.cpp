@@ -2,10 +2,15 @@
 #include "ui_w_IsomerAPI.h"
 
 #include "d_Download.h"
+#include "d_Drawing.h"
+#include "d_Columns.h"
+#include "L_levelProxyModel.h"
+
 #include "w_levelScheme.h"
 #include "w_about.h"
 #include "L_isomerAPI_version.h"
 #include "L_element.h"
+#include "L_gammaProxyModel.h"
 
 #include <QSqlError>
 #include <QFileInfo>
@@ -23,9 +28,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   :
     QMainWindow(parent),
     ui(new Ui::IsomerAPI),
-    modelFull(nullptr),
-    modelIsomers(nullptr),
-    modelGammas(nullptr)
+    modelFull(nullptr)
+    // modelIsomers(nullptr),
+    // modelGammas(nullptr)
 {
   ui->setupUi(this);
 
@@ -35,15 +40,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
   /// Database initialization
-
   // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/others/IsomerDB_Split.sqlite";
-
   dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_fullScan.sqlite"; // Full scan of original IsomerDB.sqlite file (all old isotopes with updated entries)
 
-  // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_attempt2.sqlite";
-
-
-  // dbPath = QDir::currentPath() + "/lisecfg/Isomer_DB_WIDGET.sqlite";
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
 
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
@@ -54,37 +53,77 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
     }
 
-  /// Initialize the three models we will use
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   modelFull = new QSqlTableModel(this, dbIsomLevel);
-  modelIsomers = new QSqlTableModel(this, dbIsomLevel);
-  modelGammas = new QSqlTableModel(this, dbIsomLevel);
 
+  /// ----- DEPRECATED WITH PROXY MODEL
+  // modelIsomers = new QSqlTableModel(this, dbIsomLevel);
+  // modelGammas = new QSqlTableModel(this, dbIsomLevel);
 
-  modelIsomers->setTable("isomerLevels");
-  modelIsomers->select();
+  // modelIsomers->setTable("isomerLevels");
+  // modelIsomers->select();
 
-  modelGammas->setTable("gammaEmissions");
-  modelGammas->select();
+  // modelGammas->setTable("gammaEmissions");
+  // modelGammas->select();
+
+  // modelsVector = {modelIsomers, modelGammas, modelFull};
+  /// -----
 
   modelFull->setTable("Isomers");
   modelFull->select();
 
-  modelsVector = {modelIsomers, modelGammas, modelFull};
+  levelProxy = new LevelProxyModel(this);
+  levelProxy->setSourceModel(modelFull);
+  levelProxy->setT12Column(modelFull->fieldIndex("T12"));
+
+  gammaProxy = new GammaProxyModel(this);
+  gammaProxy->setSourceModel(modelFull);
+  gammaProxy->setGAMMAColumn(modelFull->fieldIndex("E_GAMMA"));
+
+  ui->tableView_IsomerSolo->setModel(levelProxy);
+  ui->tableView_Isomer->setModel(levelProxy);
+
+  ui->tableView_GammaSolo->setModel(gammaProxy);
+  ui->tableView_Gammas->setModel(gammaProxy);
+
+  QStringList lvlColumns ={
+          "A_IT", "Z_IT",
+          "LEVEL","D_LEVEL","JPI",
+          "T12","D_T12","IT_RATIO","D_IT_RATIO",
+          "SOURCE", "LEVEL_ID"};
+
+  for (int col = 0; col < levelProxy->columnCount(); ++col) {
+      QString name = modelFull->headerData(col, Qt::Horizontal).toString();
+      ui->tableView_IsomerSolo->setColumnHidden(col, !lvlColumns.contains(name));
+      ui->tableView_Isomer->setColumnHidden(col, !lvlColumns.contains(name));
+
+  }
+
+  QStringList gamColumns = {
+       "A_IT", "Z_IT",
+       "LEVEL","D_LEVEL","JPI",
+       "E_GAMMA","D_EG","I_GAMMA","D_IG", "M_GAMMA",
+       "SOURCE", "GAMMA_ID"};
+
+  for (int col = 0; col < gammaProxy->columnCount(); ++col) {
+      QString name = modelFull->headerData(col, Qt::Horizontal).toString();
+      ui->tableView_GammaSolo->setColumnHidden(col, !gamColumns.contains(name));
+      ui->tableView_Gammas->setColumnHidden(col, !gamColumns.contains(name));
+  }
 
   modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Dev));
-  modelTuples.push_back(std::make_tuple(modelIsomers, "isomerLevels",ui->tableView_Isomer));
-  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_Gammas));
-  modelTuples.push_back(std::make_tuple(modelIsomers, "gammaEmissions",ui->tableView_IsomerSolo));
-  modelTuples.push_back(std::make_tuple(modelGammas, "gammaEmissions",ui->tableView_GammaSolo));
+  modelTuples.push_back(std::make_tuple(levelProxy, "Isomers",ui->tableView_Isomer));
+  modelTuples.push_back(std::make_tuple(levelProxy, "Isomers",ui->tableView_IsomerSolo));
+  modelTuples.push_back(std::make_tuple(gammaProxy, "Isomers",ui->tableView_Gammas));
+  modelTuples.push_back(std::make_tuple(gammaProxy, "Isomers",ui->tableView_GammaSolo));
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
       {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
-      {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
       {"LEVEL","E(level) (keV)"}, {"D_LEVEL","\u03B4E(level) (keV)"},
-      {"JPI","J\u03C0"}, {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
+      {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
+      {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
       {"SOURCE","SOURCE"}, {"ROW","ROW"}, {"NAME","NAME"}
   };
@@ -94,18 +133,16 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   //                     "E(level) (keV)", "dE(level) (keV)", "J\u03C0",
   //                     "I\u1D67", "dI\u1D67", "M\u1D67"};
 
-
+  /// Set up model views
   for (auto &tuple : modelTuples) {
       auto [model, tableName, uiView] = tuple;
       // qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
 
       uiView->setModel(model);
       uiView->horizontalHeader()->moveSection(0,20);
-      uiView->hideColumn(model->fieldIndex("M_RATIO"));
-      uiView->hideColumn(model->fieldIndex("D_MRATIO"));
-      uiView->hideColumn(model->fieldIndex("CONV"));
-      uiView->hideColumn(model->fieldIndex("D_CONV"));
       uiView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      uiView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+      uiView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
       uiView->setSortingEnabled(true);
 
@@ -125,7 +162,18 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       //     headerIndex++;
       // }
 
+      connect(uiView->selectionModel(), &QItemSelectionModel::selectionChanged,
+              this, [this, uiView](const QItemSelection &selected, const QItemSelection &deselected) {
+                  onRowSelected(uiView);
+                  // qDebug() << "[SELECTION MODEL: what is &selected]" << selected << "\n[FIN]";
+              });
   }
+
+  ui->tableView_Dev->hideColumn(modelFull->fieldIndex("M_RATIO"));
+  ui->tableView_Dev->hideColumn(modelFull->fieldIndex("D_MRATIO"));
+  ui->tableView_Dev->hideColumn(modelFull->fieldIndex("CONV"));
+  ui->tableView_Dev->hideColumn(modelFull->fieldIndex("D_CONV"));
+
 
   /// Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);
@@ -159,45 +207,35 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
 
-  // connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &IsomerAPI::onRowSelected);
-  connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::selectionChanged,
-          this, [this](const QItemSelection &selected, const QItemSelection &deselected) {
-              // Unused parameters are fine here.
-              // Call your slot directly:
-              onRowSelected();
-              // qDebug() << "[SELECTION MODEL: what is &selected]" << selected << "\n[FIN]";
-
-          });
+  // connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::selectionChanged,
+  //         this, [this](const QItemSelection &selected, const QItemSelection &deselected) {
+  //             onRowSelected();
+  //             // qDebug() << "[SELECTION MODEL: what is &selected]" << selected << "\n[FIN]";
+  //         });
   /// Shortcut intialization
   QShortcut *enterShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
   connect(enterShortcut, &QShortcut::activated, ui->pb_applyFilters, &QPushButton::click);
 
   QShortcut *escapeShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
-  connect(escapeShortcut, &QShortcut::activated, ui->tableView_Dev->selectionModel(), &QItemSelectionModel::clearSelection);
+  connect(escapeShortcut, &QShortcut::activated, this, [this](){
+      int page = ui->stackedWidget->currentIndex();
+      clearSelection(page);
+  });
+
 
   /// Stacked widget setup
   ui->stackedWidget->setCurrentIndex(3); // currently set for DEV VIEW
 
   ui->pb_isomers_gammas_view->setChecked(true);
 
-  connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){
-      ui->stackedWidget->setCurrentIndex(2);
-  });
-
-  connect(ui->actionIsomers,&QAction::triggered,this,[this](){
-      ui->stackedWidget->setCurrentIndex(1);
-  });
-
-  connect(ui->actionGammas,&QAction::triggered,this,[this](){
-      ui->stackedWidget->setCurrentIndex(0);
-  });
-
-  connect(ui->actionDevelopment_View,&QAction::triggered,this,[this](){
-      ui->stackedWidget->setCurrentIndex(3);
-  });
+  connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(2);});
+  connect(ui->actionIsomers,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(1);});
+  connect(ui->actionGammas,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(0);});
+  connect(ui->actionDevelopment_View,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(3);});
 
   connect(ui->actionClear_Selection,&QAction::triggered,this,[this](){
-      ui->tableView_Dev->selectionModel()->clearSelection();
+      int page = ui->stackedWidget->currentIndex();
+      clearSelection(page);
   });
 
   qDebug();
@@ -217,12 +255,16 @@ IsomerAPI::~IsomerAPI()
   ui->tableView_GammaSolo->setModel(nullptr);
 
   delete modelFull;
-  delete modelIsomers;
-  delete modelGammas;
+  delete levelProxy;
+  delete gammaProxy;
+  // delete modelIsomers;
+  // delete modelGammas;
 
   modelFull = nullptr;
-  modelIsomers = nullptr;
-  modelGammas = nullptr;
+  levelProxy = nullptr;
+  gammaProxy = nullptr;
+  // modelIsomers = nullptr;
+  // modelGammas = nullptr;
 
   dbIsomLevel.close();
 
@@ -267,11 +309,13 @@ void IsomerAPI::on_actionSave_As_triggered(){
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void IsomerAPI::onRowSelected()
+void IsomerAPI::onRowSelected(QTableView *view)
 {
 
-    QList<QModelIndex> indexList = ui->tableView_Dev->selectionModel()->selectedRows();
-    int columnCount = ui->tableView_Dev->model()->columnCount();
+    // QList<QModelIndex> indexList = ui->tableView_Dev->selectionModel()->selectedRows();
+    // int columnCount = ui->tableView_Dev->model()->columnCount();
+    QList<QModelIndex> indexList = view->selectionModel()->selectedRows();
+    int columnCount = view->model()->columnCount();
 
     qDebug() << "Selected Rows:" << indexList;
 
@@ -369,26 +413,45 @@ void IsomerAPI::sourceFilter()
   });
 
   qDebug() << "[sourceFilter: available entrySources]" << entrySources;
-  for (auto &model : modelsVector) {
 
-      if (reqSources.contains("All Sources")) {
-          model -> setFilter("");
-          qDebug() << "[sourceFilter: All sources triggered - clear filters]";
-      } else if (!validSearch) {
-          QMessageBox::critical(this,"Error!","Check the source entry is a possible source!");
-          qDebug() << "[sourceFilter: INVALID SEARCH]" << reqSources;
-      } else {
-          QStringList quoted;
-          for (const QString &src : reqSources) {
-              quoted.append("'" + src + "'");
+  if (reqSources.contains("All Sources")) {
+      modelFull -> setFilter("");
+      qDebug() << "[sourceFilter: All sources triggered - clear filters]";
+  } else if (!validSearch) {
+      QMessageBox::critical(this,"Error!","Check the source entry is a possible source!");
+      qDebug() << "[sourceFilter: INVALID SEARCH]" << reqSources;
+  } else {
+      QStringList quoted;
+      for (const QString &src : reqSources) {
+          quoted.append("'" + src + "'");
 
-          }
-          model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
-          qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
-          qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
       }
-
+      modelFull->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
+      qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
+      qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
   }
+
+  /// DEPRECATED WITH PROXY MODEL METHOD
+  // for (auto &model : modelsVector) {
+
+  //     if (reqSources.contains("All Sources")) {
+  //         model -> setFilter("");
+  //         qDebug() << "[sourceFilter: All sources triggered - clear filters]";
+  //     } else if (!validSearch) {
+  //         QMessageBox::critical(this,"Error!","Check the source entry is a possible source!");
+  //         qDebug() << "[sourceFilter: INVALID SEARCH]" << reqSources;
+  //     } else {
+  //         QStringList quoted;
+  //         for (const QString &src : reqSources) {
+  //             quoted.append("'" + src + "'");
+
+  //         }
+  //         model->setFilter(QString("SOURCE IN (%1)").arg(quoted.join(',')));
+  //         qDebug() << "[sourceFilter l77: NO ALL SOURCES]: " << quoted;
+  //         qDebug() << "[sourceFilter l78: Check format for SQL]: " << quoted.join(',');
+  //     }
+
+  // }
   qDebug() << "\n";
 
 }
@@ -519,8 +582,32 @@ void IsomerAPI::clearFilters()
 
 void IsomerAPI::openDrawing()
 {
-  auto *levelScheme = new LevelScheme(selectedIsotopes);
-  levelScheme->show();
+    bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
+    int drawSelection = 3;
+    if (rowSelected){
+        qDebug() << "[openDrawing: SELECTION DETECTED]" << rowSelected;
+        drawingChoiceDlg drawDlg(this);
+        if (drawDlg.exec() == QDialog::Accepted) {
+            drawSelection = drawDlg.getDrawChoice();
+            qDebug() << "[openDrawing: DIALOG ACCEPT] code"<< drawSelection;
+        }
+
+        if (drawSelection == 1) {
+            auto *levelScheme = new LevelScheme(selectedIsotopes);
+            levelScheme->show();
+        } else if (drawSelection == 2) {
+            qDebug() << "[openDrawing: select 1]";
+        } else if (drawSelection == 3) {
+            qDebug() << "[openDrawing: select 2]";
+        }
+
+    } else {
+        auto *levelScheme = new LevelScheme(selectedIsotopes);
+        levelScheme->show();
+    }
+
+  // auto *levelScheme = new LevelScheme(selectedIsotopes);
+  // levelScheme->show();
   // levelScheme->activateWindow();
 }
 
@@ -531,7 +618,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
   // qDebug() << "[prepData: BEGIN PREP]";
   QString fullQuery =
-        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI FROM Isomers";
+        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,LEVEL_ID,GAMMA_ID FROM Isomers";
 
   QString filter = modelFull->filter();
   if (!filter.isEmpty()) {
@@ -583,6 +670,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
           newLevel.lvlEnergy = tmpLevelE;
           newLevel.spin = query.value("JPI").toString();
           newLevel.halfLife = query.value("T12").toDouble();
+          newLevel.lvlID = query.value("LEVEL_ID").toInt();
 
           // qDebug() << "[prepData: check level skipping]";
 
@@ -597,6 +685,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
       tr.lvlEnergy = tmpLevelE;
       tr.emission = tmpGammaE;
       tr.label = tmpEmission;
+      tr.trID = query.value("GAMMA_ID").toInt();
 
       // ~~~~~ point to current level
       levelPtr -> transitions.append(tr);
@@ -625,11 +714,17 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-// void IsomerAPI::raiseError
-
-void IsomerAPI::treatSelected()
-{
-    qDebug();
+void IsomerAPI::clearSelection(int wIdx){
+    if (wIdx == 0) {
+        ui->tableView_GammaSolo->selectionModel()->clearSelection();
+    } else if (wIdx == 1) {
+        ui->tableView_IsomerSolo->selectionModel()->clearSelection();
+    } else if (wIdx == 2) {
+        ui->tableView_Isomer->selectionModel()->clearSelection();
+        ui->tableView_Gammas->selectionModel()->clearSelection();
+    } else if (wIdx == 3) {
+        ui->tableView_Dev->selectionModel()->clearSelection();
+    }
 }
 
 void IsomerAPI::on_actionExit_triggered()

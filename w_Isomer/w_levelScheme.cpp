@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include <QGraphicsScene>
 #include <QHash>
+#include <QShortcut>
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -27,17 +28,21 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
 
     // ~~~~~ establsih graphics hashmap
     // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
-
+    QShortcut *escapeShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
+    connect(escapeShortcut, &QShortcut::activated, this, &QWidget::close);
     // make graphics
     QPair<int,int> firstIso;
     bool firstIt = true;
 
     for (const Isotope &iso : selectedIsotopes) {
-        qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
+        // qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
         QPair<int,int> gphcKey(iso.A, iso.Z);
         auto *item = new graphicsView(iso);
         if (firstIt){
             firstIso = gphcKey;
+            QString firstIsoName = QString("%1%2")
+                               .arg(iso.A).arg(atomicSymbol(iso.Z));
+            this->setWindowTitle("Level Scheme - " + firstIsoName);
             firstIt = false;
         }
 
@@ -54,18 +59,18 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
 
         // append isotopes
         QAction *act_isotopeSelect = new QAction(QString("%1%2")
-                                                .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
+                                                     .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
 
         ui->menu_other_isotopes->addAction(act_isotopeSelect);
 
 
         currentItem = graphicStore.value(firstIso);
+
         // make actions for isotope selection -- dynamic construction requires lambda function, "on_action..."
         // private slot method is not applicable
         connect(act_isotopeSelect, &QAction::triggered,
                 this, [this, act_isotopeSelect, gphcKey]() {
             QFont f = act_isotopeSelect->font();
-
             for (QAction *act : ui->menu_other_isotopes->actions()) {
 
                 QFont f = act->font();
@@ -80,10 +85,11 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
 
                 act->setText(txt);
             }
-
+            QString newTxt = act_isotopeSelect->text();
+            this->setWindowTitle("Level Scheme - " + newTxt);
             f.setBold(true);
             act_isotopeSelect->setFont(f);
-            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+            act_isotopeSelect->setText("> " + newTxt);
 
             if (currentItem)
                 scene->removeItem(currentItem);

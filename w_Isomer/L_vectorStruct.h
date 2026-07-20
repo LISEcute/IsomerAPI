@@ -21,6 +21,7 @@ struct Transition {
     double lvlEnergy;
     double emission;
     QString label;
+    int trID;
 };
 
 
@@ -30,6 +31,7 @@ struct Level {
     QString spin;
     double halfLife;
     QVector<Transition> transitions;
+    int lvlID;
 };
 
 struct Isotope {
