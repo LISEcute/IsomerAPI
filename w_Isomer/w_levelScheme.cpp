@@ -30,6 +30,7 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
     // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
     QShortcut *escapeShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
     connect(escapeShortcut, &QShortcut::activated, this, &QWidget::close);
+
     // make graphics
     QPair<int,int> firstIso;
     bool firstIt = true;
@@ -90,7 +91,6 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
             f.setBold(true);
             act_isotopeSelect->setFont(f);
             act_isotopeSelect->setText("> " + newTxt);
-
             if (currentItem)
                 scene->removeItem(currentItem);
 

@@ -19,6 +19,7 @@
 #include "L_gammaProxyModel.h"
 #include "L_levelProxyModel.h"
 #include "L_vectorStruct.h"
+#include "cachelevelproxy.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -71,9 +72,16 @@ private:
     LevelProxyModel *levelProxy;
     GammaProxyModel *gammaProxy;
 
+    cacheLevelProxy *cacheLevel;
+
+    QSqlQueryModel *levelQuery;
+    QSqlQueryModel *gammaQuery;
+
+
     QSqlTableModel *modelIsomers;
     QSqlTableModel *modelGammas;
-    QVector<std::tuple<QAbstractItemModel*, QString, QTableView*>> modelTuples;
+
+    QVector<std::tuple<QAbstractItemModel*, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
     QSortFilterProxyModel *proxyModel;
     QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number

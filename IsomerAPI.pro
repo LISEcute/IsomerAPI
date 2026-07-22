@@ -28,6 +28,7 @@ DEFINES += IsomerAPI_case
 # Sources
 SOURCES += \
     L_Element/o_Element.cpp \
+    w_Isomer/cachelevelproxy.cpp \
     w_Isomer/d_Columns.cpp \
     w_Isomer/d_Drawing.cpp \
     w_Isomer/iso_main.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     w_Isomer/L_gammaProxyModel.h \
     w_Isomer/L_isomerAPI_version.h \
     w_Isomer/L_levelProxyModel.h \
+    w_Isomer/cachelevelproxy.h \
     w_Isomer/d_Columns.h \
     w_Isomer/d_Drawing.h \
     w_Isomer/w_IsomerAPI.h \

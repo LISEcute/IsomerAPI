@@ -28,11 +28,13 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   :
     QMainWindow(parent),
     ui(new Ui::IsomerAPI),
-    modelFull(nullptr)
-    // modelIsomers(nullptr),
-    // modelGammas(nullptr)
+    modelFull(nullptr),
+    levelProxy(nullptr),
+    gammaProxy(nullptr)
 {
   ui->setupUi(this);
+
+  this->setFocusPolicy(Qt::ClickFocus);
 
   setMinimumSize(800, 650);
   resize(1200,650);
@@ -48,10 +50,13 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
+  // dbIsomLevel.open();
 
   if(!dbIsomLevel.open()){
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
-    }
+  } else {
+      qDebug() << "DB Opened";
+  }
 
   qDebug() << "[cpp_isomerapi DBPATH:] " << dbPath;
   modelFull = new QSqlTableModel(this, dbIsomLevel);
@@ -69,12 +74,23 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // modelsVector = {modelIsomers, modelGammas, modelFull};
   /// -----
 
+
   modelFull->setTable("Isomers");
   modelFull->select();
 
   levelProxy = new LevelProxyModel(this);
   levelProxy->setSourceModel(modelFull);
   levelProxy->setT12Column(modelFull->fieldIndex("T12"));
+  levelProxy->setLEVEL_IDColumn(modelFull->fieldIndex("LEVEL_ID"));
+  levelProxy->setLEVELColumn(modelFull->fieldIndex("LEVEL"));
+
+  cacheLevel = new cacheLevelProxy(this);
+  cacheLevel->setSourceModel(modelFull);
+  cacheLevel->setT12Column(modelFull->fieldIndex("T12"));
+  cacheLevel->setLEVEL_IDColumn(modelFull->fieldIndex("LEVEL_ID"));
+
+  cacheLevel->rebuildCache();
+  // cacheLevel->setLEVELColumn(modelFull->fieldIndex("LEVEL"));
 
   gammaProxy = new GammaProxyModel(this);
   gammaProxy->setSourceModel(modelFull);
@@ -111,11 +127,14 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       ui->tableView_Gammas->setColumnHidden(col, !gamColumns.contains(name));
   }
 
-  modelTuples.push_back(std::make_tuple(modelFull, "Isomers",ui->tableView_Dev));
-  modelTuples.push_back(std::make_tuple(levelProxy, "Isomers",ui->tableView_Isomer));
-  modelTuples.push_back(std::make_tuple(levelProxy, "Isomers",ui->tableView_IsomerSolo));
-  modelTuples.push_back(std::make_tuple(gammaProxy, "Isomers",ui->tableView_Gammas));
-  modelTuples.push_back(std::make_tuple(gammaProxy, "Isomers",ui->tableView_GammaSolo));
+  modelTuples.push_back(std::make_tuple(modelFull, ui->tableView_Dev));
+  modelTuples.push_back(std::make_tuple(levelProxy, ui->tableView_Isomer));
+
+  // modelTuples.push_back(std::make_tuple(cacheLevel, ui->tableView_Isomer));
+
+  modelTuples.push_back(std::make_tuple(levelProxy, ui->tableView_IsomerSolo));
+  modelTuples.push_back(std::make_tuple(gammaProxy, ui->tableView_Gammas));
+  modelTuples.push_back(std::make_tuple(gammaProxy, ui->tableView_GammaSolo));
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
@@ -135,7 +154,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   /// Set up model views
   for (auto &tuple : modelTuples) {
-      auto [model, tableName, uiView] = tuple;
+      auto [model, uiView] = tuple;
       // qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
 
       uiView->setModel(model);
@@ -221,6 +240,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       int page = ui->stackedWidget->currentIndex();
       clearSelection(page);
   });
+
+  QShortcut *dShortcut = new QShortcut(QKeySequence(Qt::Key_D), this);
+  connect(dShortcut, &QShortcut::activated, this, &IsomerAPI::openDrawing);
+
+  QShortcut *cShortcut = new QShortcut(QKeySequence(Qt::Key_C), this);
+  connect(cShortcut, &QShortcut::activated, this, &IsomerAPI::clearFilters);
 
 
   /// Stacked widget setup
@@ -317,7 +342,8 @@ void IsomerAPI::onRowSelected(QTableView *view)
     QList<QModelIndex> indexList = view->selectionModel()->selectedRows();
     int columnCount = view->model()->columnCount();
 
-    qDebug() << "Selected Rows:" << indexList;
+    qDebug() << "[onRowSelected: start information]";
+    // qDebug() << "[onRowSelected: Selected Rows]Selected Rows:" << indexList;
 
     for (QModelIndex &index : indexList)  {
         QStringList rowData;
@@ -331,6 +357,7 @@ void IsomerAPI::onRowSelected(QTableView *view)
         qDebug() << "Index:" << index.row();
         qDebug() << "Row Data:" << rowData;
     }
+    qDebug() << "[onRowSelected: number of rows]" << indexList.length();
 
     qDebug();
 
@@ -343,7 +370,7 @@ void IsomerAPI::statRefresh()
   // qDebug() << "[IN sumStatRefresh(): val is] " << val;
   qDebug();
   // ~~~~
-  queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.001";
+  queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.01";
   // queryStr = "SELECT COUNT(A_IT) FROM Isomers";
 
   QVariant isomCount = queryModel(queryStr);
@@ -460,15 +487,14 @@ void IsomerAPI::sourceFilter()
 // ~~~~ lord have mercy.
 void IsomerAPI::applyFilters()
 {
-    bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
-    qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();
-
+    cacheLevel->rebuildCache();
+    // bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
+    // qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();
+    // if (rowSelected){
+    //   qDebug() << "[applyFilters: SELECTION DETECTED]" << rowSelected;
+    // } else {qDebug() << "[applyFilters: SELECTION SKIPPED]" << rowSelected;}
 
   sourceFilter();
-
-    if (rowSelected){
-      qDebug() << "[applyFilters: SELECTION DETECTED]" << rowSelected;
-    } else {qDebug() << "[applyFilters: SELECTION SKIPPED]" << rowSelected;}
 
   // qDebug() << "[sourceFILTER PATH CHECK]" << QDir::current() << QDir::currentPath();
   qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();

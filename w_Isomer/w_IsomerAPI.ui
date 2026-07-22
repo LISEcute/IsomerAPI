@@ -1299,8 +1299,11 @@
            <height>30</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Apply Filters (Enter)</string>
+         </property>
          <property name="text">
-          <string> Apply Filters</string>
+          <string> &amp;Apply Filters</string>
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
@@ -1322,8 +1325,11 @@
            <height>30</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Clear Filters (C)</string>
+         </property>
          <property name="text">
-          <string> Clear Filters</string>
+          <string> &amp;Clear Filters</string>
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
@@ -1345,8 +1351,11 @@
            <height>30</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Draw Scheme (D)</string>
+         </property>
          <property name="text">
-          <string> Draw Scheme</string>
+          <string> &amp;Draw Scheme</string>
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
@@ -1450,7 +1459,13 @@
   </action>
   <action name="actionClear_Selection">
    <property name="text">
+    <string>&amp;Clear Selection (Esc)</string>
+   </property>
+   <property name="toolTip">
     <string>Clear Selection</string>
+   </property>
+   <property name="statusTip">
+    <string/>
    </property>
   </action>
  </widget>
