@@ -32,7 +32,7 @@ protected:
 
 
         /// ---------
-        /// THIS LOOP RUNS EXPONENTIALLY SLOWER AS YOU SCROLL TO LOAD MORE ROWS
+        /// ~~~~ THIS LOOP RUNS EXPONENTIALLY SLOWER AS YOU SCROLL TO LOAD MORE ROWS
         for (int i = 0; i < sourceRow; ++i)
         {
             if (sourceModel()->index(i, m_LEVEL_IDcolumn).data().toInt() == id)

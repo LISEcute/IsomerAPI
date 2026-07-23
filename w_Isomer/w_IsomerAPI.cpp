@@ -392,7 +392,10 @@ void IsomerAPI::statRefresh()
   // qDebug() << "[IN sumStatRefresh(): val is] " << val;
   qDebug();
   // ~~~~
-  queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.01";
+  // queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.01 AND LEVEL != 0";
+  // queryStr = "SELECT COUNT(*) FROM SELECT DISTINCT LEVEL_ID FROM Isomers WHERE T12 >= 0.01";
+  queryStr = "SELECT COUNT(DISTINCT LEVEL_ID) FROM Isomers WHERE T12 >= 0.01";
+
   // queryStr = "SELECT COUNT(A_IT) FROM Isomers";
 
   QVariant isomCount = queryModel(queryStr);
@@ -404,10 +407,10 @@ void IsomerAPI::statRefresh()
   queryStr = "SELECT MAX(E_GAMMA) FROM Isomers";
   QVariant maxGamma = queryModel(queryStr);
 
-  queryStr = "SELECT MIN(T12) FROM Isomers";
+  queryStr = "SELECT MIN(T12) FROM Isomers WHERE LEVEL != 0";
   QVariant minT12 = queryModel(queryStr);
 
-  queryStr = "SELECT MAX(T12) FROM Isomers";
+  queryStr = "SELECT MAX(T12) FROM Isomers WHERE LEVEL != 0";
   QVariant maxT12 = queryModel(queryStr);
 
 
@@ -419,7 +422,7 @@ void IsomerAPI::statRefresh()
 
   // ui->le_lowT12Sum->setText(minT12.toString());
   // ui->le_highT12Sum->setText(maxT12.toString());
-
+  qDebug() << "[statRefresh: check minT12]" << minT12.toString();
   ui->le_lowT12Sum->setText(QString::number(minT12.toFloat(), 'g', 4));
   ui->le_highT12Sum->setText(QString::number(maxT12.toFloat(), 'g', 4));
 
@@ -446,6 +449,7 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
       return {query.value(0)};
   } else {
       qDebug() << "[queryModel: NO EXECUTION]" << query.lastError().text();
+      qDebug() << "[queryModel: BROKEN REQUEST]" << fullQuery << "\n";
   }
   return {};
 }
