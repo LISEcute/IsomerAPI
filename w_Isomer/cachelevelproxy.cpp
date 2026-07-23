@@ -42,6 +42,6 @@ bool cacheLevelProxy::filterAcceptsRow(int sourceRow,
         return false;
 
     int id = sourceModel()->index(sourceRow, m_LEVEL_IDcolumn).data().toInt();
-    qDebug() << "[cache filterAcceptsRow: ]" << (m_firstOccurrence.value(id) == sourceRow) << id << sourceRow << m_firstOccurrence.value(id);
+    qDebug() << "[cache filterAcceptsRow:]" << (m_firstOccurrence.value(id) == sourceRow) << id << sourceRow << m_firstOccurrence.value(id);
     return m_firstOccurrence.value(id) == sourceRow;
 }

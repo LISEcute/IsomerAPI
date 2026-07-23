@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.12"
-#define isomerAPI_date         "20-JUL-2026"
+#define isomerAPI_version      "1.3.13"
+#define isomerAPI_date         "23-JUL-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -77,3 +77,9 @@
 // Split database view is working with full filtering capabilities
 // Working on dialogues/algorithm to plot only selected gammas/levels selected in the view
 // Fixed escape shortcut for deselecting (takes current page, clears selection from page), and minor UI tweaks
+
+//-----------------------------
+// 1.3.13          7/23/26  Hudson
+// Modifications to Isomer table filtering for more valuable information (fixed duplicates and ground states appearing)
+// Modified dT12 to scientific notation to narrow column size
+// Updated some UI features (header font, summary display in scientific, Isomer column order changed)

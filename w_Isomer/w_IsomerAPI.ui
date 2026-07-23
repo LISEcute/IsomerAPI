@@ -298,7 +298,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Table Select</string>
+       <string>Table Displays</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
        <property name="topMargin">
@@ -752,6 +752,9 @@
                <width>0</width>
                <height>75</height>
               </size>
+             </property>
+             <property name="inputMethodHints">
+              <set>Qt::InputMethodHint::ImhNone</set>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>

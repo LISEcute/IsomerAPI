@@ -54,7 +54,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   if(!dbIsomLevel.open()){
       qCritical() << "Failted to open DB:" << dbIsomLevel.lastError().text();
-  } else {
+  } else if(dbIsomLevel.isOpen()) {
       qDebug() << "DB Opened";
   }
 
@@ -84,13 +84,13 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   levelProxy->setLEVEL_IDColumn(modelFull->fieldIndex("LEVEL_ID"));
   levelProxy->setLEVELColumn(modelFull->fieldIndex("LEVEL"));
 
-  cacheLevel = new cacheLevelProxy(this);
-  cacheLevel->setSourceModel(modelFull);
-  cacheLevel->setT12Column(modelFull->fieldIndex("T12"));
-  cacheLevel->setLEVEL_IDColumn(modelFull->fieldIndex("LEVEL_ID"));
+  // cacheLevel = new // cacheLevelProxy(this);
+  // cacheLevel->setSourceModel(modelFull);
+  // cacheLevel->setT12Column(modelFull->fieldIndex("T12"));
+  // cacheLevel->setLEVEL_IDColumn(modelFull->fieldIndex("LEVEL_ID"));
 
-  cacheLevel->rebuildCache();
-  // cacheLevel->setLEVELColumn(modelFull->fieldIndex("LEVEL"));
+  // cacheLevel->rebuild// cache();
+  // // cacheLevel->setLEVELColumn(modelFull->fieldIndex("LEVEL"));
 
   gammaProxy = new GammaProxyModel(this);
   gammaProxy->setSourceModel(modelFull);
@@ -130,7 +130,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   modelTuples.push_back(std::make_tuple(modelFull, ui->tableView_Dev));
   modelTuples.push_back(std::make_tuple(levelProxy, ui->tableView_Isomer));
 
-  // modelTuples.push_back(std::make_tuple(cacheLevel, ui->tableView_Isomer));
+  // modelTuples.push_back(std::make_tuple(// cacheLevel, ui->tableView_Isomer));
 
   modelTuples.push_back(std::make_tuple(levelProxy, ui->tableView_IsomerSolo));
   modelTuples.push_back(std::make_tuple(gammaProxy, ui->tableView_Gammas));
@@ -140,7 +140,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
       {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
       {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
-      {"LEVEL","E(level) (keV)"}, {"D_LEVEL","\u03B4E(level) (keV)"},
+      {"LEVEL","E\u02E1\u1D5B\u02E1 (keV)"}, {"D_LEVEL","\u03B4E\u02E1\u1D5B\u02E1 (keV)"},
       {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
@@ -153,6 +153,10 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   //                     "I\u1D67", "dI\u1D67", "M\u1D67"};
 
   /// Set up model views
+
+  QFont headerFont = ui->tableView_Isomer->font();
+  headerFont.setPointSize(14);
+
   for (auto &tuple : modelTuples) {
       auto [model, uiView] = tuple;
       // qDebug() << "[IsomerAPI model initialization] model, table, view" << model << tableName << uiView;
@@ -160,6 +164,16 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       uiView->setModel(model);
       uiView->horizontalHeader()->moveSection(0,20);
       uiView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+      // uiView->horizontalHeader()->setFont(headerFont);
+      uiView->horizontalHeader()->setStyleSheet(
+          "QHeaderView::section {"
+          "    padding-top: 2px;"
+          "    padding-bottom: 4px;"
+          "    min-height: 18px;"
+          "    font-size: 14px; "
+          "}"
+          );
+
       uiView->setSelectionMode(QAbstractItemView::ExtendedSelection);
       uiView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -188,11 +202,19 @@ IsomerAPI::IsomerAPI(QWidget *parent)
               });
   }
 
+
+  /// Column view formatting
+
   ui->tableView_Dev->hideColumn(modelFull->fieldIndex("M_RATIO"));
   ui->tableView_Dev->hideColumn(modelFull->fieldIndex("D_MRATIO"));
   ui->tableView_Dev->hideColumn(modelFull->fieldIndex("CONV"));
   ui->tableView_Dev->hideColumn(modelFull->fieldIndex("D_CONV"));
 
+  ui->tableView_Isomer->horizontalHeader()->moveSection(9,4);
+  ui->tableView_Isomer->horizontalHeader()->moveSection(9,4);
+
+  ui->tableView_IsomerSolo->horizontalHeader()->moveSection(9,4);
+  ui->tableView_IsomerSolo->horizontalHeader()->moveSection(9,4);
 
   /// Contained utility/attribute declaration
   query = QSqlQuery(dbIsomLevel);
@@ -249,7 +271,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
 
   /// Stacked widget setup
-  ui->stackedWidget->setCurrentIndex(3); // currently set for DEV VIEW
+  ui->stackedWidget->setCurrentIndex(2); // currently set for DEV VIEW
 
   ui->pb_isomers_gammas_view->setChecked(true);
 
@@ -395,8 +417,12 @@ void IsomerAPI::statRefresh()
   ui->le_lowGammaSum->setText(minGamma.toString());
   ui->le_highGammaSum->setText(maxGamma.toString());
 
-  ui->le_lowT12Sum->setText(minT12.toString());
-  ui->le_highT12Sum->setText(maxT12.toString());
+  // ui->le_lowT12Sum->setText(minT12.toString());
+  // ui->le_highT12Sum->setText(maxT12.toString());
+
+  ui->le_lowT12Sum->setText(QString::number(minT12.toFloat(), 'g', 4));
+  ui->le_highT12Sum->setText(QString::number(maxT12.toFloat(), 'g', 4));
+
 
   qDebug() << "[sumStatRefresh: GAMMAS, T12s] " << minGamma << maxGamma << minT12 << maxT12;
 }
@@ -487,7 +513,7 @@ void IsomerAPI::sourceFilter()
 // ~~~~ lord have mercy.
 void IsomerAPI::applyFilters()
 {
-    cacheLevel->rebuildCache();
+    // cacheLevel->rebuild// cache();
     // bool rowSelected = ui->tableView_Dev->selectionModel()->hasSelection();
     // qDebug() << "[applyFilters: OLD FILTER VALUE?]" << modelFull->filter();
     // if (rowSelected){
