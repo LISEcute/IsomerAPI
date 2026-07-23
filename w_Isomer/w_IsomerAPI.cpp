@@ -394,7 +394,7 @@ void IsomerAPI::statRefresh()
   // ~~~~
   // queryStr = "SELECT COUNT(A_IT) FROM Isomers WHERE T12>0.01 AND LEVEL != 0";
   // queryStr = "SELECT COUNT(*) FROM SELECT DISTINCT LEVEL_ID FROM Isomers WHERE T12 >= 0.01";
-  queryStr = "SELECT COUNT(DISTINCT LEVEL_ID) FROM Isomers WHERE T12 >= 0.01";
+  queryStr = "SELECT COUNT(DISTINCT LEVEL_ID) FROM Isomers WHERE T12 >= 0.01 AND LEVEL != 0";
 
   // queryStr = "SELECT COUNT(A_IT) FROM Isomers";
 
