@@ -9,10 +9,11 @@
 #include <QGraphicsScene>
 #include <QHash>
 #include <QShortcut>
+#include <QDesktopServices>
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
+LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
                          QWidget *parent)
     :
     QMainWindow(parent),
@@ -24,7 +25,20 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
     resize(800,800);
     qDebug() << _filterQuery << _path;
 
+
+
     ui->graphicsView->setScene(scene);
+
+
+    toolbar = new QToolBar(this);
+    toolbar->setIconSize(QSize(48,48));
+    toolbar->setOrientation(Qt::Vertical);
+
+    addToolBar(Qt::LeftToolBarArea, toolbar);
+
+
+    makeActions();
+
 
     // ~~~~~ establsih graphics hashmap
     // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
@@ -35,7 +49,7 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
     QPair<int,int> firstIso;
     bool firstIt = true;
 
-    for (const Isotope &iso : selectedIsotopes) {
+    for (const Isotope &iso : filteredIsotopes) {
         // qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
         QPair<int,int> gphcKey(iso.A, iso.Z);
         auto *item = new graphicsView(iso);
@@ -86,11 +100,12 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& selectedIsotopes,
 
                 act->setText(txt);
             }
-            QString newTxt = act_isotopeSelect->text();
-            this->setWindowTitle("Level Scheme - " + newTxt);
+
+            QString titleTxt = act_isotopeSelect->text();
+            this->setWindowTitle("Level Scheme - " + titleTxt);
             f.setBold(true);
             act_isotopeSelect->setFont(f);
-            act_isotopeSelect->setText("> " + newTxt);
+            act_isotopeSelect->setText("> " + titleTxt);
             if (currentItem)
                 scene->removeItem(currentItem);
 
@@ -145,12 +160,32 @@ void LevelScheme::saveImage()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
+void LevelScheme::makeActions(){
+    // CmPrintWholeAction = new QAction(tr("CmPrintWholeAction"),this);
+    // toolbar->addAction(CmPrintWholeAction);
+    // connect(CmPrintWholeAction, SIGNAL(triggered()),this, SLOT(CmPrintWhole()));
+    // CmPrintWholeAction->setIcon(QIcon(":/plottool/print10.gif"));
+    // CmPrintWholeAction->setToolTip("Print whole page, portrait");
 
-void LevelScheme::selectIsoScheme()
-{
-    qDebug() << "[selectIsoScheme: ACTIVE]";
-    auto *isoScheme = graphicStore.value({31,12});
+    act_openNNDC = new QAction(tr("act_openNNDC"),this);
+    toolbar->addAction(act_openNNDC);
+    connect(act_openNNDC, &QAction::triggered,this,[this](){
+        QStringList sepTitle = this->windowTitle().split(" ");
+        QString isoName = sepTitle.last();
+        openNNDC(isoName);
+    });
+    act_openNNDC->setIcon(QIcon(":/icons/Icons/nndcLogo.png"));
+    act_openNNDC->setToolTip("Open NNDC Data for Current Scheme");
 
+
+}
+
+//wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+void LevelScheme::openNNDC(QString A_Sym){
+    qDebug() << "[openNNDC: opening for]" << A_Sym;
+    QString ss = "https://www.nndc.bnl.gov/nudat3/getdataset.jsp?nucleus=" + A_Sym;
+    QDesktopServices::openUrl(QUrl(ss));
 }
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -161,9 +196,6 @@ LevelScheme::~LevelScheme()
 }
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void LevelScheme::on_action_act_isotopeSelect_triggered(){
-    qDebug() << "[action_isotopeSelect TRIGGERED]";
-}
 
 // here lays the old static painter
 // void LevelScheme::paintEvent(QPaintEvent *)

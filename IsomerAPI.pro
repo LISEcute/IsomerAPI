@@ -31,6 +31,7 @@ SOURCES += \
     w_Isomer/cachelevelproxy.cpp \
     w_Isomer/d_Columns.cpp \
     w_Isomer/d_Drawing.cpp \
+    w_Isomer/d_Transmission.cpp \
     w_Isomer/iso_main.cpp \
     w_Isomer/w_IsomerAPI.cpp \
     w_Isomer/w_levelScheme.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     w_Isomer/cachelevelproxy.h \
     w_Isomer/d_Columns.h \
     w_Isomer/d_Drawing.h \
+    w_Isomer/d_Transmission.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
@@ -71,6 +73,7 @@ HEADERS += \
 FORMS += \
     w_Isomer/d_Columns.ui \
     w_Isomer/d_Drawing.ui \
+    w_Isomer/d_Transmission.ui \
     w_Isomer/w_IsomerAPI.ui \
     w_Isomer/w_levelScheme.ui \
     w_Isomer/w_about.ui \

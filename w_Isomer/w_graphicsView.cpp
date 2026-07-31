@@ -80,6 +80,8 @@ void graphicsView::paint(QPainter *painter,
     // QPainter painter(this);
     // QStaticText staticText("TESTTEST<sup>3</sup>");
     // painter->drawStaticText(10, 10, staticText);
+
+    /// Draw Title
     QString title = QString("<h1><b><sup>%1</sup>%2</b></h1>")
                         .arg(L_isotope.A)
                         .arg(atomicSymbol(L_isotope.Z));
@@ -87,8 +89,6 @@ void graphicsView::paint(QPainter *painter,
     QStaticText staticText(title);
 
     painter->drawStaticText((lineLeft+lineRight)/2 - 25,yBase + titleOffset,staticText);
-    // bool firstIt = true;
-
 
     // ~~~~ painter method with filled background!!!
     // QTextDocument doc;
@@ -108,31 +108,63 @@ void graphicsView::paint(QPainter *painter,
     // QRect testRect(0,0,30,40);
     // painter->drawRect(testRect);
 
+    QFont f = painter->font();
+    f.setBold(true);
+
+    QFontMetrics metrics(f);
+    textHeight = metrics.height();
+
+    painter->setFont(f);
+    // qDebug() << "[graphicsView: check firstIt?]" << firstIt;
+
+    /// Draw Ground State Independently
+    painter->setPen(QPen(lineColor, 2));
+    painter->drawLine(lineLeft,yBase,lineRight,yBase);
+    Level gs = L_isotope.groundState;
+    // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    painter->setPen(levelTextColor);
+
+    QString spinText = gs.spin;
+
+    /// This is the new text drawing block with rectangle method
+    textWidth = metrics.horizontalAdvance(spinText);
+    textRect.setRect(spinOffset - textWidth, yBase - textHeight/2, textWidth, textHeight);
+    painter->drawText(textRect, Qt::AlignRight | Qt::AlignBaseline, spinText);
+
+    f.setBold(false);
+    painter->setFont(f);
+
+
+    QString levelText = QString("%1 keV")
+                            .arg(gs.lvlEnergy, 0, 'f', 0);
+
+    QString halfLifeText = QString("%2 \u03BCs")
+                               .arg(gs.halfLife, 0, 'e',2);
+    // qDebug() << "[gsDraw: halfLiftext]" << halfLifeText;
+
+    textWidth = metrics.horizontalAdvance(levelText);
+    textRect.setRect(lineRight + infoHOffset, yBase - textHeight/2, textWidth, textHeight);
+    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline,levelText);
+
+    textWidth = metrics.horizontalAdvance(halfLifeText);
+    textRect.setRect(lineRight + infoHOffset + halfLifeOffset, yBase - textHeight/2, textWidth, textHeight);
+    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline, halfLifeText);
+
+    // qDebug() << "[gsDraw: TRIGGERED]" << L_isotope.A << L_isotope.Z;
+
+    // qDebug() << "[graphicsView: Check isotope level counts]" << L_isotope.levels.size();
 
     for (const Level &lvl : L_isotope.levels)
       {
         int y = static_cast<int>(yBase - lvl.lvlEnergy*scale);
         painter->setPen(QPen(lineColor, 2));
         painter->drawLine(lineLeft, y, lineRight, y);
+        // qDebug() << "[graphicsView: Check what levels?]" << lvl.lvlEnergy << lvl.lvlID;
 
-        /// OLD DRAW GROUND STATE
-        // if (firstIt) {
-        //     painter->drawLine(lineLeft,yBase,lineRight,yBase);
-
-        //     painter->setPen(levelTextColor);
-        //     painter->drawText(lineRight + infoHOffset, yBase, QString(""));
-        //     firstIt = false;
-
-        // }
-
-        QFont f = painter->font();
-        f.setBold(true);
-
-        QFontMetrics metrics(f);
-        textHeight = metrics.height();
-
-        painter->setFont(f);
         painter->setPen(levelTextColor);
+
+        f.setBold(true);
+        painter->setFont(f);
 
         QString spinText = lvl.spin;
 
@@ -155,16 +187,11 @@ void graphicsView::paint(QPainter *painter,
         textRect.setRect(lineRight + infoHOffset, y - textHeight/2, textWidth, textHeight);
         painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline,levelText);
 
-        if (lvl.halfLife != 0.0) {
-
+        if (lvl.halfLife != 0.0){
             textWidth = metrics.horizontalAdvance(halfLifeText);
             textRect.setRect(lineRight + infoHOffset + halfLifeOffset, y - textHeight/2, textWidth, textHeight);
             painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline, halfLifeText);
         }
-
-        // else if (lvl.halfLife == 0.0) {
-        //     painter->drawText(lineRight + infoHOffset, y, "STABLE");
-        // }
 
 
         // ~~~~~ transition drawing
@@ -174,7 +201,7 @@ void graphicsView::paint(QPainter *painter,
         for (const Transition &tr : lvl.transitions) {
             double Ei = tr.lvlEnergy;
             if (Ei == 0.) continue;
-            double Ef = tr.lvlEnergy - tr.emission;
+            double Ef = tr.lvlEnergy - tr.gamEnergy;
 
             double y1 = static_cast<int>(yBase - Ei*scale);
             double y2 = static_cast<int>(yBase - Ef*scale);

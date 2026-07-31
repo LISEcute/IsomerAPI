@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.13"
-#define isomerAPI_date         "23-JUL-2026"
+#define isomerAPI_version      "1.3.14"
+#define isomerAPI_date         "31-JUL-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -83,3 +83,12 @@
 // Modifications to Isomer table filtering for more valuable information (fixed duplicates and ground states appearing)
 // Modified dT12 to scientific notation to narrow column size
 // Updated some UI features (header font, summary display in scientific, Isomer column order changed)
+
+
+//-----------------------------
+// 1.3.14          7/31/26  Hudson
+// Slight UI modifications, updates to levelScheme with NNDC Dataset web access to compare plot and values in NNDC
+// Updates to Level and Transition structures for better data access and handling
+// Improvements to filtering and function structure (more accessible utilities)
+// Calculate Transmission utility currently makes saveable .txt with organized level/transition for selected isotope under filters applied (early version)
+// Known issues with some data entries (primarily 257Rf and 68Co), working to fix

@@ -54,19 +54,13 @@
      <string>Scheme Selection</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menu_edit_levels">
-    <property name="title">
-     <string>edit levels (soon)</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menu_savePic">
     <property name="title">
-     <string>save picture (soon)</string>
+     <string>Save Picture (WIP)</string>
     </property>
    </widget>
    <addaction name="menu_other_isotopes"/>
    <addaction name="menu_savePic"/>
-   <addaction name="menu_edit_levels"/>
   </widget>
   <action name="action_savePic">
    <property name="text">
