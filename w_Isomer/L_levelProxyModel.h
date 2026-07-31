@@ -43,7 +43,7 @@ protected:
         QModelIndex idT12 = sourceModel()->index(sourceRow, m_t12Column, parent);
         QModelIndex idLEVEL = sourceModel()->index(sourceRow, m_LEVELColumn, parent);
 
-        return idT12.data().toDouble() > 0.01 && idLEVEL.data().toDouble() > 0;
+        return idT12.data().toDouble() >= 0.01 && idLEVEL.data().toDouble() > 0;
 
         // QModelIndex idx = sourceModel()->index(sourceRow, m_t12Column, parent);
         // return idx.data().toDouble() > 0.01;

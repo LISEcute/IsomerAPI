@@ -40,11 +40,15 @@ public:
 
     QMap<QPair<int, int>, Isotope> prepData();
 
+    void writeDecayTXT(QPair<int,int> isoKey);
+
 private slots:
 
     void on_actionAbout_triggered();
     void on_actionSave_As_triggered();
+    void on_actionCalc_Transmission_triggered();
     void on_actionExit_triggered();
+
 
     void applyFilters();
     void sourceFilter();
@@ -84,7 +88,7 @@ private:
     QVector<std::tuple<QAbstractItemModel*, QTableView*>> modelTuples;
     QVector<QSqlTableModel*> modelsVector;
     QSortFilterProxyModel *proxyModel;
-    QMap<QPair<int,int>,Isotope> selectedIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
+    QMap<QPair<int,int>,Isotope> filteredIsotopes;    // QPair<int,int> acts as isotope key with A,Z number
 
 
     QList<QLineEdit*> filterBounds;

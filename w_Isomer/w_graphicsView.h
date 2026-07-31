@@ -30,6 +30,8 @@ private:
     double maxEnergy;
     double scale;
     int drawHeight;
+    int it;
+    bool firstIt;
 
 };
 

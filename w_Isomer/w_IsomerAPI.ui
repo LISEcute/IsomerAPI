@@ -31,7 +31,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page_Gamma">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -82,7 +82,7 @@
         <item>
          <widget class="QLabel" name="label_23">
           <property name="text">
-           <string>Isomers</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Isomers - T&lt;span style=&quot; vertical-align:sub;&quot;&gt;1/2 &lt;/span&gt; &amp;ge; 0.01 (μs):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -133,7 +133,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Isomers</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Isomers - T&lt;span style=&quot; vertical-align:sub;&quot;&gt;1/2 &lt;/span&gt; &amp;ge; 0.01 (μs):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -1411,8 +1411,15 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuCalculate_Transmission">
+    <property name="title">
+     <string>Calculate</string>
+    </property>
+    <addaction name="actionCalc_Transmission"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions_WIP"/>
+   <addaction name="menuCalculate_Transmission"/>
    <addaction name="menuabout_page"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -1469,6 +1476,11 @@
    </property>
    <property name="statusTip">
     <string/>
+   </property>
+  </action>
+  <action name="actionCalc_Transmission">
+   <property name="text">
+    <string>Isomer Transmission</string>
    </property>
   </action>
  </widget>
