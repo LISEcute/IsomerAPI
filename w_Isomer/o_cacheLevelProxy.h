@@ -1,5 +1,5 @@
-#ifndef CACHELEVELPROXY_H
-#define CACHELEVELPROXY_H
+#ifndef O_CACHELEVELPROXY_H
+#define O_CACHELEVELPROXY_H
 
 #include "qsortfilterproxymodel.h"
 class cacheLevelProxy : public QSortFilterProxyModel
@@ -59,6 +59,6 @@ private:
 //     QHash<int, int> m_firstOccurrence;
 // };
 
-#endif // CACHELEVELPROXY_H
+#endif // O_CACHELEVELPROXY_H
 
 

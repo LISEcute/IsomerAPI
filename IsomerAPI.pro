@@ -6,14 +6,14 @@ CONFIG   -= app_bundle
 
 
 win32-g++ {
-DESTDIR = C:/IsomerAPI/_install
+DESTDIR = $$PWD/_install
 }
 win32-msvc {
-DESTDIR = c:/IsomerAPI/_install_MSVC
+DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.3.10.0 # major.minor.patch.build
-else:VERSION  = 1.3.10   # major.minor.patch
+win32:VERSION = 1.3.19.0 # major.minor.patch.build
+else:VERSION  = 1.3.19   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -28,11 +28,11 @@ DEFINES += IsomerAPI_case
 # Sources
 SOURCES += \
     L_Element/o_Element.cpp \
-    w_Isomer/cachelevelproxy.cpp \
     w_Isomer/d_Columns.cpp \
     w_Isomer/d_Drawing.cpp \
     w_Isomer/d_Transmission.cpp \
     w_Isomer/iso_main.cpp \
+    w_Isomer/o_cacheLevelProxy.cpp \
     w_Isomer/w_IsomerAPI.cpp \
     w_Isomer/w_levelScheme.cpp \
     w_Isomer/w_graphicsView.cpp \
@@ -51,14 +51,14 @@ HEADERS += \
     L_Init/declare_IsomerAPI.h \
     L_Init/myextern_IsomerAPI.h \
     L_Init/mytypes_IsomerAPI.h \
-    w_Isomer/L_element.h \
+    w_Isomer/L_IsomerElement.h \
     w_Isomer/L_gammaProxyModel.h \
     w_Isomer/L_isomerAPI_version.h \
     w_Isomer/L_levelProxyModel.h \
-    w_Isomer/cachelevelproxy.h \
     w_Isomer/d_Columns.h \
     w_Isomer/d_Drawing.h \
     w_Isomer/d_Transmission.h \
+    w_Isomer/o_cacheLevelProxy.h \
     w_Isomer/w_IsomerAPI.h \
     w_Isomer/w_levelScheme.h \
     w_Isomer/w_graphicsView.h \
@@ -91,20 +91,20 @@ INCLUDEPATH += $$PWD
 #                                  \"$$OUT_PWD/database_store/Isomer_DB_WIDGET.sqlite\"
 
 # Handle Qt version differences
-greaterThan(QT_MAJOR_VERSION, 5) {
-    message("Building with Qt6")
-    CONFIG += c++17
-} else {
-    message("Building with Qt5")
-    CONFIG += c++17
-}
+# greaterThan(QT_MAJOR_VERSION, 5) {
+#     message("Building with Qt6")
+#     CONFIG += c++17
+# } else {
+#     message("Building with Qt5")
+#     CONFIG += c++17
+# }
 
-DISTFILES += \
-    _install/lisecfg/IsomerDB_Split.sqlite \
-    _install/lisecfg/Isomer_DB_WIDGET.sqlite \
-    _install/lisecfg/nndc_DB_fullScan.sqlite \
-    mainstyle.qss
-    mainstyle_light.qss
+# DISTFILES += \
+#     _install/lisecfg/IsomerDB_Split.sqlite \
+#     _install/lisecfg/Isomer_DB_WIDGET.sqlite \
+#     _install/lisecfg/nndc_DB_fullScan.sqlite \
+#     mainstyle.qss
+#     mainstyle_light.qss
 
 RESOURCES += \
     w_Isomer/isomapi_resources.qrc

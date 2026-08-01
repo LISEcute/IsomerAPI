@@ -1,6 +1,6 @@
 #include "d_Transmission.h"
 #include "ui_d_Transmission.h"
-#include "w_Isomer/L_element.h"
+#include "w_Isomer/L_IsomerElement.h"
 
 transmissionDlg::transmissionDlg(QWidget *parent)
     : QDialog(parent)

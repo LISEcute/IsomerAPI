@@ -1,0 +1,162 @@
+digraph IsomerAPI_BlockScheme {
+  graph [
+    rankdir=LR,
+    splines=ortho,
+    nodesep=0.55,
+    ranksep=0.85,
+    pad=0.35,
+    bgcolor="white",
+    fontname="Arial",
+    label="IsomerAPI block scheme",
+    labelloc=t,
+    fontsize=22
+  ];
+
+  node [
+    shape=box,
+    style="rounded,filled",
+    color="#42526e",
+    fillcolor="#f7f9fc",
+    penwidth=1.4,
+    fontname="Arial",
+    fontsize=12,
+    margin="0.10,0.07"
+  ];
+
+  edge [
+    color="#42526e",
+    arrowsize=0.75,
+    penwidth=1.2,
+    fontname="Arial",
+    fontsize=10
+  ];
+
+  subgraph cluster_startup {
+    label="Startup and UI setup";
+    color="#9aa9bd";
+    style="rounded";
+
+    main [label="iso_main.cpp\nQApplication starts"];
+    window [label="IsomerAPI constructor\nw_IsomerAPI.cpp/.ui"];
+    ui [label="Main window UI\nstacked pages + controls"];
+    defaults [label="Default startup state\nIsomers page\nT1/2 0.1..10\nA_IT 50..80\nLEVEL 0..4000 keV"];
+  }
+
+  subgraph cluster_data {
+    label="Database and model layer";
+    color="#9aa9bd";
+    style="rounded";
+
+    sqlite [label="SQLite file\nlisecfg/nndc_DB_fullScan.sqlite", shape=cylinder, fillcolor="#eef6ff"];
+    db [label="QSqlDatabase\nconnection: IsomDB"];
+    model [label="QSqlTableModel\nTable: Isomers"];
+    level_proxy [label="LevelProxyModel\nkeeps level rows\nT12 >= 0.01\nLEVEL > 0"];
+    gamma_proxy [label="GammaProxyModel\nkeeps gamma rows\nE_GAMMA present"];
+  }
+
+  subgraph cluster_tables {
+    label="Visible tables";
+    color="#9aa9bd";
+    style="rounded";
+
+    isomer_solo [label="tableView_IsomerSolo\nisomers-only page"];
+    gamma_solo [label="tableView_GammaSolo\ngammas-only page"];
+    split_isomer [label="tableView_Isomer\nsplit page"];
+    split_gamma [label="tableView_Gammas\nsplit page"];
+    dev [label="tableView_Dev\ndevelopment table"];
+    headers [label="Header formatting\nE_level, T1/2,\ngamma labels"];
+  }
+
+  subgraph cluster_filtering {
+    label="Filtering and derived data";
+    color="#9aa9bd";
+    style="rounded";
+
+    source_filter [label="sourceFilter()\nAll sources or SOURCE IN (...)"];
+    apply_filters [label="applyFilters()\nbuilds SQL WHERE expression"];
+    select_model [label="modelFull->setFilter()\nmodelFull->select()"];
+    prep_data [label="prepData()\nrows -> Isotope map"];
+    structs [label="L_vectorStruct.h\nIsotope -> Levels -> Transitions"];
+    stats [label="statRefresh()\ncounts and min/max summaries"];
+  }
+
+  subgraph cluster_actions {
+    label="User actions";
+    color="#9aa9bd";
+    style="rounded";
+
+    page_buttons [label="Page buttons / menu\nGammas, Isomers,\nIsomers/Gammas, Dev"];
+    selection [label="selectionChanged\nonRowSelected()"];
+    drawing [label="openDrawing()\ncheckSelection()"];
+    level_scheme [label="LevelScheme window\nw_levelScheme.cpp/.ui"];
+    graphics [label="w_graphicsView.cpp\nlevel/transition drawing"];
+    save_picture [label="saveImage()\nlevel-scheme image"];
+    transmission [label="transmissionDlg\nselect isotope key"];
+    txt_export [label="writeDecayTXT()\nsave decay data .txt"];
+    about [label="About dialog\nversion from L_isomerAPI_version.h"];
+  }
+
+  subgraph cluster_helpers {
+    label="Helpers and renamed files";
+    color="#9aa9bd";
+    style="rounded";
+
+    element [label="L_IsomerElement.h\natomic number/symbol helpers"];
+    cache_proxy [label="o_cacheLevelProxy.*\ncache proxy helper\ncurrently not active"];
+    project [label="IsomerAPI.pro\nsources, headers,\nMinGW/MSVC install paths"];
+  }
+
+  main -> window -> ui -> defaults;
+
+  window -> db;
+  sqlite -> db -> model;
+  model -> level_proxy;
+  model -> gamma_proxy;
+  model -> dev;
+
+  level_proxy -> isomer_solo;
+  level_proxy -> split_isomer;
+  gamma_proxy -> gamma_solo;
+  gamma_proxy -> split_gamma;
+  headers -> isomer_solo;
+  headers -> gamma_solo;
+  headers -> split_isomer;
+  headers -> split_gamma;
+
+  defaults -> apply_filters;
+  ui -> source_filter;
+  source_filter -> apply_filters;
+  apply_filters -> select_model -> model;
+  select_model -> prep_data -> structs;
+  prep_data -> stats;
+  stats -> ui;
+
+  ui -> page_buttons;
+  page_buttons -> isomer_solo;
+  page_buttons -> gamma_solo;
+  page_buttons -> split_isomer;
+  page_buttons -> split_gamma;
+  page_buttons -> dev;
+
+  isomer_solo -> selection;
+  split_isomer -> selection;
+  gamma_solo -> selection;
+  split_gamma -> selection;
+  dev -> selection;
+
+  ui -> drawing -> level_scheme -> graphics;
+  structs -> level_scheme;
+  level_scheme -> save_picture;
+
+  ui -> transmission -> txt_export;
+  structs -> txt_export;
+
+  ui -> about;
+  element -> window;
+  element -> transmission;
+  element -> level_scheme;
+  element -> graphics;
+  project -> window;
+  project -> cache_proxy [style=dashed, xlabel="listed"];
+  cache_proxy -> model [style=dashed, xlabel="optional"];
+}
