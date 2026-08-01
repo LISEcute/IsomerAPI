@@ -11,7 +11,7 @@
 #include "L_isomerAPI_version.h"
 #include "L_element.h"
 #include "L_gammaProxyModel.h"
-#include "L_richTextHeader.h"
+// #include "L_richTextHeader.h"
 #include "d_Transmission.h"
 
 #include <QSqlError>
