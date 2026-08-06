@@ -435,17 +435,14 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
             out << "Isotope: " + AStr + symbol << "\n";
             // out << "entry;E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM";
 
-            /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
-            /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
             for (Level &lvl : iso.levels) {
-                // out << "\nLevel:  " << lvl.lvlEnergy << " dLevel: " << lvl.dlvlEnergy <<
-                //     "   T12(us): " << lvl.halfLife << " JPI: " << lvl.spin << " Level-ID: " <<
-                //     "   %IT: " << lvl.IT << lvl.lvlID << "\n";
+
+                /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
                 out <<"LVL"<<";"<< lvl.lvlEnergy<<";"<<lvl.dlvlEnergy<<";"<<lvl.IT<<
                     ";"<<lvl.halfLife<<";"<<lvl.dhalfLife<<";"<<lvl.spin<<"\n";
                 for (Transition &tr : lvl.transitions) {
-                    // out << "    Gamma: " << tr.gamEnergy << "   dGamma: " << tr.dgamEnergy <<
-                    //     "   IGamma: " << tr.IGam << "   Gamma-ID: " << tr.trID << "\n";
+
+                    /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
                     out << "GAM"<<";"<<tr.gamEnergy<<";"<<tr.dgamEnergy<<
                         ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
                 }
