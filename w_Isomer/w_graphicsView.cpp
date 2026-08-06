@@ -1,5 +1,5 @@
 #include "w_graphicsView.h"
-#include "L_element.h"
+#include "L_IsomerElement.h"
 
 #include <QPainter>
 #include <QPen>

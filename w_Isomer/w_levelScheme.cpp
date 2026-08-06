@@ -1,7 +1,7 @@
 #include "w_levelScheme.h"
 #include "ui_w_levelScheme.h"
 #include "L_vectorStruct.h"
-#include "L_element.h"
+#include "L_IsomerElement.h"
 
 
 #include <QPainter>
@@ -31,10 +31,11 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
 
 
     toolbar = new QToolBar(this);
-    toolbar->setIconSize(QSize(48,48));
-    toolbar->setOrientation(Qt::Vertical);
+    toolbar->setIconSize(QSize(32, 32));
+    toolbar->setOrientation(Qt::Horizontal);
+    toolbar->setMovable(false);
 
-    addToolBar(Qt::LeftToolBarArea, toolbar);
+    addToolBar(Qt::TopToolBarArea, toolbar);
 
 
     makeActions();

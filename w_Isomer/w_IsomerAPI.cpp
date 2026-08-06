@@ -9,9 +9,13 @@
 #include "w_levelScheme.h"
 #include "w_about.h"
 #include "L_isomerAPI_version.h"
-#include "L_element.h"
+#include "L_IsomerElement.h"
 #include "L_gammaProxyModel.h"
+<<<<<<< HEAD
 // #include "L_richTextHeader.h"
+=======
+//#include "L_richTextHeader.h"
+>>>>>>> origin/main
 #include "d_Transmission.h"
 
 #include <QSqlError>
@@ -142,7 +146,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
       {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
       {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
-      {"LEVEL","E\u02E1\u1D5B\u02E1 (keV)"}, {"D_LEVEL","\u03B4E\u02E1\u1D5B\u02E1 (keV)"},
+      {"LEVEL","E\u2097\u2091\u1D5B\u2091\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u2091\u1D5B\u2091\u2097 (keV)"},
       {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
@@ -159,8 +163,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       {"D_EG",       "δE<sub>γ</sub> (keV)"},
       {"T12",        "T<sub>1/2</sub> (μs)"},
       {"D_T12",      "δT<sub>1/2</sub> (μs)"},
-      {"LEVEL",      "E<sub>lvl</sub> (keV)"},
-      {"D_LEVEL",    "δE<sub>lvl</sub> (keV)"},
+      {"LEVEL",      "E<sub>level</sub> (keV)"},
+      {"D_LEVEL",    "δE<sub>level</sub> (keV)"},
       {"JPI",        "J<sup>π</sup>"},
       {"IT_RATIO",   "I<sub>r</sub>"},
       {"D_IT_RATIO", "δI<sub>r</sub>"},
@@ -231,6 +235,8 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
       connect(uiView->selectionModel(), &QItemSelectionModel::selectionChanged,
               this, [this, uiView](const QItemSelection &selected, const QItemSelection &deselected) {
+                  Q_UNUSED(selected);
+                  Q_UNUSED(deselected);
                   onRowSelected(uiView);
                   // qDebug() << "[SELECTION MODEL: what is &selected]" << selected << "\n[FIN]";
               });
@@ -271,8 +277,14 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   // qDebug() << "[Init l41: Entry source check]: " << entrySources;
 
   ui->cb_sourceFilter->addItems(entrySources);
-  filteredIsotopes = prepData();
-  statRefresh();
+  ui->le_T121->setText("0.1");
+  ui->le_T122->setText("10");
+  ui->le_numA1->setText("50");
+  ui->le_numA2->setText("80");
+  ui->le_FINE1->setText("0");
+  ui->le_FINE2->setText("4000");
+
+  applyFilters();
 
   /// Establish connections
 
@@ -307,9 +319,11 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
 
   /// Stacked widget setup
-  ui->stackedWidget->setCurrentIndex(2); // currently set for DEV VIEW
+  ui->stackedWidget->setCurrentIndex(1);
 
-  ui->pb_isomers_gammas_view->setChecked(true);
+  ui->pb_isomers_view->setChecked(true);
+  ui->pb_gammas_view->setChecked(false);
+  ui->pb_isomers_gammas_view->setChecked(false);
 
   connect(ui->actionIsomer_Emission_Split,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(2);});
   connect(ui->actionIsomers,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(1);});
@@ -395,7 +409,7 @@ void IsomerAPI::on_actionCalc_Transmission_triggered(){
         qDebug() << "[tmssngDlg ACCEPTED]";
 
         // std::tie(A,Z) = tmssnDlg.getOptions();
-        QPair selIsoKey = tmssnDlg.getOptions();
+        QPair<int, int> selIsoKey = tmssnDlg.getOptions();
         writeDecayTXT(selIsoKey);
     }
 
@@ -411,12 +425,8 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
     QString AStr = QString::number(A);
 
     qDebug() << "[writeDecayTXT: symbol]" << symbol << Z;
-// #include <QFile>
-// #include <QTextStream>
-// #include <QDebug>
 
     // ------------------------------------------
-
 
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Text File"), AStr + symbol + "_decay_data",
@@ -427,13 +437,18 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
         if (textFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&textFile);
             out << "Isotope: " + AStr + symbol << "\n";
+            // out << "entry;E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM";
+
             for (Level &lvl : iso.levels) {
-                out << "\nLevel:  " << lvl.lvlEnergy << " dLevel: " << lvl.dlvlEnergy <<
-                    "   T12(us): " << lvl.halfLife << " JPI: " << lvl.spin << " Level-ID: " <<
-                    "   %IT: " << lvl.IT << lvl.lvlID << "\n";
+
+                /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
+                out <<"LVL"<<";"<< lvl.lvlEnergy<<";"<<lvl.dlvlEnergy<<";"<<lvl.IT<<
+                    ";"<<lvl.halfLife<<";"<<lvl.dhalfLife<<";"<<lvl.spin<<"\n";
                 for (Transition &tr : lvl.transitions) {
-                    out << "    Gamma: " << tr.gamEnergy << "   dGamma: " << tr.dgamEnergy <<
-                        "   IGamma: " << tr.IGam << "   Gamma-ID: " << tr.trID << "\n";
+
+                    /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
+                    out << "GAM"<<";"<<tr.gamEnergy<<";"<<tr.dgamEnergy<<
+                        ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
                 }
             }
             textFile.close();
@@ -479,8 +494,6 @@ void IsomerAPI::onRowSelected(QTableView *view)
         }
 
         int IsomerID = rowData.value(modelFull->fieldIndex("LEVEL_ID")).toInt();
-        int A = rowData.value(modelFull->fieldIndex("A_IT")).toInt();
-        int Z = rowData.value(modelFull->fieldIndex("Z_IT")).toInt();
         IsomerIDList.append(IsomerID);
 
         qDebug() << "Index:" << index.row();
@@ -814,7 +827,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
   // qDebug() << "[prepData: BEGIN PREP]";
   QString fullQuery =
-        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,LEVEL_ID,GAMMA_ID FROM Isomers";
+        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,M_GAMMA,LEVEL_ID,GAMMA_ID FROM Isomers";
 
   QString filter = modelFull->filter();
   if (!filter.isEmpty()) {
@@ -873,6 +886,8 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
               newLevel.dlvlEnergy = query.value("D_LEVEL").toString();
               newLevel.spin = query.value("JPI").toString();
               newLevel.halfLife = query.value("T12").toDouble();
+              newLevel.dhalfLife = query.value("D_T12").toString();
+
               newLevel.lvlID = query.value("LEVEL_ID").toInt();
 
               newLevel.IT = query.value("IT_RATIO").toInt();
@@ -887,6 +902,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
               groundState.dlvlEnergy = query.value("D_LEVEL").toString();
               groundState.spin = query.value("JPI").toString();
               groundState.halfLife = query.value("T12").toDouble();
+              groundState.dhalfLife = query.value("D_T12").toString();
               groundState.lvlID = query.value("LEVEL_ID").toInt();
 
               groundState.IT = query.value("IT_RATIO").toDouble();
@@ -912,6 +928,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
       tr.trID = query.value("GAMMA_ID").toInt();
 
       tr.IGam = query.value("I_GAMMA").toDouble();
+      tr.MGam = query.value("M_GAMMA").toString();
 
       // ~~~~~ point to current level
       levelPtr -> transitions.append(tr);
@@ -969,6 +986,8 @@ bool IsomerAPI::checkSelection(int page){
     } else if (page == 3) {
         return(ui->tableView_Dev->selectionModel()->hasSelection());
     }
+
+    return false;
 }
 
 void IsomerAPI::on_actionExit_triggered()

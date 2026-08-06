@@ -1,4 +1,4 @@
-#include "cachelevelproxy.h"
+#include "o_cacheLevelProxy.h"
 
 cacheLevelProxy::cacheLevelProxy(QObject *parent)
     :QSortFilterProxyModel(parent)
@@ -22,9 +22,10 @@ void cacheLevelProxy::rebuildCache()
         int id = sourceModel()->index(row, m_LEVEL_IDcolumn).data().toInt();
 
         // only keep the first row for each LEVEL_ID
-        if (!m_firstOccurrence.contains(id))
+        if (!m_firstOccurrence.contains(id)) {
             m_firstOccurrence.insert(id, row);
             qDebug() << "[rebuildCache: KEEP ID]" << id << row;
+        }
     }
 
     invalidateFilter();

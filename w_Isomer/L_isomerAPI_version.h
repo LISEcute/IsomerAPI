@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.14"
-#define isomerAPI_date         "31-JUL-2026"
+#define isomerAPI_version      "1.3.19"
+#define isomerAPI_date         "01-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -92,3 +92,32 @@
 // Improvements to filtering and function structure (more accessible utilities)
 // Calculate Transmission utility currently makes saveable .txt with organized level/transition for selected isotope under filters applied (early version)
 // Known issues with some data entries (primarily 257Rf and 68Co), working to fix
+
+//-----------------------------
+// 1.3.15          8/1/26  Oleg
+// Updated project file for local MinGW/MSVC install output folders
+// Resolved MSVC compile error by typing selected isotope key as QPair<int,int>
+// Reduced qmake/build warnings by disabling unused Qt version and DISTFILES blocks
+// Compressed deployment database set by keeping nndc_DB_fullScan.sqlite and removing obsolete split/others DB files
+// Rebuilt MinGW and MSVC install executables with the refreshed package layout
+// Updated project-local install output paths
+
+//-----------------------------
+// 1.3.16          8/1/26  Oleg
+// Typed selected isotope key handling for transmission export
+// Refined main window layout and level-scheme toolbar placement
+// Updated application layout and level-scheme toolbar placement
+
+//-----------------------------
+// 1.3.17          8/1/26  Oleg
+// Updated main window UI layout
+// Renamed cache level proxy files to o_cacheLevelProxy.cpp/.h and refreshed project references
+// Kept MinGW/MSVC project version metadata synchronized
+
+//-----------------------------
+// 1.3.18          8/1/26  Oleg
+// Renamed L_element.h to L_IsomerElement.h and refreshed project/header references
+
+//-----------------------------
+// 1.3.19          8/1/26  Oleg
+// Added IsomerAPI block-scheme documentation as Graphviz source, PDF, and PNG files

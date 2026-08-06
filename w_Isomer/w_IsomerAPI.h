@@ -19,7 +19,7 @@
 #include "L_gammaProxyModel.h"
 #include "L_levelProxyModel.h"
 #include "L_vectorStruct.h"
-#include "cachelevelproxy.h"
+#include "o_cacheLevelProxy.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

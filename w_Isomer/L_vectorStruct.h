@@ -22,8 +22,8 @@ struct Transition {
     QString dlvlEnergy;
     double gamEnergy;
     QString dgamEnergy;
-
     double IGam;
+    QString MGam;
 
     QString label;
     int trID;
@@ -36,7 +36,7 @@ struct Level {
     QString dlvlEnergy;
     QString spin;
     double halfLife;
-
+    QString dhalfLife;
     double IT;
 
     QVector<Transition> transitions;
