@@ -421,12 +421,8 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
     QString AStr = QString::number(A);
 
     qDebug() << "[writeDecayTXT: symbol]" << symbol << Z;
-// #include <QFile>
-// #include <QTextStream>
-// #include <QDebug>
 
     // ------------------------------------------
-
 
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Text File"), AStr + symbol + "_decay_data",
@@ -437,13 +433,21 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
         if (textFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&textFile);
             out << "Isotope: " + AStr + symbol << "\n";
+            // out << "entry;E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM";
+
+            /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
+            /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
             for (Level &lvl : iso.levels) {
-                out << "\nLevel:  " << lvl.lvlEnergy << " dLevel: " << lvl.dlvlEnergy <<
-                    "   T12(us): " << lvl.halfLife << " JPI: " << lvl.spin << " Level-ID: " <<
-                    "   %IT: " << lvl.IT << lvl.lvlID << "\n";
+                // out << "\nLevel:  " << lvl.lvlEnergy << " dLevel: " << lvl.dlvlEnergy <<
+                //     "   T12(us): " << lvl.halfLife << " JPI: " << lvl.spin << " Level-ID: " <<
+                //     "   %IT: " << lvl.IT << lvl.lvlID << "\n";
+                out <<"LVL"<<";"<< lvl.lvlEnergy<<";"<<lvl.dlvlEnergy<<";"<<lvl.IT<<
+                    ";"<<lvl.halfLife<<";"<<lvl.dhalfLife<<";"<<lvl.spin<<"\n";
                 for (Transition &tr : lvl.transitions) {
-                    out << "    Gamma: " << tr.gamEnergy << "   dGamma: " << tr.dgamEnergy <<
-                        "   IGamma: " << tr.IGam << "   Gamma-ID: " << tr.trID << "\n";
+                    // out << "    Gamma: " << tr.gamEnergy << "   dGamma: " << tr.dgamEnergy <<
+                    //     "   IGamma: " << tr.IGam << "   Gamma-ID: " << tr.trID << "\n";
+                    out << "GAM"<<";"<<tr.gamEnergy<<";"<<tr.dgamEnergy<<
+                        ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
                 }
             }
             textFile.close();
@@ -822,7 +826,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
   // qDebug() << "[prepData: BEGIN PREP]";
   QString fullQuery =
-        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,LEVEL_ID,GAMMA_ID FROM Isomers";
+        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,M_GAMMA,LEVEL_ID,GAMMA_ID FROM Isomers";
 
   QString filter = modelFull->filter();
   if (!filter.isEmpty()) {
@@ -881,6 +885,8 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
               newLevel.dlvlEnergy = query.value("D_LEVEL").toString();
               newLevel.spin = query.value("JPI").toString();
               newLevel.halfLife = query.value("T12").toDouble();
+              newLevel.dhalfLife = query.value("D_T12").toString();
+
               newLevel.lvlID = query.value("LEVEL_ID").toInt();
 
               newLevel.IT = query.value("IT_RATIO").toInt();
@@ -895,6 +901,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
               groundState.dlvlEnergy = query.value("D_LEVEL").toString();
               groundState.spin = query.value("JPI").toString();
               groundState.halfLife = query.value("T12").toDouble();
+              groundState.dhalfLife = query.value("D_T12").toString();
               groundState.lvlID = query.value("LEVEL_ID").toInt();
 
               groundState.IT = query.value("IT_RATIO").toDouble();
@@ -920,6 +927,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
       tr.trID = query.value("GAMMA_ID").toInt();
 
       tr.IGam = query.value("I_GAMMA").toDouble();
+      tr.MGam = query.value("M_GAMMA").toString();
 
       // ~~~~~ point to current level
       levelPtr -> transitions.append(tr);
