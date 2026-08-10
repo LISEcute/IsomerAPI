@@ -1,6 +1,6 @@
-#include "w_levelScheme.h"
-#include "ui_w_levelScheme.h"
-#include "L_vectorStruct.h"
+#include "w_schemeWindow.h"
+#include "ui_w_schemeWindow.h"
+#include "L_isoStructs.h"
 #include "L_IsomerElement.h"
 
 
@@ -10,6 +10,7 @@
 #include <QHash>
 #include <QShortcut>
 #include <QDesktopServices>
+#include <QToolButton>
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -30,15 +31,18 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
     ui->graphicsView->setScene(scene);
 
 
-    toolbar = new QToolBar(this);
-    toolbar->setIconSize(QSize(32, 32));
-    toolbar->setOrientation(Qt::Horizontal);
-    toolbar->setMovable(false);
+    // toolbar = new QToolBar(this);
+    // toolbar->setIconSize(QSize(32, 32));
+    // toolbar->setOrientation(Qt::Horizontal);
+    // toolbar->setMovable(false);
 
-    addToolBar(Qt::TopToolBarArea, toolbar);
+    // addToolBar(Qt::TopToolBarArea, toolbar);
 
 
     makeActions();
+
+    ui->menuBar->addAction(act_openNNDC);
+
 
 
     // ~~~~~ establsih graphics hashmap
@@ -128,6 +132,7 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
     qDebug() << "[levelScheme: check scene exists]" << graphicStore.value(QPair<int,int>(31,12));
     scene->addItem(graphicStore.value(firstIso));
 
+
     /*QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);
     scene->addItem(item);
@@ -169,13 +174,15 @@ void LevelScheme::makeActions(){
     // CmPrintWholeAction->setToolTip("Print whole page, portrait");
 
     act_openNNDC = new QAction(tr("act_openNNDC"),this);
-    toolbar->addAction(act_openNNDC);
+    // toolbar->addAction(act_openNNDC);
     connect(act_openNNDC, &QAction::triggered,this,[this](){
         QStringList sepTitle = this->windowTitle().split(" ");
         QString isoName = sepTitle.last();
         openNNDC(isoName);
     });
-    act_openNNDC->setIcon(QIcon(":/icons/Icons/nndcLogo.png"));
+    act_openNNDC->setText("Open NNDC Records");
+    // act_openNNDC->setIcon(QIcon(":/icons/Icons/nndcLogo.png"));
+
     act_openNNDC->setToolTip("Open NNDC Data for Current Scheme");
 
 

@@ -18,7 +18,7 @@
 
 #include "L_gammaProxyModel.h"
 #include "L_levelProxyModel.h"
-#include "L_vectorStruct.h"
+#include "L_isoStructs.h"
 #include "o_cacheLevelProxy.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +41,12 @@ public:
     QMap<QPair<int, int>, Isotope> prepData();
 
     void writeDecayTXT(QPair<int,int> isoKey);
+
+    Level decayAlgo(Level *selLvl, QVector<Level> *infoLevels, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
+    Level decayAlgoExtern(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
+
+
+
 
 private slots:
 

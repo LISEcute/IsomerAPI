@@ -10,8 +10,8 @@
 #include <QToolBar>
 
 
-#include "w_graphicsView.h"
-#include "L_vectorStruct.h"
+#include "w_schemeGraphic.h"
+#include "L_isoStructs.h"
 
 
 QT_BEGIN_NAMESPACE

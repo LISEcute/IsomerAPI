@@ -1,22 +1,18 @@
 #include "w_IsomerAPI.h"
 #include "ui_w_IsomerAPI.h"
 
-#include "d_Download.h"
-#include "d_Drawing.h"
-#include "d_Columns.h"
+#include "d_DownloadFiles.h"
+#include "d_DrawingOptions.h"
+#include "d_ColumnsOptions.h"
 #include "L_levelProxyModel.h"
 
-#include "w_levelScheme.h"
-#include "w_about.h"
+#include "w_schemeWindow.h"
+#include "w_aboutIsomerAPI.h"
 #include "L_isomerAPI_version.h"
 #include "L_IsomerElement.h"
 #include "L_gammaProxyModel.h"
-<<<<<<< HEAD
 // #include "L_richTextHeader.h"
-=======
-//#include "L_richTextHeader.h"
->>>>>>> origin/main
-#include "d_Transmission.h"
+#include "d_TransmissionCalc.h"
 
 #include <QSqlError>
 #include <QFileInfo>
@@ -27,7 +23,7 @@
 #include <QFileDialog>
 #include <QShortcut>
 
-#include "L_Init/declare_IsomerAPI.h"
+// #include "L_Init/declare_IsomerAPI.h"
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 IsomerAPI::IsomerAPI(QWidget *parent)
@@ -50,6 +46,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   /// Database initialization
   // dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/others/IsomerDB_Split.sqlite";
   dbPath = QCoreApplication::applicationDirPath() + "/lisecfg/nndc_DB_fullScan.sqlite"; // Full scan of original IsomerDB.sqlite file (all old isotopes with updated entries)
+
 
   qDebug() << "[cpp_isomerapi BUILD PATH:]" << QDir::currentPath() << dbPath << QFile::exists(dbPath);
 
@@ -146,14 +143,12 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
       {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
       {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
-      {"LEVEL","E\u2097\u2091\u1D5B\u2091\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u2091\u1D5B\u2091\u2097 (keV)"},
+      {"LEVEL","E\u2097\u1D65\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u1D65\u2097 (keV)"},
       {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
       {"SOURCE","SOURCE"}, {"ROW","ROW"}, {"NAME","NAME"}
   };
-
-  // subscript lvl (bad): \u2097\u1D65\u2097
 
   QMap<QString, QString> headerMapOFF = {
       {"INDEX_IT",   "γ-ID"},
@@ -196,15 +191,15 @@ IsomerAPI::IsomerAPI(QWidget *parent)
       uiView->horizontalHeader()->moveSection(0,20);
       uiView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-      // uiView->horizontalHeader()->setFont(headerFont);
-      // uiView->horizontalHeader()->setStyleSheet(
-      //     "QHeaderView::section {"
-      //     "    padding-top: 2px;"
-      //     "    padding-bottom: 4px;"
-      //     "    min-height: 18px;"
-      //     "    font-size: 14px; "
-      //     "}"
-      //     );
+      uiView->horizontalHeader()->setFont(headerFont);
+      uiView->horizontalHeader()->setStyleSheet(
+          "QHeaderView::section {"
+          "    padding-top: 2px;"
+          "    padding-bottom: 4px;"
+          "    min-height: 18px;"
+          "    font-size: 14px; "
+          "}"
+          );
 
       // RichTextHeaderView *richHeader = new RichTextHeaderView(Qt::Horizontal, this);
       // uiView->setHorizontalHeader(richHeader);
@@ -431,15 +426,48 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save Text File"), AStr + symbol + "_decay_data",
                                                     tr("Text Files (*.txt);;All Files (*)"));
-    // 2. Check if the user didn't cancel
+
+    QMap<int, Level> lvlMap;
+
+    for (Level &lvl : iso.levels) {
+        lvlMap[lvl.lvlID] = lvl;
+    }
+    qDebug() << "[writeDecayTXT lvlIDs]" << lvlMap.keys() << lvlMap.count();
+
+
+    /// If user decides to save the file
     if (!fileName.isEmpty()) {
         QFile textFile(fileName);
+
+        for (Level &lvl : iso.levels) {
+            lvlMap[lvl.lvlID] = lvl;
+        }
+
+
+
+        QVector<Level> storeDecays;
+
         if (textFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            qDebug() << "[writeDecayTXT: start writing!]";
             QTextStream out(&textFile);
-            out << "Isotope: " + AStr + symbol << "\n";
+            out << "#Isotope: " + AStr + symbol << "\n";
+            out << "#Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI\n";
+            out << "#Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM\n\n";
             // out << "entry;E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM";
 
+
+            // -----------------------------------------------------------------------------------
+
             for (Level &lvl : iso.levels) {
+                qDebug() << "[writeDecayTXT: call decayAlgo for level]" << lvl.lvlEnergy << lvl.lvlID;
+                Level decay = decayAlgoExtern(&lvl, lvlMap, 20, true);
+                storeDecays.append(decay);
+                qDebug() << "[writeDecayTXT: Check decay size]" << decay.lvlEnergy << decay.lvlID << decay.transitions.count();
+            }
+
+
+
+            for (Level &lvl : storeDecays) {
 
                 /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
                 out <<"LVL"<<";"<< lvl.lvlEnergy<<";"<<lvl.dlvlEnergy<<";"<<lvl.IT<<
@@ -448,26 +476,75 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
 
                     /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
                     out << "GAM"<<";"<<tr.gamEnergy<<";"<<tr.dgamEnergy<<
-                        ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
+                        ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<
+                        ";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
                 }
+                out << "\n";
             }
+
+
+            // -----------------------------------------------------------------------------------
+
+
+            // for (Level &lvl : iso.levels) {
+
+            //     /// Level Format (LVL): E_LVL;dE_LVL;IT_RATIO;T12;dT12;JPI
+            //     out <<"LVL"<<";"<< lvl.lvlEnergy<<";"<<lvl.dlvlEnergy<<";"<<lvl.IT<<
+            //         ";"<<lvl.halfLife<<";"<<lvl.dhalfLife<<";"<<lvl.spin<<"\n";
+            //     for (Transition &tr : lvl.transitions) {
+
+            //         /// Gamma Format (GAM): E_GAM;dE_GAM;E_LVL;dE_LVL;JPI;I_GAM;M_GAM
+            //         out << "GAM"<<";"<<tr.gamEnergy<<";"<<tr.dgamEnergy<<
+            //             ";"<<tr.lvlEnergy<<";"<<tr.dlvlEnergy<<";"<<lvl.spin<<";"<<tr.IGam<<";"<<tr.MGam<<"\n";
+            //     }
+            // }
             textFile.close();
         }
     }
-
-
-    // ------------------------------------------
-
-    // for (Level &lvl : iso.levels) {
-    //     qDebug() << "[calcTransmision: investigate levelIDs]" << lvl.lvlID;
-
-
-    // }
-
-
-
 }
 
+
+// Level IsomerAPI::decayAlgo(Level *selLvl, QVector<Level> *infoLevels, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool){
+//     qDebug();
+//     Level *tmpLevel = selLvl;
+//     tmpLevel->transitions.clear();
+
+//     for (Transition &tr : selLvl->transitions) {
+//         Level &finLvl = lvlMap[tr.finID];
+//         bool escape = (finLvl.halfLife >= T12_deadEnd) || (finLvl.lvlEnergy == 0.0);
+//         tmpLevel->transitions.append(tr);
+
+
+//         if (escape) {continue;}
+//         else {decayAlgo(&finLvl, infoLevels, lvlMap, T12_deadEnd, transBool);}
+
+//     }
+// }
+
+Level IsomerAPI::decayAlgoExtern(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool){
+    qDebug();
+    qDebug() << "[decayAlgoExtern: level E, ID, trCount]" << selLvl->lvlEnergy << selLvl->lvlID << selLvl->transitions.count();
+    Level tmpLevel = *selLvl;
+    tmpLevel.transitions.clear();
+
+    int it = 1;
+
+    for (Transition &tr : selLvl->transitions) {
+        qDebug() << "[decayAlgoExtern: transition ?]" << tr.gamEnergy << tr.trID;
+
+        Level &finLvl = lvlMap[tr.finID];
+        bool escape = (finLvl.halfLife >= T12_deadEnd) || (finLvl.lvlEnergy == 0.0);
+        tmpLevel.transitions.append(tr);
+        qDebug() << "[decayAlgoExtern: finLvl and escape?]" << finLvl.lvlEnergy << finLvl.lvlID << escape;
+
+
+        if (escape) {qDebug() << "[decayAlgoExtern: skipping level]" << finLvl.lvlEnergy << finLvl.lvlID; continue;}
+        else {qDebug() << "[decayAlgoExtern: completed level iteration]" << it;tmpLevel.transitions.append(decayAlgoExtern(&finLvl, lvlMap, T12_deadEnd, transBool).transitions);}
+        qDebug() << "[decayAlgoExtern: RETURNING]\n";
+    }
+    return tmpLevel;
+
+}
 
 void IsomerAPI::onRowSelected(QTableView *view)
 {
@@ -536,7 +613,6 @@ void IsomerAPI::onRowSelected(QTableView *view)
     qDebug();
 
 }
-
 
 
 void IsomerAPI::statRefresh()
@@ -827,7 +903,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
 
   // qDebug() << "[prepData: BEGIN PREP]";
   QString fullQuery =
-        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,M_GAMMA,LEVEL_ID,GAMMA_ID FROM Isomers";
+        "SELECT A_IT,Z_IT,E_GAMMA,D_EG,T12,D_T12,LEVEL,D_LEVEL,JPI,IT_RATIO,I_GAMMA,M_GAMMA,LEVEL_ID,GAMMA_ID,FINAL_LEVEL_ID FROM Isomers";
 
   QString filter = modelFull->filter();
   if (!filter.isEmpty()) {
@@ -926,6 +1002,7 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
       tr.dgamEnergy = tmpdGammaE;
       tr.label = query.value("E_GAMMA").toString();
       tr.trID = query.value("GAMMA_ID").toInt();
+      tr.finID = query.value("FINAL_LEVEL_ID").toInt();
 
       tr.IGam = query.value("I_GAMMA").toDouble();
       tr.MGam = query.value("M_GAMMA").toString();

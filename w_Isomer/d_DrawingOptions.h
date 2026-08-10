@@ -1,5 +1,5 @@
-#ifndef D_DRAWING_H
-#define D_DRAWING_H
+#ifndef D_DRAWINGOPTIONS_H
+#define D_DRAWINGOPTIONS_H
 
 #include <QDialog>
 
@@ -21,4 +21,4 @@ private:
     Ui::drawingChoiceDlg *ui;
 };
 
-#endif // D_DRAWING_H
+#endif // D_DRAWINGOPTIONS_H

@@ -1,5 +1,5 @@
-#ifndef D_COLUMNS_H
-#define D_COLUMNS_H
+#ifndef D_COLUMNSOPTIONS_H
+#define D_COLUMNSOPTIONS_H
 
 #include <QDialog>
 
@@ -22,4 +22,4 @@ private:
     Ui::columnToggleDlg *ui;
 };
 
-#endif // D_COLUMNS_H
+#endif // D_COLUMNSOPTIONS_H

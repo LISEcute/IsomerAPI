@@ -1,5 +1,5 @@
-#include "d_Drawing.h"
-#include "ui_d_Drawing.h"
+#include "d_DrawingOptions.h"
+#include "ui_d_DrawingOptions.h"
 
 drawingChoiceDlg::drawingChoiceDlg(QWidget *parent)
     : QDialog(parent)

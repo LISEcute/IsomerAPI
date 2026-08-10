@@ -1,4 +1,4 @@
-#include "w_graphicsView.h"
+#include "w_schemeGraphic.h"
 #include "L_IsomerElement.h"
 
 #include <QPainter>
@@ -218,19 +218,19 @@ void graphicsView::paint(QPainter *painter,
 
             QFont trFont = painter->font();
             QFontMetrics metrics(trFont);
-            int width = metrics.horizontalAdvance(tr.label);
+            textWidth = metrics.horizontalAdvance(tr.label);
             // qDebug() << "[graphicsView TRANS FONT]" << tr.label << ":" << width;
 
             painter->setPen(transitionColor);
             f.setBold(true);
             painter->setFont(f);
             // make labels vertical for transition lines
-            painter->rotate(90);
-            painter->drawText((y1+y2 - width)/2,-(x+5),tr.label);
+            painter->rotate(-90);
+            painter->drawText(-(y1+y2 + textWidth - arrowPointiness)/2,(x+textHeight),tr.label);
             f.setBold(false);
             painter->setFont(f);
             painter->setPen(QPen(transitionColor, 2));
-            painter->rotate(-90);
+            painter->rotate(90);
 
             xOffset += 20; // iterate xOffset for next transition line
 

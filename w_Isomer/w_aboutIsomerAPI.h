@@ -1,5 +1,5 @@
-#ifndef W_ABOUT_H
-#define W_ABOUT_H
+#ifndef W_ABOUTISOMERAPI_H
+#define W_ABOUTISOMERAPI_H
 
 #include <QWidget>
 
@@ -24,4 +24,4 @@ private:
     Ui::About *ui;
 };
 
-#endif // W_ABOUT_H
+#endif // W_ABOUTISOMERAPI_H

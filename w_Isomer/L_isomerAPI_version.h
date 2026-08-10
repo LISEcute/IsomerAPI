@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.19"
-#define isomerAPI_date         "01-AUG-2026"
+#define isomerAPI_version      "1.3.20"
+#define isomerAPI_date         "10-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -121,3 +121,10 @@
 //-----------------------------
 // 1.3.19          8/1/26  Oleg
 // Added IsomerAPI block-scheme documentation as Graphviz source, PDF, and PNG files
+
+//-----------------------------
+// 1.3.20          8/10/26  Hudson
+// Fixed level subscript with stylesheet for headers
+// Decay algorithm created for transmission calculations with "dead end" half-lives
+// Updated database with "FINAL_LEVEL_ID" for each transition, computationally increases speed significantly
+// Cleaned and renamed files, managed comment documentation

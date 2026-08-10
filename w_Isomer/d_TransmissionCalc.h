@@ -1,5 +1,5 @@
-#ifndef D_TRANSMISSION_H
-#define D_TRANSMISSION_H
+#ifndef D_TRANSMISSIONCALC_H
+#define D_TRANSMISSIONCALC_H
 
 #include <QDialog>
 
@@ -22,4 +22,4 @@ private:
     Ui::transmissionDlg *ui;
 };
 
-#endif // D_TRANSMISSION_H
+#endif // D_TRANSMISSIONCALC_H

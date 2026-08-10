@@ -1,5 +1,5 @@
-#include "d_Download.h"
-#include "ui_d_Download.h"
+#include "d_DownloadFiles.h"
+#include "ui_d_DownloadFiles.h"
 
 DownloadDialog::DownloadDialog(QWidget *parent)
     : QDialog(parent)

@@ -27,6 +27,7 @@ struct Transition {
 
     QString label;
     int trID;
+    int finID;
 };
 
 

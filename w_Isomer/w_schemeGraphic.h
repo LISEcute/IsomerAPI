@@ -6,7 +6,7 @@
 #include <QString>
 
 
-#include "L_vectorStruct.h"
+#include "L_isoStructs.h"
 
 //------------------------------------------------------
 

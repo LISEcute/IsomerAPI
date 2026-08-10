@@ -1,5 +1,5 @@
-#include "d_Columns.h"
-#include "ui_d_Columns.h"
+#include "d_ColumnsOptions.h"
+#include "ui_d_ColumnsOptions.h"
 
 columnToggleDlg::columnToggleDlg(QWidget *parent)
     : QDialog(parent)
