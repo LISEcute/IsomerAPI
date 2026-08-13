@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.20"
-#define isomerAPI_date         "10-AUG-2026"
+#define isomerAPI_version      "1.3.21"
+#define isomerAPI_date         "13-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -134,3 +134,4 @@
 // Added inclusion of fast levels within filter constraints for plotting decay schemes
 // Transmission information utility working for all levels within filtered results
 // Included NNDC links for schemes, level wallet, etc.
+// Added transition line thickness proportional to I_GAMMA
