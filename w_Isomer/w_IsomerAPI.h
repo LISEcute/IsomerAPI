@@ -42,8 +42,7 @@ public:
 
     void writeDecayTXT(QPair<int,int> isoKey);
 
-    Level decayAlgo(Level *selLvl, QVector<Level> *infoLevels, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
-    Level decayAlgoExtern(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
+    Level decayAlgo(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
 
 
 

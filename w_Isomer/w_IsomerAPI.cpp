@@ -460,7 +460,7 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
 
             for (Level &lvl : iso.levels) {
                 qDebug() << "[writeDecayTXT: call decayAlgo for level]" << lvl.lvlEnergy << lvl.lvlID;
-                Level decay = decayAlgoExtern(&lvl, lvlMap, 20, true);
+                Level decay = decayAlgo(&lvl, lvlMap, 20, true);
                 storeDecays.append(decay);
                 qDebug() << "[writeDecayTXT: Check decay size]" << decay.lvlEnergy << decay.lvlID << decay.transitions.count();
             }
@@ -521,30 +521,33 @@ void IsomerAPI::writeDecayTXT(QPair<int, int> isoKey){
 //     }
 // }
 
-Level IsomerAPI::decayAlgoExtern(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool){
+
+/// Algorithm for populating levels that decay in succession
+Level IsomerAPI::decayAlgo(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool){
     qDebug();
-    qDebug() << "[decayAlgoExtern: level E, ID, trCount]" << selLvl->lvlEnergy << selLvl->lvlID << selLvl->transitions.count();
+    qDebug() << "[decayAlgo: level E, ID, trCount]" << selLvl->lvlEnergy << selLvl->lvlID << selLvl->transitions.count();
     Level tmpLevel = *selLvl;
     tmpLevel.transitions.clear();
 
     int it = 1;
 
     for (Transition &tr : selLvl->transitions) {
-        qDebug() << "[decayAlgoExtern: transition ?]" << tr.gamEnergy << tr.trID;
+        qDebug() << "[decayAlgo: transition ?]" << tr.gamEnergy << tr.trID;
 
         Level &finLvl = lvlMap[tr.finID];
         bool escape = (finLvl.halfLife >= T12_deadEnd) || (finLvl.lvlEnergy == 0.0);
         tmpLevel.transitions.append(tr);
-        qDebug() << "[decayAlgoExtern: finLvl and escape?]" << finLvl.lvlEnergy << finLvl.lvlID << escape;
+        qDebug() << "[decayAlgo: finLvl and escape?]" << finLvl.lvlEnergy << finLvl.lvlID << escape;
 
 
-        if (escape) {qDebug() << "[decayAlgoExtern: skipping level]" << finLvl.lvlEnergy << finLvl.lvlID; continue;}
-        else {qDebug() << "[decayAlgoExtern: completed level iteration]" << it;tmpLevel.transitions.append(decayAlgoExtern(&finLvl, lvlMap, T12_deadEnd, transBool).transitions);}
-        qDebug() << "[decayAlgoExtern: RETURNING]\n";
+        if (escape) {qDebug() << "[decayAlgo: skipping level]" << finLvl.lvlEnergy << finLvl.lvlID; continue;}
+        else {qDebug() << "[decayAlgo: completed level iteration]" << it;tmpLevel.transitions.append(decayAlgo(&finLvl, lvlMap, T12_deadEnd, transBool).transitions);}
+        qDebug() << "[decayAlgo: RETURNING]\n";
     }
     return tmpLevel;
-
 }
+
+
 
 void IsomerAPI::onRowSelected(QTableView *view)
 {
@@ -758,6 +761,8 @@ void IsomerAPI::applyFilters()
 
   QString filterExpr = modelFull->filter(); // ~~~ treat modelFull first -- cut on T12, Egam later
   QStringList baseNameExceptions = {"le_GE", "le_FINE", "le_T12"};
+  QString isoCondition;
+
 
   for (QLineEdit* le : std::as_const(filterBounds)) {
       if (le->text().isEmpty()) {
@@ -776,6 +781,9 @@ void IsomerAPI::applyFilters()
           QString col = filterMap[baseName];
           QString textValue = le->text();
           QString finalValue;
+          QString Acondition;
+          QString Zcondition;
+
           qDebug() << "[applyFilters: check col assignment]" << col;
           if (baseName != "le_numZ") {
               finalValue = textValue;
@@ -807,30 +815,47 @@ void IsomerAPI::applyFilters()
               condition = (suffix == "1") ? QString("%1 >= %2").arg(col,finalValue)
                                           : QString("%1 <= %2").arg(col,finalValue);
               if (baseNameExceptions.contains(baseName)) {
-                  condition = "(" + condition + " OR (E_GAMMA IS NULL))";
+                  // condition = "(" + condition + " OR (E_GAMMA IS NULL) OR (T12 IS NULL))"; /// NOT REALLY WORKING
+                  // condition = "(" + condition + " OR (E_GAMMA IS NULL))"; /// "E_GAMMA IS NULL" captures Ground State in filter
+
               }
           } else if (suffix == "0") {
               condition = QString("%1 IS %2").arg(col, finalValue);
           }
 
+          if (baseName == "le_T12") {condition = "(("+condition+") OR (T12 IS NULL))";qDebug() << "[applyFilters: check t12 cond]";}
 
+          if (baseName == "le_numA" || baseName == "le_numZ") {
+              if (isoCondition.isEmpty()) {isoCondition = condition;qDebug() << "[isocond empty]" << isoCondition;}
+              else {isoCondition = isoCondition + " AND " + condition;qDebug() << "[isocond full]" << isoCondition;}
+          }
 
           if (!filterExpr.isEmpty()) {
               filterExpr += " AND ";
           }
+
+
+
           filterExpr += condition;
-          // qDebug() << "[applyFilters: check ]"
 
           // qDebug() << "[applyFilters l139: col check]" << col;
           // qDebug() << "[applyFilters l140: value check]" << finalValue;
           qDebug() << "[applyFilters l141: conditional check]" << condition;
-
+          qDebug() << "[applyFiltes: check isocondition]" << isoCondition;
           qDebug() << "[applyFilters: check filterexpr]" << filterExpr;
         }
       qDebug();
     }
 
   // filterExpr = "(" + filterExpr + ") OR (E_GAMMA IS NULL)";
+
+  // ------------------------------------------
+    if (!isoCondition.isEmpty()) filterExpr += QString(" OR (%1 AND E_GAMMA IS NULL)").arg(isoCondition);
+    qDebug() << "[applyFilters: post add isocond]" << filterExpr;
+  // ------------------------------------------
+
+
+
   modelFull->setFilter(filterExpr);
   modelFull->select();
   ui->tableView_Dev->setModel(modelFull);
@@ -868,7 +893,7 @@ void IsomerAPI::openDrawing()
     currentPage = ui->stackedWidget->currentIndex();
 
     bool rowSelected = checkSelection(currentPage);
-    int drawSelection = 3;
+    QString drawSelection = "";
     if (rowSelected){
         qDebug() << "[openDrawing: SELECTION DETECTED]" << rowSelected;
         drawingChoiceDlg drawDlg(this);
@@ -877,13 +902,14 @@ void IsomerAPI::openDrawing()
             qDebug() << "[openDrawing: DIALOG ACCEPT] code"<< drawSelection;
         }
 
-        if (drawSelection == 1) {
+        if (drawSelection == "filt") {
             auto *levelScheme = new LevelScheme(filteredIsotopes);
             levelScheme->show();
-        } else if (drawSelection == 2) {
-            qDebug() << "[openDrawing: select 1]";
-        } else if (drawSelection == 3) {
-            qDebug() << "[openDrawing: select 2]";
+        } else if (drawSelection == "lvl") {
+
+            qDebug() << "[openDrawing: select lvl]";
+        } else if (drawSelection == "gam") {
+            qDebug() << "[openDrawing: select gam]";
         }
 
     } else {
@@ -1024,8 +1050,8 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
     {
         if (storedIso->levels.isEmpty()) {
             storedIso = isotopeMap.erase(storedIso);
-            qDebug() << "[prepData: isotope is empty]" << storedIso.key() << atomicSymbol(storedIso.key().first);
-            qDebug() << "   gs:" << storedIso->groundState.lvlID;
+            // qDebug() << "[prepData: isotope is empty]" << storedIso.key() << atomicSymbol(storedIso.key().first);
+            // qDebug() << "   gs:" << storedIso->groundState.lvlID;
 
         } else {
             ++storedIso;

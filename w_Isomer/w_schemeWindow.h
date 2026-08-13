@@ -35,7 +35,7 @@ public:
     QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
 
     void makeActions();
-    void openNNDC(QString A_Sym);
+    void openNNDC(QString A_Sym, QString choice);
 
 private:
 
@@ -49,7 +49,7 @@ private:
     QGraphicsScene *scene = new QGraphicsScene(this);
 
 
-    QAction *act_openNNDC, *act_saveImage;
+    QAction *act_openNNDC_LVLS, *act_openNNDC_SCHEME, *act_openNNDC_betaSCHEME, *act_saveImage;
 
     // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
 

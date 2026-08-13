@@ -59,8 +59,14 @@
      <string>Save Picture (WIP)</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuNNDC_Records">
+    <property name="title">
+     <string>NNDC Records</string>
+    </property>
+   </widget>
    <addaction name="menu_other_isotopes"/>
    <addaction name="menu_savePic"/>
+   <addaction name="menuNNDC_Records"/>
   </widget>
   <action name="action_savePic">
    <property name="text">

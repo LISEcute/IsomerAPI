@@ -128,3 +128,9 @@
 // Decay algorithm created for transmission calculations with "dead end" half-lives
 // Updated database with "FINAL_LEVEL_ID" for each transition, computationally increases speed significantly
 // Cleaned and renamed files, managed comment documentation
+
+//-----------------------------
+// 1.3.21          8/13/26  Hudson
+// Added inclusion of fast levels within filter constraints for plotting decay schemes
+// Transmission information utility working for all levels within filtered results
+// Included NNDC links for schemes, level wallet, etc.

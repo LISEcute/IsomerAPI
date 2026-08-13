@@ -15,7 +15,7 @@ public:
     explicit drawingChoiceDlg(QWidget *parent = nullptr);
     ~drawingChoiceDlg();
 
-    int getDrawChoice();
+    QString getDrawChoice();
 
 private:
     Ui::drawingChoiceDlg *ui;

@@ -65,8 +65,10 @@ void graphicsView::paint(QPainter *painter,
     int lineRight = trCount*trHOffset + 25;
     int indentation = 25;
     // int textVOffset = -5;
-    int arrowHeadSize = 5;
+    int arrowHeadSize = 6;
     int arrowPointiness = 5;
+    int arrowMaxWidth = 4;
+    int arrowMinWidth = 3;
 
     QColor lineColor(0,0,0);
     QColor levelTextColor(0,0,0);
@@ -195,7 +197,7 @@ void graphicsView::paint(QPainter *painter,
 
 
         // ~~~~~ transition drawing
-        painter->setPen(QPen(transitionColor, 2));
+        // painter->setPen(QPen(transitionColor, 2));
         painter->setBrush(transitionColor);
 
         for (const Transition &tr : lvl.transitions) {
@@ -203,12 +205,16 @@ void graphicsView::paint(QPainter *painter,
             if (Ei == 0.) continue;
             double Ef = tr.lvlEnergy - tr.gamEnergy;
 
+
             double y1 = static_cast<int>(yBase - Ei*scale);
             double y2 = static_cast<int>(yBase - Ef*scale);
 
             int x = lineLeft + indentation + xOffset;
 
-            painter->drawLine(x, y1, x, y2);
+
+            painter->setPen(QPen(transitionColor, arrowMinWidth + tr.IGam/100*arrowMaxWidth));
+            painter->drawLine(x, y1 + tr.IGam/25, x, y2 - arrowHeadSize-2);
+            painter->setPen(QPen(transitionColor, 2));
 
             QPolygon arrowHead;
             arrowHead << QPoint(x - arrowHeadSize, y2 - arrowHeadSize - arrowPointiness)

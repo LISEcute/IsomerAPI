@@ -14,14 +14,14 @@ drawingChoiceDlg::~drawingChoiceDlg()
 }
 
 
-int drawingChoiceDlg::getDrawChoice(){
-    int ss;
+QString drawingChoiceDlg::getDrawChoice(){
+    QString ss;
     if (ui->rb_filtered->isChecked()) {
-        ss = 1;
+        ss = "filt";
     } else if (ui->rb_lvlSelected->isChecked()) {
-        ss = 2;
+        ss = "lvl";
     } else if (ui->rb_gamSelected->isChecked()) {
-        ss = 3;
-    } else { ss = 0; }
+        ss = "gam";
+    } else { ss = ""; }
     return ss;
 }

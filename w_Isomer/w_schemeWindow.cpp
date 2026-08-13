@@ -41,7 +41,10 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
 
     makeActions();
 
-    ui->menuBar->addAction(act_openNNDC);
+    ui->menuNNDC_Records->addAction(act_openNNDC_LVLS);
+    ui->menuNNDC_Records->addAction(act_openNNDC_SCHEME);
+    ui->menuNNDC_Records->addAction(act_openNNDC_betaSCHEME);
+
 
 
 
@@ -173,26 +176,50 @@ void LevelScheme::makeActions(){
     // CmPrintWholeAction->setIcon(QIcon(":/plottool/print10.gif"));
     // CmPrintWholeAction->setToolTip("Print whole page, portrait");
 
-    act_openNNDC = new QAction(tr("act_openNNDC"),this);
-    // toolbar->addAction(act_openNNDC);
-    connect(act_openNNDC, &QAction::triggered,this,[this](){
+    act_openNNDC_LVLS = new QAction(tr("act_openNNDC_LVLS"),this);
+    // toolbar->addAction(act_openNNDC_LVLS);
+    connect(act_openNNDC_LVLS, &QAction::triggered,this,[this](){
         QStringList sepTitle = this->windowTitle().split(" ");
         QString isoName = sepTitle.last();
-        openNNDC(isoName);
+        openNNDC(isoName, "LVLS");
     });
-    act_openNNDC->setText("Open NNDC Records");
-    // act_openNNDC->setIcon(QIcon(":/icons/Icons/nndcLogo.png"));
+    act_openNNDC_LVLS->setText("Open NNDC Records");
+    act_openNNDC_LVLS->setToolTip("Open NNDC Data for Current Isotope");
 
-    act_openNNDC->setToolTip("Open NNDC Data for Current Scheme");
+    act_openNNDC_SCHEME = new QAction(tr("act_openNNDC_SCHEME"),this);
+    // toolbar->addAction(act_openNNDC_LVLS);
+    connect(act_openNNDC_SCHEME, &QAction::triggered,this,[this](){
+        QStringList sepTitle = this->windowTitle().split(" ");
+        QString isoName = sepTitle.last();
+        openNNDC(isoName, "SCHEME");
+    });
+    act_openNNDC_SCHEME->setText("Open NNDC Scheme");
+    act_openNNDC_SCHEME->setToolTip("Open NNDC Scheme for Current Isotope");
+
+
+    act_openNNDC_betaSCHEME = new QAction(tr("act_openNNDC_betaSCHEME"),this);
+    // toolbar->addAction(act_openNNDC_LVLS);
+    connect(act_openNNDC_betaSCHEME, &QAction::triggered,this,[this](){
+        QStringList sepTitle = this->windowTitle().split(" ");
+        QString isoName = sepTitle.last();
+        openNNDC(isoName, "betaSCHEME");
+    });
+    act_openNNDC_betaSCHEME->setText("Open NNDC Scheme (beta)");
+    act_openNNDC_betaSCHEME->setToolTip("Open NNDC Scheme (beta) for Current Isotope");
+
+
 
 
 }
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-void LevelScheme::openNNDC(QString A_Sym){
+void LevelScheme::openNNDC(QString A_Sym, QString choice){
     qDebug() << "[openNNDC: opening for]" << A_Sym;
-    QString ss = "https://www.nndc.bnl.gov/nudat3/getdataset.jsp?nucleus=" + A_Sym;
+    QString ss;
+    if (choice == "LVLS") {ss = "https://www.nndc.bnl.gov/nudat3/getdataset.jsp?nucleus=" + A_Sym;}
+    else if (choice == "SCHEME") {ss = "https://www.nndc.bnl.gov/nudat3/NuDatBandPlotServlet?nucleus=" + A_Sym + "&unc=NDS";}
+    else if (choice == "betaSCHEME") {ss = "https://www.nndc.bnl.gov/nudat3/levelscheme/?nucleus=" + A_Sym;}
     QDesktopServices::openUrl(QUrl(ss));
 }
 
