@@ -28,11 +28,21 @@ class LevelScheme : public QMainWindow
 
 public:
 
-    LevelScheme(const QMap<QPair<int,int>,Isotope>& isotopeMap,
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ///isotopeMap method deprecated by schemeMap methods
+    // LevelScheme(const QMap<QPair<int,int>,Isotope>& isotopeMap,
+    //             QWidget *parent=nullptr);
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    LevelScheme(const SchemeMap& schemeMap,
                 QWidget *parent=nullptr);
     ~LevelScheme();
 
-    QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ///isotopeMap method deprecated by schemeMap methods
+    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    QMap<SchemeKey, QGraphicsItem*> graphicStore;
+
 
     void makeActions();
     void openNNDC(QString A_Sym, QString choice);
@@ -50,9 +60,6 @@ private:
 
 
     QAction *act_openNNDC_LVLS, *act_openNNDC_SCHEME, *act_openNNDC_betaSCHEME, *act_saveImage;
-
-    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
-
 
     void saveImage();
     // void paintEvent(QPaintEvent *event) override;

@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.3.20.0 # major.minor.patch.build
-else:VERSION  = 1.3.20   # major.minor.patch
+win32:VERSION = 1.3.22.0 # major.minor.patch.build
+else:VERSION  = 1.3.22   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -27,6 +27,7 @@ DEFINES += IsomerAPI_case
 
 # Sources
 SOURCES += \
+    w_Isomer/L_levelProxyModel.cpp \
     w_Isomer/d_ColumnsOptions.cpp \
     w_Isomer/d_DownloadFiles.cpp \
     w_Isomer/d_DrawingOptions.cpp \

@@ -20,23 +20,41 @@
       <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="le_A"/>
-      </item>
       <item row="1" column="2">
        <widget class="QLineEdit" name="le_Z"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="le_A"/>
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Isotope Z</string>
+         <string>Isotope Z:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Isotope A</string>
+         <string>Isotope A:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="le_T12">
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="placeholderText">
+         <string>20</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Max T&lt;span style=&quot; vertical-align:sub;&quot;&gt;1/2&lt;/span&gt; (μs):
+</string>
         </property>
        </widget>
       </item>

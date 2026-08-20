@@ -14,7 +14,12 @@
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
-LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///isotopeMap method deprecated by schemeMap methods
+// LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& isotopeMap,
+//                          QWidget *parent)
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+LevelScheme::LevelScheme(const SchemeMap& schemeMap,
                          QWidget *parent)
     :
     QMainWindow(parent),
@@ -26,18 +31,7 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
     resize(800,800);
     qDebug() << _filterQuery << _path;
 
-
-
     ui->graphicsView->setScene(scene);
-
-
-    // toolbar = new QToolBar(this);
-    // toolbar->setIconSize(QSize(32, 32));
-    // toolbar->setOrientation(Qt::Horizontal);
-    // toolbar->setMovable(false);
-
-    // addToolBar(Qt::TopToolBarArea, toolbar);
-
 
     makeActions();
 
@@ -48,93 +42,174 @@ LevelScheme::LevelScheme(const QMap<QPair<int,int>,Isotope>& filteredIsotopes,
 
 
 
-    // ~~~~~ establsih graphics hashmap
-    // QHash<QPair<int,int>, QGraphicsItem*> graphicStore;
     QShortcut *escapeShortcut = new QShortcut(QKeySequence(Qt::Key_Escape), this);
     connect(escapeShortcut, &QShortcut::activated, this, &QWidget::close);
 
-    // make graphics
-    QPair<int,int> firstIso;
-    bool firstIt = true;
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ///isotopeMap method deprecated by schemeMap methods
+    // QPair<int,int> firstIso;
+    // bool firstIt = true;
+    // for (const Isotope &iso : isotopeMap) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    for (const Isotope &iso : filteredIsotopes) {
-        // qDebug() << "[levelScheme: check isotope]" << iso.A << iso.Z;
-        QPair<int,int> gphcKey(iso.A, iso.Z);
-        auto *item = new graphicsView(iso);
-        if (firstIt){
-            firstIso = gphcKey;
-            QString firstIsoName = QString("%1%2")
-                               .arg(iso.A).arg(atomicSymbol(iso.Z));
-            this->setWindowTitle("Level Scheme - " + firstIsoName);
-            firstIt = false;
-        }
+    SchemeKey firstKey;
+    bool hasFirstScheme = false;
 
-        for (const Level &lvl : iso.levels) {
-            if (lvl.lvlEnergy <= 400 && lvl.lvlEnergy > 600) {
+    for (auto it = schemeMap.cbegin(); it != schemeMap.cend(); ++it) {
+        const SchemeKey &schemeKey = it.key();
+        const Isotope &schemeIsotope = it.value();
 
+        auto *item = new graphicsView(schemeIsotope);
+        graphicStore.insert(schemeKey, item);
+
+        QString label;
+        QString isotopeName = QString("%1%2")
+                                  .arg(schemeKey.A)
+                                  .arg(atomicSymbol(schemeKey.Z));
+
+        if (schemeKey.type == SchemeType::FilteredIsotope) {
+            label = isotopeName;
+        } else if (schemeKey.type == SchemeType::DecayFromLevel) {
+            double rootEnergy = 0.0;
+
+            for (const Level &level : schemeIsotope.levels) {
+                if (level.lvlID == schemeKey.anchorId) {
+                    rootEnergy = level.lvlEnergy;
+                    break;
+                }
             }
+
+            label = QString("%1 - %2 keV Level")
+                            .arg(isotopeName)
+                            .arg(rootEnergy, 0, 'g', 10);
+        } else if (schemeKey.type == SchemeType::GammaCoincidence) {
+            double gammaEnergy = 0.0;
+
+            for (const Level &level : schemeIsotope.levels) {
+                for (const Transition &transition : level.transitions) {
+                    if (transition.trID == schemeKey.anchorId) {
+                        gammaEnergy = transition.gamEnergy;
+                        break;
+                    }
+                }
+                if (gammaEnergy != 0.0) {
+                    break;
+                }
+            }
+
+            label = QString("%1 - %2 keV Coincidence")
+                        .arg(isotopeName)
+                        .arg(gammaEnergy, 0, 'g', 10);
         }
 
-        graphicStore.insert(gphcKey, item);
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///isotopeMap method deprecated by schemeMap methods
+        // if (firstIt){
+        //     firstIso = schemeKey;
+        //     QString firstIsoName = QString("%1%2")
+        //                        .arg(iso.A).arg(atomicSymbol(iso.Z));
+        //     this->setWindowTitle("Level Scheme - " + firstIsoName);
+        //     firstIt = false;
+        // }
 
-        // qDebug() << "[levelScheme: graphicStore checks]" << graphicStore.keys() << graphicStore.values();
+        // for (const Level &lvl : iso.levels) {
+        //     if (lvl.lvlEnergy <= 400 && lvl.lvlEnergy > 600) {
 
+        //     }
+        // }
 
-        // append isotopes
-        QAction *act_isotopeSelect = new QAction(QString("%1%2")
-                                                     .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
+        // QAction *act_isotopeSelect = new QAction(QString("%1%2")
+        //                                              .arg(iso.A).arg(atomicSymbol(iso.Z)),this);
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        QAction *act_isotopeSelect = new QAction(label, this);
+
 
         ui->menu_other_isotopes->addAction(act_isotopeSelect);
 
 
-        currentItem = graphicStore.value(firstIso);
-
-        // make actions for isotope selection -- dynamic construction requires lambda function, "on_action..."
-        // private slot method is not applicable
-        connect(act_isotopeSelect, &QAction::triggered,
-                this, [this, act_isotopeSelect, gphcKey]() {
-            QFont f = act_isotopeSelect->font();
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///isotopeMap method deprecated by schemeMap methods
+        // connect(act_isotopeSelect, &QAction::triggered,
+        //         this, [this, act_isotopeSelect, gphcKey]() {
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        connect (act_isotopeSelect, &QAction::triggered, this, [this, schemeKey, act_isotopeSelect, label](){
             for (QAction *act : ui->menu_other_isotopes->actions()) {
 
                 QFont f = act->font();
+                f.setBold(false);
+                act->setFont(f);
+
                 QString txt = act->text();
-
                 if (txt.startsWith("> ")) {
-                    txt.remove(0, 2);
-                    f.setBold(false);
-                    act->setFont(f);
+                    act->setText(txt.mid(2));
                 }
-
-
-                act->setText(txt);
             }
 
-            QString titleTxt = act_isotopeSelect->text();
-            this->setWindowTitle("Level Scheme - " + titleTxt);
+            if (currentItem) {
+                scene->removeItem(currentItem);
+            }
+            currentItem = graphicStore.value(schemeKey, nullptr);
+
+            if (currentItem) {
+                scene->addItem(currentItem);
+            }
+
+            QFont f = act_isotopeSelect->font();
             f.setBold(true);
             act_isotopeSelect->setFont(f);
-            act_isotopeSelect->setText("> " + titleTxt);
-            if (currentItem)
-                scene->removeItem(currentItem);
+            act_isotopeSelect->setText("> " + label);
+            setWindowTitle("Level Scheme - " + label);
 
-            currentItem = graphicStore.value(gphcKey, nullptr);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            ///isotopeMap method deprecated by schemeMap methods
+            // QString titleTxt = act_isotopeSelect->text();
+            // this->setWindowTitle("Level Scheme - " + titleTxt);
+            // f.setBold(true);
+            // act_isotopeSelect->setFont(f);
+            // act_isotopeSelect->setText("> " + titleTxt);
+            // if (currentItem)
+            //     scene->removeItem(currentItem);
 
-            if (currentItem)
-                scene->addItem(currentItem);
+            // currentItem = graphicStore.value(gphcKey, nullptr);
+
+            // if (currentItem)
+            //     scene->addItem(currentItem);
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         });
 
-        if (gphcKey == firstIso) {
-            QFont fFirst = act_isotopeSelect->font();
-            fFirst.setBold(true);
-            act_isotopeSelect->setFont(fFirst);
-            act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        ///isotopeMap method deprecated by schemeMap methods
+        // if (gphcKey == firstIso) {
+        //     QFont fFirst = act_isotopeSelect->font();
+        //     fFirst.setBold(true);
+        //     act_isotopeSelect->setFont(fFirst);
+        //     act_isotopeSelect->setText("> " + act_isotopeSelect->text());
+        // }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        if (!hasFirstScheme) {
+            firstKey = schemeKey;
+            hasFirstScheme = true;
         }
 
     }
 
-    qDebug() << "[levelScheme: check scene exists]" << graphicStore.value(QPair<int,int>(31,12));
-    scene->addItem(graphicStore.value(firstIso));
+    if (hasFirstScheme) {
+        currentItem = graphicStore.value(firstKey, nullptr);
 
+        if (currentItem) {
+            scene->addItem(currentItem);
+        }
+
+        QAction *firstAction = ui->menu_other_isotopes->actions().first();
+        QString firstLabel = firstAction->text();
+        setWindowTitle("Level Scheme - " + firstLabel);
+
+        QFont font = firstAction->font();
+        font.setBold(true);
+        firstAction->setFont(font);
+        firstAction->setText("> " + firstLabel);
+    }
 
     /*QGraphicsScene *scene = new QGraphicsScene(this);
     auto *item = new graphicsView(levels, transitions);

@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.21"
-#define isomerAPI_date         "13-AUG-2026"
+#define isomerAPI_version      "1.3.22"
+#define isomerAPI_date         "20-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -135,3 +135,12 @@
 // Transmission information utility working for all levels within filtered results
 // Included NNDC links for schemes, level wallet, etc.
 // Added transition line thickness proportional to I_GAMMA
+
+//-----------------------------
+// 1.3.22          8/20/26  Hudson
+// Updates to scheme-drawing architecture with new schemeKey and schemeMap structs
+// vecDecayAlgo working for transmission utility and decay from levels
+// Working "decay from selected level" draw schemes option
+// Updates to levelScheme window to handle multiple decay scheme types (for isotope, for level decay)
+// Fixes/failsafes added to transmissionCalc utility
+

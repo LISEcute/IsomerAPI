@@ -68,7 +68,7 @@ void graphicsView::paint(QPainter *painter,
     int arrowHeadSize = 6;
     int arrowPointiness = 5;
     int arrowMaxWidth = 4;
-    int arrowMinWidth = 3;
+    int arrowMinWidth = 2;
 
     QColor lineColor(0,0,0);
     QColor levelTextColor(0,0,0);

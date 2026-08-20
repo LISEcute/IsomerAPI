@@ -50,7 +50,32 @@ struct Isotope {
     int Z;
     QVector<Level> levels;
     Level groundState;
+
 };
+
+
+
+enum class SchemeType {
+    FilteredIsotope,
+    DecayFromLevel,
+    GammaCoincidence
+};
+
+struct SchemeKey {
+    int Z;
+    int A;
+    SchemeType type;
+    int anchorId;  // LEVEL_ID for DecayFromLevel; GAMMA_ID for GammaCoincidence
+
+    bool operator<(const SchemeKey &other) const {
+        if (Z != other.Z) return Z < other.Z;
+        if (A != other.A) return A < other.A;
+        if (type != other.type) return type < other.type;
+        return anchorId < other.anchorId;
+    };
+};
+
+using SchemeMap = QMap<SchemeKey, Isotope>;
 
 // struct Level {
 //     // QString AZ;

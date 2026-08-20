@@ -13,7 +13,7 @@ class transmissionDlg : public QDialog
 
 public:
 
-    std::pair<int, int> getOptions();
+    std::tuple<int,int,float> getOptions();
 
     explicit transmissionDlg(QWidget *parent = nullptr);
     ~transmissionDlg();

@@ -40,13 +40,15 @@ public:
 
     QMap<QPair<int, int>, Isotope> prepData();
 
-    void writeDecayTXT(QPair<int,int> isoKey);
+    void writeDecayTXT(QPair<int,int> isoKey, float maxT12);
 
     Level decayAlgo(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
+    QVector<Level> vecDecayAlgo(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
 
 
+    QList<SchemeKey> selectedLevelKeys(QTableView *view) const;
 
-
+    QTableView *getTableView(int page, SchemeType schemeType);
 private slots:
 
     void on_actionAbout_triggered();

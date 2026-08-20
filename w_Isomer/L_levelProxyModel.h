@@ -1,59 +1,34 @@
-#ifndef L_LEVELPROXYMODEL_H
-#define L_LEVELPROXYMODEL_H
+#ifndef LEVELPROXYMODEL_H
+#define LEVELPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
+#include <QVector>
 
 class LevelProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
 public:
-    explicit LevelProxyModel(QObject *parent = nullptr)
-        : QSortFilterProxyModel(parent)
-    {}
+    explicit LevelProxyModel(QObject *parent = nullptr);
 
-    void setT12Column(int column)
-    {
-        m_t12Column = column;
-    }
+    void setT12Column(int column);
+    void setLEVEL_IDColumn(int column);
+    void setLEVELColumn(int column);
 
-    void setLEVEL_IDColumn(int column) {
-        m_LEVEL_IDcolumn = column;
-    }
+    // void clearShownLevels();
 
-    void setLEVELColumn(int column) {
-        m_LEVELColumn = column;
-    }
 
 protected:
     bool filterAcceptsRow(int sourceRow,
-                          const QModelIndex &parent) const override
-    {
-        int id = sourceModel()->index(sourceRow, m_LEVEL_IDcolumn).data().toInt();
-
-
-        /// ---------
-        /// ~~~~ THIS LOOP RUNS EXPONENTIALLY SLOWER AS YOU SCROLL TO LOAD MORE ROWS
-        for (int i = 0; i < sourceRow; ++i)
-        {
-            if (sourceModel()->index(i, m_LEVEL_IDcolumn).data().toInt() == id)
-                return false;
-        }
-        /// ---------
-
-        QModelIndex idT12 = sourceModel()->index(sourceRow, m_t12Column, parent);
-        QModelIndex idLEVEL = sourceModel()->index(sourceRow, m_LEVELColumn, parent);
-
-        return idT12.data().toDouble() >= 0.01 && idLEVEL.data().toDouble() > 0;
-
-        // QModelIndex idx = sourceModel()->index(sourceRow, m_t12Column, parent);
-        // return idx.data().toDouble() > 0.01;
-    }
+                          const QModelIndex &sourceParent) const override;
 
 private:
-    int m_t12Column;
-    int m_LEVELColumn;
-    int m_LEVEL_IDcolumn;
+    mutable QVector<int> shownLvlIDs;
+
+    int m_t12Column = -1;
+    int m_LEVELColumn = -1;
+    int m_LEVEL_IDcolumn = -1;
 };
 
-
-#endif // L_LEVELPROXYMODEL_H
+#endif // LEVELPROXYMODEL_H
