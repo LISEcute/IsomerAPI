@@ -33,7 +33,7 @@
       <item>
        <widget class="QRadioButton" name="rb_lvlSelected">
         <property name="text">
-         <string>Decays from selected level (WIP)</string>
+         <string>Decays from selected level</string>
         </property>
        </widget>
       </item>

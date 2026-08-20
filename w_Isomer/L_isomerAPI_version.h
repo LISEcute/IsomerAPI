@@ -143,4 +143,5 @@
 // Working "decay from selected level" draw schemes option
 // Updates to levelScheme window to handle multiple decay scheme types (for isotope, for level decay)
 // Fixes/failsafes added to transmissionCalc utility
+// UI tweaks to fix formatting of tables
 
