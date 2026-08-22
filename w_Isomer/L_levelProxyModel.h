@@ -3,7 +3,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
-#include <QVector>
+#include <QHash>
 
 class LevelProxyModel : public QSortFilterProxyModel
 {
@@ -15,6 +15,7 @@ public:
     void setT12Column(int column);
     void setLEVEL_IDColumn(int column);
     void setLEVELColumn(int column);
+    void rebuildCache();
 
     // void clearShownLevels();
 
@@ -24,7 +25,10 @@ protected:
                           const QModelIndex &sourceParent) const override;
 
 private:
-    mutable QVector<int> shownLvlIDs;
+    void ensureCache() const;
+
+    mutable QHash<int, int> m_firstLevelRows;
+    mutable int m_cachedRowCount = -1;
 
     int m_t12Column = -1;
     int m_LEVELColumn = -1;

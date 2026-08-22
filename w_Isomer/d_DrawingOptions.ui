@@ -25,18 +25,21 @@
         <property name="text">
          <string>Results from filtering</string>
         </property>
+       <property name="checked">
+         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="rb_lvlSelected">
+       <property name="text">
+        <string>Decays from selected level</string>
+       </property>
         <property name="checked">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="rb_lvlSelected">
-        <property name="text">
-         <string>Decays from selected level</string>
-        </property>
-       </widget>
-      </item>
+      </widget>
+     </item>
       <item>
        <widget class="QRadioButton" name="rb_gamSelected">
         <property name="text">

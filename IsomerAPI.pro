@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.3.22.0 # major.minor.patch.build
-else:VERSION  = 1.3.22   # major.minor.patch
+win32:VERSION = 1.4.2.0 # major.minor.patch.build
+else:VERSION  = 1.4.2   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -25,6 +25,18 @@ win32 {
 # important to eliminate some LISEcute functions in IsomerAPI project
 DEFINES += IsomerAPI_case
 
+# Debug trace switch:
+#   default: hide qDebug() output
+#   enable : run qmake with ISOMERAPI_DEBUG_TRACE=1
+isEmpty(ISOMERAPI_DEBUG_TRACE): ISOMERAPI_DEBUG_TRACE = 0
+equals(ISOMERAPI_DEBUG_TRACE, 1) {
+    DEFINES += ISOMERAPI_DEBUG_TRACE
+    message("IsomerAPI qDebug trace output enabled")
+} else {
+    DEFINES += QT_NO_DEBUG_OUTPUT
+    message("IsomerAPI qDebug trace output disabled")
+}
+
 # Sources
 SOURCES += \
     w_Isomer/L_levelProxyModel.cpp \
@@ -35,6 +47,9 @@ SOURCES += \
     w_Isomer/iso_main.cpp \
     w_Isomer/o_cacheLevelProxy.cpp \
     w_Isomer/w_IsomerAPI.cpp \
+    w_Isomer/w_IsomerAPI_drawing.cpp \
+    w_Isomer/w_IsomerAPI_filters.cpp \
+    w_Isomer/w_IsomerAPI_transmission.cpp \
     w_Isomer/w_aboutIsomerAPI.cpp \
     w_Isomer/w_schemeGraphic.cpp \
     w_Isomer/w_schemeWindow.cpp \
@@ -74,7 +89,8 @@ FORMS += \
     w_Isomer/w_schemeWindow.ui
 
 # Include path
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD \
+               $$PWD/../GLOBAL
 
 # Database file (tracked for IDE, packaging, etc.)
 # DISTFILES += database_store/Isomer_DB_WIDGET.sqlite

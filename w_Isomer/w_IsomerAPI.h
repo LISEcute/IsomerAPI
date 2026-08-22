@@ -68,6 +68,8 @@ private slots:
     void onRowSelected(QTableView *view);
     void clearSelection(int widgetIndex);
     bool checkSelection(int widgetIndex);
+    void fetchAllModelRows();
+    void setDefaultFilters();
 
 
 

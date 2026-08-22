@@ -46,13 +46,16 @@ int main(int argc, char *argv[])
 
     QString qssFilePath(":/w_Isomer/styles/mainstyle.qss");
     QFile file(qssFilePath);
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        QString styleSheet = QLatin1String(file.readAll());
-        app.setStyleSheet(styleSheet);  // SECOND
-        qDebug() << qssFilePath << "QSS loaded successfully.";
-    } else {
-        qDebug() << qssFilePath << "QSS load failed!";
-    }
+
+    if (file.open(QFile::ReadOnly | QFile::Text))
+        {
+            QString styleSheet = QLatin1String(file.readAll());
+            app.setStyleSheet(styleSheet);  // SECOND
+            qDebug() << qssFilePath << "QSS loaded successfully.";
+        }
+    else {
+            qDebug() << qssFilePath << "QSS load failed!";
+        }
 
     // QPalette palette;
     // palette.setColor(QPalette::Window, QColor(240, 245, 240)); // set window background color

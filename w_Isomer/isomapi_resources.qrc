@@ -9,6 +9,8 @@
         <file>Icons/plot.png</file>
         <file>Icons/trans.gif</file>
         <file>Icons/nndcLogo.png</file>
+        <file>Icons/gamma_decay2.png</file>
+        <file>Icons/gamma_decay3.png</file>
     </qresource>
     <qresource prefix="/cursor">
         <file alias="finger.cur">Icons/cursor/finger.cur</file>

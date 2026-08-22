@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.3.22"
-#define isomerAPI_date         "20-AUG-2026"
+#define isomerAPI_version      "1.4.2"
+#define isomerAPI_date         "22-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -145,3 +145,62 @@
 // Fixes/failsafes added to transmissionCalc utility
 // UI tweaks to fix formatting of tables
 
+//-----------------------------
+// 1.3.23          8/22/26  Oleg
+// Decay scheme icon has been changed
+
+//-----------------------------
+// 1.3.24          8/22/26  Oleg
+// Fixed filtered table display by fetching all SQL rows before proxy filtering
+// Startup view now opens on the Isomers-only table with A range 40-100
+
+//-----------------------------
+// 1.3.25          8/22/26  Oleg
+// Removed the unfiltered startup row fetch that could stall launch
+// Kept full row fetching only after the narrowed startup/user filters are applied
+
+//-----------------------------
+// 1.3.26          8/22/26  Oleg
+// Clear Filters now restores the bounded startup filter set instead of loading the full database
+// Empty filter applications are guarded to prevent full-table UI fetches
+
+//-----------------------------
+// 1.3.27          8/22/26  Oleg
+// Replaced duplicate-level proxy row scanning with a first-occurrence cache
+// Reduced startup and filter refresh time for the bounded isomer table
+
+//-----------------------------
+// 1.3.28          8/22/26  Oleg
+// Clear Filters now leaves filter cells empty and avoids loading the full database
+// Cleared view is held with an empty SQL result until the user applies new filters
+
+//-----------------------------
+// 1.3.29          8/22/26  Oleg
+// Drawing Options now defaults to Decays from selected level
+
+//-----------------------------
+// 1.3.30          8/22/26  Oleg
+// Added qmake switch ISOMERAPI_DEBUG_TRACE to hide or show qDebug trace output
+
+//-----------------------------
+// 1.3.31          8/22/26  Oleg
+// Added GLOBAL include path so clean builds compile shared utility sources
+// Rebuilt all objects with qDebug trace output disabled by default
+
+//-----------------------------
+// 1.3.32          8/22/26  Oleg
+// Split w_IsomerAPI.cpp into focused implementation files for drawing, filtering, and transmission logic
+
+//-----------------------------
+// 1.4.0           8/22/26  Oleg
+// Promoted release version after startup/filter performance, debug-trace, build, and source-organization updates
+// Added detailed Word documentation for modifications since 1.3.23
+
+//-----------------------------
+// 1.4.1           8/22/26  Oleg
+// Level scheme windows are now parented to IsomerAPI and close with the main application window
+
+//-----------------------------
+// 1.4.2           8/22/26  Oleg
+// Draw Scheme now always opens the plot choice dialog before plotting
+// Level scheme windows remain top-level windows while owned by the main IsomerAPI window

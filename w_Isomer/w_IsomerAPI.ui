@@ -31,7 +31,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_Gamma">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1352,7 +1352,13 @@
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
-           <normaloff>:/icons/Icons/plot.png</normaloff>:/icons/Icons/plot.png</iconset>
+           <normaloff>:/icons/Icons/gamma_decay3.png</normaloff>:/icons/Icons/gamma_decay3.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
        </item>

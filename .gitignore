@@ -9,5 +9,6 @@
 LibraryDebugConsole.*
 *.a
 *.lib
-
+*.py
 *.lnk
+/render*/
