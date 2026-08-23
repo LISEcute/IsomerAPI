@@ -1,4 +1,4 @@
-#include "w_Isomer/w_IsomerAPI.h"
+#include "g_Isomer/w_IsomerAPI.h"
 
 
 #include <QApplication>
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "[iso_main.cpp Home Path:]" << QDir::homePath();
 
-    QString qssFilePath(":/w_Isomer/styles/mainstyle.qss");
+    QString qssFilePath(":/g_Isomer/styles/mainstyle.qss");
     QFile file(qssFilePath);
 
     if (file.open(QFile::ReadOnly | QFile::Text))

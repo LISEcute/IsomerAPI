@@ -1,6 +1,6 @@
 #include "d_TransmissionCalc.h"
 #include "ui_d_TransmissionCalc.h"
-#include "w_Isomer/L_IsomerElement.h"
+#include "g_Isomer/L_IsomerElement.h"
 
 #include <QMessageBox>
 
