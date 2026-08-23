@@ -1,6 +1,6 @@
 #include "w_aboutIsomerAPI.h"
 #include "ui_w_aboutIsomerAPI.h"
-#include "w_Isomer/L_isomerAPI_version.h"
+#include "g_Isomer/L_isomerAPI_version.h"
 
 #include <QDesktopServices>
 

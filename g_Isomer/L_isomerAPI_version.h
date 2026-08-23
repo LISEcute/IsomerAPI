@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.2"
-#define isomerAPI_date         "22-AUG-2026"
+#define isomerAPI_version      "1.4.3"
+#define isomerAPI_date         "23-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -204,3 +204,7 @@
 // 1.4.2           8/22/26  Oleg
 // Draw Scheme now always opens the plot choice dialog before plotting
 // Level scheme windows remain top-level windows while owned by the main IsomerAPI window
+
+//-----------------------------
+// 1.4.3           8/23/26  Oleg
+// folder w_Isomer --> g_Isomer

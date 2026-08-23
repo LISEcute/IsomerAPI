@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.2.0 # major.minor.patch.build
-else:VERSION  = 1.4.2   # major.minor.patch
+win32:VERSION = 1.4.3.0 # major.minor.patch.build
+else:VERSION  = 1.4.3   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -39,20 +39,20 @@ equals(ISOMERAPI_DEBUG_TRACE, 1) {
 
 # Sources
 SOURCES += \
-    w_Isomer/L_levelProxyModel.cpp \
-    w_Isomer/d_ColumnsOptions.cpp \
-    w_Isomer/d_DownloadFiles.cpp \
-    w_Isomer/d_DrawingOptions.cpp \
-    w_Isomer/d_TransmissionCalc.cpp \
-    w_Isomer/iso_main.cpp \
-    w_Isomer/o_cacheLevelProxy.cpp \
-    w_Isomer/w_IsomerAPI.cpp \
-    w_Isomer/w_IsomerAPI_drawing.cpp \
-    w_Isomer/w_IsomerAPI_filters.cpp \
-    w_Isomer/w_IsomerAPI_transmission.cpp \
-    w_Isomer/w_aboutIsomerAPI.cpp \
-    w_Isomer/w_schemeGraphic.cpp \
-    w_Isomer/w_schemeWindow.cpp \
+    g_Isomer/L_levelProxyModel.cpp \
+    g_Isomer/d_ColumnsOptions.cpp \
+    g_Isomer/d_DownloadFiles.cpp \
+    g_Isomer/d_DrawingOptions.cpp \
+    g_Isomer/d_TransmissionCalc.cpp \
+    g_Isomer/iso_main.cpp \
+    g_Isomer/o_cacheLevelProxy.cpp \
+    g_Isomer/w_IsomerAPI.cpp \
+    g_Isomer/w_IsomerAPI_drawing.cpp \
+    g_Isomer/w_IsomerAPI_filters.cpp \
+    g_Isomer/w_IsomerAPI_transmission.cpp \
+    g_Isomer/w_aboutIsomerAPI.cpp \
+    g_Isomer/w_schemeGraphic.cpp \
+    g_Isomer/w_schemeWindow.cpp \
     w_Stuff/w_Label_clickable.cpp \
     w_Stuff/win_utilCalc.cpp \
     w_Stuff/win_utilPlot.cpp \
@@ -60,33 +60,33 @@ SOURCES += \
 
 # Headers
 HEADERS += \
-    w_Isomer/L_IsomerElement.h \
-    w_Isomer/L_gammaProxyModel.h \
-    w_Isomer/L_isoStructs.h \
-    w_Isomer/L_isomerAPI_version.h \
-    w_Isomer/L_levelProxyModel.h \
-    w_Isomer/d_ColumnsOptions.h \
-    w_Isomer/d_DownloadFiles.h \
-    w_Isomer/d_DrawingOptions.h \
-    w_Isomer/d_TransmissionCalc.h \
-    w_Isomer/o_cacheLevelProxy.h \
-    w_Isomer/w_IsomerAPI.h \
-    w_Isomer/w_aboutIsomerAPI.h \
-    w_Isomer/w_schemeGraphic.h \
-    w_Isomer/w_schemeWindow.h \
+    g_Isomer/L_IsomerElement.h \
+    g_Isomer/L_gammaProxyModel.h \
+    g_Isomer/L_isoStructs.h \
+    g_Isomer/L_isomerAPI_version.h \
+    g_Isomer/L_levelProxyModel.h \
+    g_Isomer/d_ColumnsOptions.h \
+    g_Isomer/d_DownloadFiles.h \
+    g_Isomer/d_DrawingOptions.h \
+    g_Isomer/d_TransmissionCalc.h \
+    g_Isomer/o_cacheLevelProxy.h \
+    g_Isomer/w_IsomerAPI.h \
+    g_Isomer/w_aboutIsomerAPI.h \
+    g_Isomer/w_schemeGraphic.h \
+    g_Isomer/w_schemeWindow.h \
     w_Stuff/liseStrcpyOS.h \
     w_Stuff/o_error_function.h \
     w_Stuff/w_Label_clickable.h
 
 # UI forms
 FORMS += \
-    w_Isomer/d_ColumnsOptions.ui \
-    w_Isomer/d_DownloadFiles.ui \
-    w_Isomer/d_DrawingOptions.ui \
-    w_Isomer/d_TransmissionCalc.ui \
-    w_Isomer/w_IsomerAPI.ui \
-    w_Isomer/w_aboutIsomerAPI.ui \
-    w_Isomer/w_schemeWindow.ui
+    g_Isomer/d_ColumnsOptions.ui \
+    g_Isomer/d_DownloadFiles.ui \
+    g_Isomer/d_DrawingOptions.ui \
+    g_Isomer/d_TransmissionCalc.ui \
+    g_Isomer/w_IsomerAPI.ui \
+    g_Isomer/w_aboutIsomerAPI.ui \
+    g_Isomer/w_schemeWindow.ui
 
 # Include path
 INCLUDEPATH += $$PWD \
@@ -117,14 +117,14 @@ INCLUDEPATH += $$PWD \
 #     mainstyle_light.qss
 
 RESOURCES += \
-    w_Isomer/isomapi_resources.qrc
+    g_Isomer/isomapi_resources.qrc
 
 DISTFILES += \
        _install/lisecfg/nndc_DB_fullScan.sqlite \
-       w_Isomer/Icons/IsomerAPI_icon.ico
+       g_Isomer/Icons/IsomerAPI_icon.ico
 
 RC_ICONS +=  \
-       w_Isomer/Icons/IsomerAPI_icon.ico
+       g_Isomer/Icons/IsomerAPI_icon.ico
 
 
 

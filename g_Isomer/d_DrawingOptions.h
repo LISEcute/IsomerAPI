@@ -6,6 +6,7 @@
 namespace Ui {
 class drawingChoiceDlg;
 }
+//WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
 class drawingChoiceDlg : public QDialog
 {
