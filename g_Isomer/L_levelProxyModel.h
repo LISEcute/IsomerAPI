@@ -24,6 +24,8 @@ protected:
     bool filterAcceptsRow(int sourceRow,
                           const QModelIndex &sourceParent) const override;
 
+    void fetchMore(const QModelIndex &parent) override;
+
 private:
     void ensureCache() const;
 
