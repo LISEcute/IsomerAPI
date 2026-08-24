@@ -1,4 +1,4 @@
-#define isomerAPI_version      "1.4.4"
+#define isomerAPI_version      "1.4.5"
 #define isomerAPI_date         "24-AUG-2026"
 
 //-----------------------------
@@ -212,3 +212,10 @@
 //-----------------------------
 // 1.4.4           8/24/26  Hudson
 // fixed compilation issues with stylesheet, Constant.h, and L_levelProxyModel
+
+//-----------------------------
+// 1.4.5           8/24/26  Hudson
+// fixed issue with opening NNDC data for the decay from levels plots
+// added WIP to Save As... option since still not working
+
+

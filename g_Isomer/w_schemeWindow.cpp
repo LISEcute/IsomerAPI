@@ -31,6 +31,7 @@ LevelScheme::LevelScheme(const SchemeMap& schemeMap,
     resize(800,800);
     qDebug() << _filterQuery << _path;
 
+
     ui->graphicsView->setScene(scene);
 
     makeActions();
@@ -250,33 +251,44 @@ void LevelScheme::makeActions(){
     // connect(CmPrintWholeAction, SIGNAL(triggered()),this, SLOT(CmPrintWhole()));
     // CmPrintWholeAction->setIcon(QIcon(":/plottool/print10.gif"));
     // CmPrintWholeAction->setToolTip("Print whole page, portrait");
+    QStringList sepTitle = this->windowTitle().split(" ");
+    QString isoName = sepTitle.value(1);
+
+
 
     act_openNNDC_LVLS = new QAction(tr("act_openNNDC_LVLS"),this);
     // toolbar->addAction(act_openNNDC_LVLS);
-    connect(act_openNNDC_LVLS, &QAction::triggered,this,[this](){
-        QStringList sepTitle = this->windowTitle().split(" ");
-        QString isoName = sepTitle.last();
+    connect(act_openNNDC_LVLS, &QAction::triggered,this,[this,isoName](){
+        QStringList sepTitle = this->windowTitle().split(" - ");
+        QString isoName = sepTitle.value(1);
         openNNDC(isoName, "LVLS");
+
     });
     act_openNNDC_LVLS->setText("Open NNDC Records");
     act_openNNDC_LVLS->setToolTip("Open NNDC Data for Current Isotope");
 
+
+
     act_openNNDC_SCHEME = new QAction(tr("act_openNNDC_SCHEME"),this);
     // toolbar->addAction(act_openNNDC_LVLS);
-    connect(act_openNNDC_SCHEME, &QAction::triggered,this,[this](){
-        QStringList sepTitle = this->windowTitle().split(" ");
-        QString isoName = sepTitle.last();
+    connect(act_openNNDC_SCHEME, &QAction::triggered,this,[this,isoName](){
+        QStringList sepTitle = this->windowTitle().split(" - ");
+        QString isoName = sepTitle.value(1);
+
         openNNDC(isoName, "SCHEME");
     });
     act_openNNDC_SCHEME->setText("Open NNDC Scheme");
     act_openNNDC_SCHEME->setToolTip("Open NNDC Scheme for Current Isotope");
 
 
+
+
     act_openNNDC_betaSCHEME = new QAction(tr("act_openNNDC_betaSCHEME"),this);
     // toolbar->addAction(act_openNNDC_LVLS);
-    connect(act_openNNDC_betaSCHEME, &QAction::triggered,this,[this](){
-        QStringList sepTitle = this->windowTitle().split(" ");
-        QString isoName = sepTitle.last();
+    connect(act_openNNDC_betaSCHEME, &QAction::triggered,this,[this,isoName](){
+        QStringList sepTitle = this->windowTitle().split(" - ");
+        QString isoName = sepTitle.value(1);
+
         openNNDC(isoName, "betaSCHEME");
     });
     act_openNNDC_betaSCHEME->setText("Open NNDC Scheme (beta)");
