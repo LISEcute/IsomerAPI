@@ -217,5 +217,3 @@
 // 1.4.5           8/24/26  Hudson
 // fixed issue with opening NNDC data for the decay from levels plots
 // added WIP to Save As... option since still not working
-
-
