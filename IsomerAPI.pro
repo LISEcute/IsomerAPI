@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.3.0 # major.minor.patch.build
-else:VERSION  = 1.4.3   # major.minor.patch
+win32:VERSION = 1.4.4.0 # major.minor.patch.build
+else:VERSION  = 1.4.4   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -60,6 +60,7 @@ SOURCES += \
 
 # Headers
 HEADERS += \
+    L_Init/Constant.h \
     g_Isomer/L_IsomerElement.h \
     g_Isomer/L_gammaProxyModel.h \
     g_Isomer/L_isoStructs.h \

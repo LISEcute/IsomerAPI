@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
     QString qssFilePath(":/g_Isomer/styles/mainstyle.qss");
     QFile file(qssFilePath);
 
+
     if (file.open(QFile::ReadOnly | QFile::Text))
         {
             QString styleSheet = QLatin1String(file.readAll());

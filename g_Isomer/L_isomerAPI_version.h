@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.3"
-#define isomerAPI_date         "23-AUG-2026"
+#define isomerAPI_version      "1.4.4"
+#define isomerAPI_date         "24-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -208,3 +208,7 @@
 //-----------------------------
 // 1.4.3           8/23/26  Oleg
 // folder w_Isomer --> g_Isomer
+
+//-----------------------------
+// 1.4.4           8/24/26  Hudson
+// fixed compilation issues with stylesheet, Constant.h, and L_levelProxyModel

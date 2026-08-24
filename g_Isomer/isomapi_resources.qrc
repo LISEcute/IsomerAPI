@@ -16,7 +16,7 @@
         <file alias="finger.cur">Icons/cursor/finger.cur</file>
         <file alias="lise.cur">Icons/cursor/lise.cur</file>
     </qresource>
-    <qresource prefix="/w_Isomer">
+    <qresource prefix="/g_Isomer">
         <file>styles/mainstyle.qss</file>
     </qresource>
 </RCC>
