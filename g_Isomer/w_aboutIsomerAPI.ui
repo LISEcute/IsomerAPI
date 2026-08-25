@@ -56,7 +56,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="isomapi_resources.qrc">:/icons/Icons/isomerAPI-Logo.png</pixmap>
+        <pixmap resource="isomapi_resources.qrc">:/Icons/isomerAPI-Logo.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -115,7 +115,7 @@ margin-bottom:0;</string>
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="isomapi_resources.qrc">:/icons/Icons/isomerAPI-Logo.png</pixmap>
+        <pixmap resource="isomapi_resources.qrc">:/Icons/isomerAPI-Logo.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -307,7 +307,7 @@ color: rgb(210, 210, 210);</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="isomapi_resources.qrc">:/icons/Icons/emblem_little_plus.png</pixmap>
+         <pixmap resource="isomapi_resources.qrc">:/Icons/emblem_little_plus.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>false</bool>

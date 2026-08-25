@@ -1,22 +1,20 @@
 <RCC>
-    <qresource prefix="/icons">
-        <file>Icons/emblem_little_plus.png</file>
-        <file>Icons/isomerAPI-Logo.png</file>
-        <file>Icons/lisepp_small.bmp</file>
-        <file>Icons/IsomerAPI_icon.ico</file>
-        <file>Icons/clear.gif</file>
-        <file>Icons/clear.png</file>
-        <file>Icons/plot.png</file>
-        <file>Icons/trans.gif</file>
-        <file>Icons/nndcLogo.png</file>
-        <file>Icons/gamma_decay2.png</file>
-        <file>Icons/gamma_decay3.png</file>
-    </qresource>
-    <qresource prefix="/cursor">
-        <file alias="finger.cur">Icons/cursor/finger.cur</file>
-        <file alias="lise.cur">Icons/cursor/lise.cur</file>
-    </qresource>
-    <qresource prefix="/g_Isomer">
-        <file>styles/mainstyle.qss</file>
+    <qresource prefix="/">
+        <file>../styles/mainstyle.qss</file>
+        <file>../styles/mainstyle_dark.qss</file>
+        <file>../styles/mainstyle_light.qss</file>
+        <file>../Icons/clear.gif</file>
+        <file>../Icons/clear.png</file>
+        <file>../Icons/emblem_little_plus.png</file>
+        <file>../Icons/gamma_decay2.png</file>
+        <file>../Icons/gamma_decay3.png</file>
+        <file>../Icons/IsomerAPI_icon.ico</file>
+        <file>../Icons/isomerAPI-Logo.png</file>
+        <file>../Icons/lisepp_small.bmp</file>
+        <file>../Icons/nndcLogo.png</file>
+        <file>../Icons/plot.png</file>
+        <file>../Icons/trans.gif</file>
+        <file>../Icons/cursor/finger.cur</file>
+        <file>../Icons/cursor/lise.cur</file>
     </qresource>
 </RCC>

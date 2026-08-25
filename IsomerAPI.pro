@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.5.0 # major.minor.patch.build
-else:VERSION  = 1.4.5   # major.minor.patch
+win32:VERSION = 1.4.6.0 # major.minor.patch.build
+else:VERSION  = 1.4.6   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -121,6 +121,17 @@ RESOURCES += \
     g_Isomer/isomapi_resources.qrc
 
 DISTFILES += \
+       Icons/IsomerAPI_icon.ico \
+       Icons/clear.gif \
+       Icons/clear.png \
+       Icons/emblem_little_plus.png \
+       Icons/gamma_decay2.png \
+       Icons/gamma_decay3.png \
+       Icons/isomerAPI-Logo.png \
+       Icons/lisepp_small.bmp \
+       Icons/nndcLogo.png \
+       Icons/plot.png \
+       Icons/trans.gif \
        _install/lisecfg/nndc_DB_fullScan.sqlite \
        g_Isomer/Icons/IsomerAPI_icon.ico
 

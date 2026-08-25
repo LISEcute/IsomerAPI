@@ -14,7 +14,7 @@
    <string>IsomerAPI</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="isomapi_resources.qrc">
+   <iconset>
     <normaloff>:/icons/Icons/isomerAPI-Logo.png</normaloff>:/icons/Icons/isomerAPI-Logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -855,11 +855,32 @@
           </item>
           <item row="0" column="1">
            <widget class="QLineEdit" name="le_T121">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -875,11 +896,32 @@
           </item>
           <item row="2" column="3">
            <widget class="QLineEdit" name="le_FINE2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -905,41 +947,125 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="le_GE1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="le_FINE1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="3">
            <widget class="QLineEdit" name="le_T122">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="le_GE2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="inputMethodHints">
              <set>Qt::InputMethodHint::ImhPreferNumbers</set>
             </property>
             <property name="alignment">
              <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -1060,6 +1186,9 @@
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item row="0" column="2" colspan="3">
@@ -1091,6 +1220,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -1151,6 +1283,9 @@
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item row="2" column="2">
@@ -1170,6 +1305,9 @@
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item row="2" column="4">
@@ -1188,6 +1326,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -1220,6 +1361,9 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -1303,7 +1447,7 @@
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
-           <normaloff>:/icons/Icons/trans.gif</normaloff>:/icons/Icons/trans.gif</iconset>
+           <normaloff>:/Icons/trans.gif</normaloff>:/Icons/trans.gif</iconset>
          </property>
         </widget>
        </item>
@@ -1329,7 +1473,7 @@
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
-           <normaloff>:/icons/Icons/clear.gif</normaloff>:/icons/Icons/clear.gif</iconset>
+           <normaloff>:/Icons/clear.gif</normaloff>:/Icons/clear.gif</iconset>
          </property>
         </widget>
        </item>
@@ -1355,7 +1499,7 @@
          </property>
          <property name="icon">
           <iconset resource="isomapi_resources.qrc">
-           <normaloff>:/icons/Icons/gamma_decay3.png</normaloff>:/icons/Icons/gamma_decay3.png</iconset>
+           <normaloff>:/Icons/gamma_decay3.png</normaloff>:/Icons/gamma_decay3.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -1425,7 +1569,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="isomapi_resources.qrc">
-     <normaloff>:/icons/Icons/IsomerAPI_icon.ico</normaloff>:/icons/Icons/IsomerAPI_icon.ico</iconset>
+     <normaloff>:/Icons/IsomerAPI_icon.ico</normaloff>:/Icons/IsomerAPI_icon.ico</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>

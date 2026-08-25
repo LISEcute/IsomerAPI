@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.5"
-#define isomerAPI_date         "24-AUG-2026"
+#define isomerAPI_version      "1.4.6"
+#define isomerAPI_date         "25-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -217,3 +217,9 @@
 // 1.4.5           8/24/26  Hudson
 // fixed issue with opening NNDC data for the decay from levels plots
 // added WIP to Save As... option since still not working
+
+//-----------------------------
+// 1.4.6           8/25/26  Hudson
+// moved styles and icons up a level for integration with LISE++
+// edited headers for uncertainties in tables
+// fixed isomCount being wrong

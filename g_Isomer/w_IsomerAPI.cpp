@@ -136,9 +136,9 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   QMap<QString, QString> headerMap = {
       {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
-      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67 (keV)"},
-      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082 (\u03BCs)"},
-      {"LEVEL","E\u2097\u1D65\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u1D65\u2097 (keV)"},
+      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67"},
+      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082"},
+      {"LEVEL","E\u2097\u1D65\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u1D65\u2097"},
       {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
       {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
       {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},

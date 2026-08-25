@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "[iso_main.cpp Home Path:]" << QDir::homePath();
 
-    QString qssFilePath(":/g_Isomer/styles/mainstyle.qss");
+    QString qssFilePath(":/styles/mainstyle.qss");
     QFile file(qssFilePath);
 
 

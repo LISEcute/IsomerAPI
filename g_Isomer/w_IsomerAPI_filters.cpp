@@ -13,9 +13,9 @@ void IsomerAPI::statRefresh()
 {
   qDebug();
 
-  queryStr = "SELECT COUNT(DISTINCT LEVEL_ID) FROM Isomers WHERE T12 >= 0.01 AND LEVEL != 0";
-
-  QVariant isomCount = queryModel(queryStr);
+  // queryStr = "SELECT COUNT(DISTINCT LEVEL_ID) FROM Isomers WHERE T12 >= 0.01 AND LEVEL != 0";
+  // QVariant isomCount = queryModel(queryStr);
+  int isomCount = levelProxy->rowCount();
 
   queryStr = "SELECT MIN(E_GAMMA) FROM Isomers";
   QVariant minGamma = queryModel(queryStr);
@@ -30,7 +30,7 @@ void IsomerAPI::statRefresh()
   QVariant maxT12 = queryModel(queryStr);
 
 
-  ui->le_isomerCounts->setText(isomCount.toString());
+  ui->le_isomerCounts->setText(QString::number(isomCount));
   ui->le_isotopeCounts->setText(QString::number(filteredIsotopes.size()));
 
   ui->le_lowGammaSum->setText(minGamma.toString());
@@ -55,8 +55,9 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
       // qDebug() << "[queryModel: TRIGGERED empty query]";
     }
   if (query.exec(fullQuery) && query.next()) {
-      // qDebug() << "[queryModel: exec, fullQuery value]" << fullQuery;
-      // qDebug() << "[queryModel -- query value]" << query.value(0);
+      qDebug() << "[queryModel: exec, fullQuery value]" << fullQuery;
+      qDebug() << "[queryModel -- query value]" << query.value(0);
+      qDebug();
       return {query.value(0)};
   } else {
       qDebug() << "[queryModel: NO EXECUTION]" << query.lastError().text();
@@ -235,6 +236,7 @@ void IsomerAPI::applyFilters()
 
 
   modelFull->setFilter(filterExpr);
+  qDebug() << "[applyFilters: check filterExpr]" << filterExpr;
   if (!modelFull->select()) {
       qWarning() << modelFull->lastError().text();
       return;
@@ -365,12 +367,12 @@ QMap<QPair<int,int>,Isotope> IsomerAPI::prepData()
       Level* levelPtr = nullptr;
 
       // ~~~~~ check for level nearness -- later include customization of plots based on diff
-      for (Level& lvl : iso.levels) {
-          if (qFuzzyCompare(lvl.lvlEnergy + 1.0, tmpLevelE + 1.0)) {
-              levelPtr = &lvl;
-              break;
-          }
-      }
+      // for (Level& lvl : iso.levels) {
+      //     if (qFuzzyCompare(lvl.lvlEnergy + 1.0, tmpLevelE + 1.0)) {
+      //         levelPtr = &lvl;
+      //         break;
+      //     }
+      // }
 
       // ~~~~~ if no near levels, make new entry -- watch for level skipping!!
       if (!levelPtr) {
