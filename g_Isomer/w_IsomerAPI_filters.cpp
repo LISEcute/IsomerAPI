@@ -47,6 +47,7 @@ QVariant IsomerAPI::queryModel(const QString &queryRequest)
   QString fullQuery = queryRequest;
   QString filter = modelFull->filter(); // ``` model full attempt
   // qDebug() << "[queryModel FILTER VALUE]" << filter;
+
   if (!filter.isEmpty()) {
       if (fullQuery.contains("WHERE", Qt::CaseInsensitive))
           fullQuery += " AND " + filter;

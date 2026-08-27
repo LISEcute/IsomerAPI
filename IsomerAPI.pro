@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.6.0 # major.minor.patch.build
-else:VERSION  = 1.4.6   # major.minor.patch
+win32:VERSION = 1.4.7.0 # major.minor.patch.build
+else:VERSION  = 1.4.7   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -132,11 +132,11 @@ DISTFILES += \
        Icons/nndcLogo.png \
        Icons/plot.png \
        Icons/trans.gif \
-       _install/lisecfg/nndc_DB_fullScan.sqlite \
-       g_Isomer/Icons/IsomerAPI_icon.ico
+       Icons/IsomerAPI_icon.ico \
+       _install/lisecfg/nndc_DB_fullScan.sqlite
 
 RC_ICONS +=  \
-       g_Isomer/Icons/IsomerAPI_icon.ico
+       Icons/IsomerAPI_icon.ico
 
 
 

@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.6"
-#define isomerAPI_date         "25-AUG-2026"
+#define isomerAPI_version      "1.4.7"
+#define isomerAPI_date         "27-AUG-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -222,4 +222,8 @@
 // 1.4.6           8/25/26  Hudson
 // moved styles and icons up a level for integration with LISE++
 // edited headers for uncertainties in tables
-// fixed isomCount being wrong
+// fixed isomCount displaying wrong  incorrectly
+
+//-----------------------------
+// 1.4.7           8/25/26  Hudson
+// fixed compilation error from resource file/project file building old files
