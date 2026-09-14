@@ -71,6 +71,7 @@ HEADERS += \
     g_Isomer/d_DrawingOptions.h \
     g_Isomer/d_TransmissionCalc.h \
     g_Isomer/o_cacheLevelProxy.h \
+    g_Isomer/tmp.h \
     g_Isomer/w_IsomerAPI.h \
     g_Isomer/w_aboutIsomerAPI.h \
     g_Isomer/w_schemeGraphic.h \
