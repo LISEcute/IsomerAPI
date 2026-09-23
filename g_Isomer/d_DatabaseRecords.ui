@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DatabaseRecordsDialog</class>
+ <widget class="QDialog" name="DatabaseRecordsDialog">
+  <property name="geometry"><rect><x>0</x><y>0</y><width>1100</width><height>750</height></rect></property>
+  <property name="windowTitle"><string>Isomer database records</string></property>
+  <layout class="QVBoxLayout" name="mainLayout" stretch="0,0,1,2,0">
+   <item><widget class="QLabel" name="helpLabel"><property name="text"><string>Add Record opens a blank entry; fill it in and click Add to Database. Select an existing record and click Save to update it. Level energy, spin, half-life and IT ratio are shared by all transitions with the same LEVEL_ID. FINAL_LEVEL_ID may be blank if unknown.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+   <item><widget class="QLabel" name="statusLabel"><property name="text"><string>Select a record to edit or delete, or click Add Record to enter a new one.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+   <item><widget class="QTableView" name="recordsTable"><property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property><property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property><property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property></widget></item>
+   <item><widget class="QScrollArea" name="fieldsScrollArea"><property name="widgetResizable"><bool>true</bool></property>
+    <widget class="QWidget" name="fieldsWidget"><layout class="QFormLayout" name="fieldsLayout">
+     <item row="0" column="0"><widget class="QLabel" name="label_INDEX_IT"><property name="text"><string>INDEX_IT</string></property><property name="buddy"><cstring>record_INDEX_IT</cstring></property></widget></item>
+     <item row="0" column="1"><widget class="QLineEdit" name="record_INDEX_IT"><property name="readOnly"><bool>true</bool></property></widget></item>
+     <item row="1" column="0"><widget class="QLabel" name="label_A_IT"><property name="text"><string>A_IT</string></property><property name="buddy"><cstring>record_A_IT</cstring></property></widget></item>
+     <item row="1" column="1"><widget class="QLineEdit" name="record_A_IT"></widget></item>
+     <item row="2" column="0"><widget class="QLabel" name="label_Z_IT"><property name="text"><string>Z_IT</string></property><property name="buddy"><cstring>record_Z_IT</cstring></property></widget></item>
+     <item row="2" column="1"><widget class="QLineEdit" name="record_Z_IT"></widget></item>
+     <item row="3" column="0"><widget class="QLabel" name="label_E_GAMMA"><property name="text"><string>E_GAMMA</string></property><property name="buddy"><cstring>record_E_GAMMA</cstring></property></widget></item>
+     <item row="3" column="1"><widget class="QLineEdit" name="record_E_GAMMA"></widget></item>
+     <item row="4" column="0"><widget class="QLabel" name="label_D_EG"><property name="text"><string>D_EG</string></property><property name="buddy"><cstring>record_D_EG</cstring></property></widget></item>
+     <item row="4" column="1"><widget class="QLineEdit" name="record_D_EG"></widget></item>
+     <item row="5" column="0"><widget class="QLabel" name="label_IT_RATIO"><property name="text"><string>IT_RATIO</string></property><property name="buddy"><cstring>record_IT_RATIO</cstring></property></widget></item>
+     <item row="5" column="1"><widget class="QLineEdit" name="record_IT_RATIO"></widget></item>
+     <item row="6" column="0"><widget class="QLabel" name="label_D_IT_RATIO"><property name="text"><string>D_IT_RATIO</string></property><property name="buddy"><cstring>record_D_IT_RATIO</cstring></property></widget></item>
+     <item row="6" column="1"><widget class="QLineEdit" name="record_D_IT_RATIO"></widget></item>
+     <item row="7" column="0"><widget class="QLabel" name="label_T12"><property name="text"><string>T12</string></property><property name="buddy"><cstring>record_T12</cstring></property></widget></item>
+     <item row="7" column="1"><widget class="QLineEdit" name="record_T12"></widget></item>
+     <item row="8" column="0"><widget class="QLabel" name="label_D_T12"><property name="text"><string>D_T12</string></property><property name="buddy"><cstring>record_D_T12</cstring></property></widget></item>
+     <item row="8" column="1"><widget class="QLineEdit" name="record_D_T12"></widget></item>
+     <item row="9" column="0"><widget class="QLabel" name="label_LEVEL"><property name="text"><string>LEVEL</string></property><property name="buddy"><cstring>record_LEVEL</cstring></property></widget></item>
+     <item row="9" column="1"><widget class="QLineEdit" name="record_LEVEL"></widget></item>
+     <item row="10" column="0"><widget class="QLabel" name="label_D_LEVEL"><property name="text"><string>D_LEVEL</string></property><property name="buddy"><cstring>record_D_LEVEL</cstring></property></widget></item>
+     <item row="10" column="1"><widget class="QLineEdit" name="record_D_LEVEL"></widget></item>
+     <item row="11" column="0"><widget class="QLabel" name="label_JPI"><property name="text"><string>JPI</string></property><property name="buddy"><cstring>record_JPI</cstring></property></widget></item>
+     <item row="11" column="1"><widget class="QLineEdit" name="record_JPI"></widget></item>
+     <item row="12" column="0"><widget class="QLabel" name="label_I_GAMMA"><property name="text"><string>I_GAMMA</string></property><property name="buddy"><cstring>record_I_GAMMA</cstring></property></widget></item>
+     <item row="12" column="1"><widget class="QLineEdit" name="record_I_GAMMA"></widget></item>
+     <item row="13" column="0"><widget class="QLabel" name="label_D_IG"><property name="text"><string>D_IG</string></property><property name="buddy"><cstring>record_D_IG</cstring></property></widget></item>
+     <item row="13" column="1"><widget class="QLineEdit" name="record_D_IG"></widget></item>
+     <item row="14" column="0"><widget class="QLabel" name="label_M_GAMMA"><property name="text"><string>M_GAMMA</string></property><property name="buddy"><cstring>record_M_GAMMA</cstring></property></widget></item>
+     <item row="14" column="1"><widget class="QLineEdit" name="record_M_GAMMA"></widget></item>
+     <item row="15" column="0"><widget class="QLabel" name="label_M_RATIO"><property name="text"><string>M_RATIO</string></property><property name="buddy"><cstring>record_M_RATIO</cstring></property></widget></item>
+     <item row="15" column="1"><widget class="QLineEdit" name="record_M_RATIO"></widget></item>
+     <item row="16" column="0"><widget class="QLabel" name="label_D_MRATIO"><property name="text"><string>D_MRATIO</string></property><property name="buddy"><cstring>record_D_MRATIO</cstring></property></widget></item>
+     <item row="16" column="1"><widget class="QLineEdit" name="record_D_MRATIO"></widget></item>
+     <item row="17" column="0"><widget class="QLabel" name="label_CONV"><property name="text"><string>CONV</string></property><property name="buddy"><cstring>record_CONV</cstring></property></widget></item>
+     <item row="17" column="1"><widget class="QLineEdit" name="record_CONV"></widget></item>
+     <item row="18" column="0"><widget class="QLabel" name="label_D_CONV"><property name="text"><string>D_CONV</string></property><property name="buddy"><cstring>record_D_CONV</cstring></property></widget></item>
+     <item row="18" column="1"><widget class="QLineEdit" name="record_D_CONV"></widget></item>
+     <item row="19" column="0"><widget class="QLabel" name="label_SOURCE"><property name="text"><string>SOURCE</string></property><property name="buddy"><cstring>record_SOURCE</cstring></property></widget></item>
+     <item row="19" column="1"><widget class="QLineEdit" name="record_SOURCE"></widget></item>
+     <item row="20" column="0"><widget class="QLabel" name="label_NAME"><property name="text"><string>NAME</string></property><property name="buddy"><cstring>record_NAME</cstring></property></widget></item>
+     <item row="20" column="1"><widget class="QLineEdit" name="record_NAME"></widget></item>
+     <item row="21" column="0"><widget class="QLabel" name="label_ROW"><property name="text"><string>ROW</string></property><property name="buddy"><cstring>record_ROW</cstring></property></widget></item>
+     <item row="21" column="1"><widget class="QLineEdit" name="record_ROW"><property name="readOnly"><bool>true</bool></property></widget></item>
+     <item row="22" column="0"><widget class="QLabel" name="label_LEVEL_ID"><property name="text"><string>LEVEL_ID</string></property><property name="buddy"><cstring>record_LEVEL_ID</cstring></property></widget></item>
+     <item row="22" column="1"><widget class="QLineEdit" name="record_LEVEL_ID"></widget></item>
+     <item row="23" column="0"><widget class="QLabel" name="label_GAMMA_ID"><property name="text"><string>GAMMA_ID</string></property><property name="buddy"><cstring>record_GAMMA_ID</cstring></property></widget></item>
+     <item row="23" column="1"><widget class="QLineEdit" name="record_GAMMA_ID"><property name="readOnly"><bool>true</bool></property></widget></item>
+     <item row="24" column="0"><widget class="QLabel" name="label_FINAL_LEVEL_ID"><property name="text"><string>FINAL_LEVEL_ID</string></property><property name="buddy"><cstring>record_FINAL_LEVEL_ID</cstring></property></widget></item>
+     <item row="24" column="1"><widget class="QLineEdit" name="record_FINAL_LEVEL_ID"></widget></item>
+    </layout></widget>
+   </widget></item>
+   <item><layout class="QHBoxLayout" name="buttonsLayout">
+    <item><spacer name="buttonsSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+    <item><widget class="QPushButton" name="saveButton"><property name="minimumSize"><size><width>125</width><height>36</height></size></property><property name="text"><string>Save</string></property><property name="autoDefault"><bool>false</bool></property></widget></item>
+    <item><widget class="QPushButton" name="addButton"><property name="minimumSize"><size><width>125</width><height>36</height></size></property><property name="text"><string>Add Record</string></property><property name="autoDefault"><bool>false</bool></property></widget></item>
+    <item><widget class="QPushButton" name="insertButton"><property name="minimumSize"><size><width>125</width><height>36</height></size></property><property name="text"><string>Add to Database</string></property><property name="autoDefault"><bool>false</bool></property></widget></item>
+    <item><widget class="QPushButton" name="deleteButton"><property name="minimumSize"><size><width>125</width><height>36</height></size></property><property name="text"><string>Delete</string></property><property name="autoDefault"><bool>false</bool></property></widget></item>
+    <item><widget class="QPushButton" name="closeButton"><property name="minimumSize"><size><width>125</width><height>36</height></size></property><property name="text"><string>Close</string></property><property name="autoDefault"><bool>false</bool></property></widget></item>
+   </layout></item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>record_INDEX_IT</tabstop>
+  <tabstop>record_A_IT</tabstop>
+  <tabstop>record_Z_IT</tabstop>
+  <tabstop>record_E_GAMMA</tabstop>
+  <tabstop>record_D_EG</tabstop>
+  <tabstop>record_IT_RATIO</tabstop>
+  <tabstop>record_D_IT_RATIO</tabstop>
+  <tabstop>record_T12</tabstop>
+  <tabstop>record_D_T12</tabstop>
+  <tabstop>record_LEVEL</tabstop>
+  <tabstop>record_D_LEVEL</tabstop>
+  <tabstop>record_JPI</tabstop>
+  <tabstop>record_I_GAMMA</tabstop>
+  <tabstop>record_D_IG</tabstop>
+  <tabstop>record_M_GAMMA</tabstop>
+  <tabstop>record_M_RATIO</tabstop>
+  <tabstop>record_D_MRATIO</tabstop>
+  <tabstop>record_CONV</tabstop>
+  <tabstop>record_D_CONV</tabstop>
+  <tabstop>record_SOURCE</tabstop>
+  <tabstop>record_NAME</tabstop>
+  <tabstop>record_ROW</tabstop>
+  <tabstop>record_LEVEL_ID</tabstop>
+  <tabstop>record_GAMMA_ID</tabstop>
+  <tabstop>record_FINAL_LEVEL_ID</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>insertButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>closeButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

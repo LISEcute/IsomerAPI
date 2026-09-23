@@ -49,6 +49,7 @@ SOURCES += \
     g_Isomer/w_IsomerAPI.cpp \
     g_Isomer/w_IsomerAPI_drawing.cpp \
     g_Isomer/w_IsomerAPI_filters.cpp \
+    g_Isomer/w_IsomerAPI_records.cpp \
     g_Isomer/w_IsomerAPI_transmission.cpp \
     g_Isomer/w_aboutIsomerAPI.cpp \
     g_Isomer/w_schemeGraphic.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
 # UI forms
 FORMS += \
     g_Isomer/d_ColumnsOptions.ui \
+    g_Isomer/d_DatabaseRecords.ui \
     g_Isomer/d_DownloadFiles.ui \
     g_Isomer/d_DrawingOptions.ui \
     g_Isomer/d_TransmissionCalc.ui \

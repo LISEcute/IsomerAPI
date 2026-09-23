@@ -18,6 +18,7 @@
 #include <QFileDialog>
 #include <QShortcut>
 #include <QTextStream>
+#include <QToolBar>
 
 // #include "L_Init/declare_IsomerAPI.h"
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
@@ -48,6 +49,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   dbIsomLevel = QSqlDatabase::addDatabase("QSQLITE","IsomDB");
   // point to external IsomDb in LISE
   dbIsomLevel.setDatabaseName(dbPath);
+  dbIsomLevel.setConnectOptions("QSQLITE_BUSY_TIMEOUT=3000");
   // dbIsomLevel.open();
 
   if(!dbIsomLevel.open()){
@@ -320,6 +322,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->actionIsomers,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->actionGammas,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(0);});
   connect(ui->actionDevelopment_View,&QAction::triggered,this,[this](){ui->stackedWidget->setCurrentIndex(3);});
+  connect(ui->actionEdit_Records,&QAction::triggered, this, &IsomerAPI::editDatabaseRecords);
 
   connect(ui->actionClear_Selection,&QAction::triggered,this,[this](){
       int page = ui->stackedWidget->currentIndex();

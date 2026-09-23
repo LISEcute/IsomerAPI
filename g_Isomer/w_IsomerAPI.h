@@ -50,6 +50,7 @@ public:
 
     QTableView *getTableView(int page, SchemeType schemeType);
 private slots:
+    void editDatabaseRecords();
 
     void on_actionAbout_triggered();
     void on_actionSave_As_triggered();

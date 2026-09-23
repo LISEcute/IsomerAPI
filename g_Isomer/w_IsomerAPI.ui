@@ -1543,7 +1543,7 @@
      <addaction name="actionDevelopment_View"/>
     </widget>
     <addaction name="menuView_Select"/>
-    <addaction name="actionPlot_Selection_WIP"/>
+    <addaction name="actionEdit_Records"/>
     <addaction name="actionClear_Selection"/>
    </widget>
    <widget class="QMenu" name="menuFile">
@@ -1605,9 +1605,9 @@
     <string>Save As... (WIP)</string>
    </property>
   </action>
-  <action name="actionPlot_Selection_WIP">
+  <action name="actionEdit_Records">
    <property name="text">
-    <string>Plot Selection (WIP)</string>
+    <string>Edit Database Records</string>
    </property>
   </action>
   <action name="actionClear_Selection">
