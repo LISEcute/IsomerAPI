@@ -18,7 +18,6 @@
 #include <QFileDialog>
 #include <QShortcut>
 #include <QTextStream>
-#include <QToolBar>
 
 // #include "L_Init/declare_IsomerAPI.h"
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

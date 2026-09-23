@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.7"
-#define isomerAPI_date         "27-AUG-2026"
+#define isomerAPI_version      "1.4.8"
+#define isomerAPI_date         "23-SEP-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -227,3 +227,7 @@
 //-----------------------------
 // 1.4.7           8/25/26  Hudson
 // fixed compilation error from resource file/project file building old files
+
+//-----------------------------
+// 1.4.8           9/23/26  Hudson/Daniel
+// included early version of edit records utility
