@@ -1,6 +1,7 @@
 #include "w_IsomerAPI.h"
 #include "ui_w_IsomerAPI.h"
 #include "ui_d_DatabaseRecords.h"
+#include "L_recordsQueryModel.h"
 #include <QDialog>
 #include <QLabel>
 #include <QMessageBox>
@@ -22,8 +23,27 @@ void IsomerAPI::editDatabaseRecords()
     auto insert = recordUi.insertButton;
     auto remove = recordUi.deleteButton;
     auto close = recordUi.closeButton;
-    QSqlQueryModel records(&dialog);
+    RecordsQueryModel records(&dialog);
+
     table->setModel(&records);
+
+    QFont headerFont = ui->tableView_Isomer->font();
+    headerFont.setPointSize(14);
+
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    table->verticalHeader()->setVisible(false);
+
+    table->horizontalHeader()->setFont(headerFont);
+    table->horizontalHeader()->setStyleSheet(
+        "QHeaderView::section {"
+        "    padding-top: 2px;"
+        "    padding-bottom: 4px;"
+        "    min-height: 18px;"
+        "    font-size: 14px; "
+        "}"
+        );
+
+
     // Bind Designer fields to the database columns; layout lives in the .ui file.
     const QMap<QString, QLineEdit *> fields = {
         {"INDEX_IT", recordUi.record_INDEX_IT},
@@ -84,8 +104,8 @@ void IsomerAPI::editDatabaseRecords()
         if (records.lastError().isValid()) error(records.lastError().text());
     };
     for (auto edit : fields) connect(edit, &QLineEdit::textEdited, &dialog, [&]() { dirty = true; });
-    connect(table, &QTableView::clicked, &dialog, [&](const QModelIndex &index) {
-        if (loading || !discard()) return;
+    auto loadRecord = [&](const QModelIndex &index) {
+        if (loading || !index.isValid() || !discard()) return;
         const auto record = records.record(index.row());
         rowId = record.value(0).toLongLong();
         original.clear();
@@ -95,11 +115,16 @@ void IsomerAPI::editDatabaseRecords()
         }
         dirty = false;
         save->setEnabled(true);
+        add->show();
         add->setEnabled(true);
         insert->hide();
         fieldsWidget->setEnabled(true);
         remove->setEnabled(true);
-        status->setText(tr("Editing an existing record. Save updates it; Delete removes it. Add Record starts a separate new entry."));
+        status->setText(tr("<b>Editing an existing record</b> - Make changes and press <b><i>Save</b></i> to update it; <b><i>Delete</b></i> removes the record. <b><i>Add Record</b></i> starts a separate new entry."));
+    };
+    connect(table->selectionModel(), &QItemSelectionModel::currentChanged,
+            &dialog, [&](const QModelIndex &current, const QModelIndex &) {
+        loadRecord(current);
     });
     connect(add, &QPushButton::clicked, &dialog, [&]() {
         if (!discard()) return;
@@ -116,12 +141,12 @@ void IsomerAPI::editDatabaseRecords()
         fields["LEVEL_ID"]->setText(ids.value(0).toString());
         dirty = false;
         save->setEnabled(false);
-        add->setEnabled(false);
+        add->hide();
         insert->show();
         fieldsWidget->setEnabled(true);
         remove->setEnabled(false);
         table->clearSelection();
-        status->setText(tr("New record â€” enter values, then click Add to Database. Keep the suggested LEVEL_ID for a new level; leave FINAL_LEVEL_ID blank if unknown."));
+        status->setText(tr("<b>Creating new record</b> - enter values, then click <b><i>Add to Database</i></b>. Keep the suggested \"Lvl-ID\" for a new level; leave \"Final Lvl-ID\" blank if unknown."));
         fields["A_IT"]->setFocus();
     });
     auto writeRecord = [&]() {
@@ -247,6 +272,7 @@ void IsomerAPI::editDatabaseRecords()
         for (auto edit : fields) edit->clear();
         save->setEnabled(false); remove->setEnabled(false); refresh();
         fieldsWidget->setEnabled(false);
+        add->show();
         add->setEnabled(true);
         insert->hide();
         status->setText(tr("Record deleted. Select another record or click Add Record."));
@@ -254,6 +280,7 @@ void IsomerAPI::editDatabaseRecords()
     // Handle Close, Escape, and the window close button through the same check.
     connect(close, &QPushButton::clicked, &dialog, &QDialog::reject);
     save->setEnabled(false); remove->setEnabled(false);
+    add->show();
     add->setEnabled(dbIsomLevel.isOpen());
     insert->hide();
     fieldsWidget->setEnabled(false);

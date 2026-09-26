@@ -19,6 +19,18 @@
 #include <QShortcut>
 #include <QTextStream>
 
+const QMap<QString, QString> IsomerAPI::headerMap = {
+    {"INDEX_IT", "RECORD-ID"}, {"A_IT", "A"}, {"Z_IT", "Z"},
+    {"E_GAMMA", "E\u1D67 (keV)"}, {"D_EG", "\u03B4E\u1D67"},
+    {"T12", "T\u2081\u2082 (\u03BCs)"}, {"D_T12", "\u03B4T\u2081\u2082"},
+    {"LEVEL", "E\u2097\u1D65\u2097 (keV)"}, {"D_LEVEL", "\u03B4E\u2097\u1D65\u2097"},
+    {"JPI", "J\u03C0"}, {"IT_RATIO", "I\u1D63"}, {"D_IT_RATIO", "\u03B4I\u1D63"},
+    {"I_GAMMA", "I\u1D67"}, {"D_IG", "\u03B4I\u1D67"},
+    {"M_GAMMA", "M\u1D67"}, {"M_RATIO", "M_RATIO"}, {"D_MRATIO", "D_MRATIO"},
+    {"GAMMA_ID", "\u03B3-ID"}, {"LEVEL_ID", "Lvl-ID"}, {"FINAL_LEVEL_ID", "Final Lvl-ID"},
+    {"SOURCE", "source"}, {"ROW", "ROW"}, {"NAME", "name"}
+};
+
 // #include "L_Init/declare_IsomerAPI.h"
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 IsomerAPI::IsomerAPI(QWidget *parent)
@@ -35,7 +47,7 @@ IsomerAPI::IsomerAPI(QWidget *parent)
 
   setMinimumSize(800, 650);
   resize(1200,650);
-    // table config
+  // table config
   // ui->tableView_Full->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
   /// Database initialization
@@ -134,18 +146,6 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   modelTuples.push_back(std::make_tuple(levelProxy, ui->tableView_IsomerSolo));
   modelTuples.push_back(std::make_tuple(gammaProxy, ui->tableView_Gammas));
   modelTuples.push_back(std::make_tuple(gammaProxy, ui->tableView_GammaSolo));
-
-  QMap<QString, QString> headerMap = {
-      {"INDEX_IT", "\u03B3-ID"}, {"A_IT","A"}, {"Z_IT","Z"},
-      {"E_GAMMA","E\u1D67 (keV)"}, {"D_EG","\u03B4E\u1D67"},
-      {"T12","T\u2081\u2082 (\u03BCs)"}, {"D_T12","\u03B4T\u2081\u2082"},
-      {"LEVEL","E\u2097\u1D65\u2097 (keV)"}, {"D_LEVEL","\u03B4E\u2097\u1D65\u2097"},
-      {"JPI","J\u03C0"}, {"IT_RATIO","I\u1D63"}, {"D_IT_RATIO","\u03B4I\u1D63"},
-      {"I_GAMMA","I\u1D67"}, {"D_IG","\u03B4I\u1D67"},
-      {"M_GAMMA","M\u1D67"}, {"M_RATIO","M_RATIO"}, {"D_MRATIO","D_MRATIO"},
-      {"GAMMA_ID", "\u03B3-ID"}, {"LEVEL_ID", "Lvl-ID"},
-      {"SOURCE","source"}, {"ROW","ROW"}, {"NAME","NAME"}
-  };
 
   QMap<QString, QString> headerMapOFF = {
       {"INDEX_IT",   "γ-ID"},
@@ -286,6 +286,15 @@ IsomerAPI::IsomerAPI(QWidget *parent)
   connect(ui->pb_isomers_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(1);});
   connect(ui->pb_isomers_gammas_view, &QPushButton::clicked, this, [this](){ui->stackedWidget->setCurrentIndex(2);});
 
+  connect(ui->tb_clearA, &QPushButton::clicked, this, [this](){clearRange("A");});
+  connect(ui->tb_clearZ, &QPushButton::clicked, this, [this](){clearRange("Z");});
+  connect(ui->tb_clearT12, &QPushButton::clicked, this, [this](){clearRange("T12");});
+  connect(ui->tb_clearEGAM, &QPushButton::clicked, this, [this](){clearRange("EGAM");});
+  connect(ui->tb_clearELVL, &QPushButton::clicked, this, [this](){clearRange("ELVL");});
+
+
+
+
 
 
   // connect(ui->tableView_Dev->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -398,3 +407,4 @@ void IsomerAPI::on_actionExit_triggered()
 {
   exit(2);
 }
+

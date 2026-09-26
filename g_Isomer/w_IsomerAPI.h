@@ -40,6 +40,7 @@ public:
 
     QMap<QPair<int, int>, Isotope> prepData();
 
+
     void writeDecayTXT(QPair<int,int> isoKey, float maxT12);
 
     Level decayAlgo(Level *selLvl, QMap<int, Level> lvlMap, double T12_deadEnd, bool transBool);
@@ -47,6 +48,7 @@ public:
 
 
     QList<SchemeKey> selectedLevelKeys(QTableView *view) const;
+    static const QMap<QString, QString> headerMap;
 
     QTableView *getTableView(int page, SchemeType schemeType);
 private slots:
@@ -75,7 +77,13 @@ private slots:
 
 
 
+
+    void clearRange(QString suffix);
+
+
 private:
+
+    // static const QMap<QString, QString> headerMap;
 
     Ui::IsomerAPI *ui;
     QSqlDatabase dbIsomLevel;
