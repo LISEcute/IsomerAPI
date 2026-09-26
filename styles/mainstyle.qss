@@ -12,8 +12,8 @@ border-radius: 5px;
 }
 
 QGroupBox::disabled {
-color: #8A8AAE;
-border: 1px solid #8A8AAE;
+color: #688783;
+border: 1px solid #688783;
 border-radius: 4px;
    margin-top: 0.5em;
    background-color: rgba(224,224,224,0.5);

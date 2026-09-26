@@ -1,4 +1,4 @@
-#define isomerAPI_version      "1.4.9"
+#define isomerAPI_version      "1.4.10"
 #define isomerAPI_date         "26-SEP-2026"
 
 //-----------------------------
@@ -235,3 +235,7 @@
 //-----------------------------
 // 1.4.9           9/26/26  Hudson
 // Revised edit records utility, added range clear buttons
+
+//-----------------------------
+// 1.4.10           9/26/26  Hudson
+// Fixed disabled groupbox coloring in mainstyle.qss
