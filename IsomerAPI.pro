@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.8.0 # major.minor.patch.build
-else:VERSION  = 1.4.8   # major.minor.patch
+win32:VERSION = 1.4.9.0 # major.minor.patch.build
+else:VERSION  = 1.4.9   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {
@@ -28,7 +28,7 @@ DEFINES += IsomerAPI_case
 # Debug trace switch:
 #   default: hide qDebug() output
 #   enable : run qmake with ISOMERAPI_DEBUG_TRACE=1
-isEmpty(ISOMERAPI_DEBUG_TRACE): ISOMERAPI_DEBUG_TRACE = 1
+isEmpty(ISOMERAPI_DEBUG_TRACE): ISOMERAPI_DEBUG_TRACE = 0
 equals(ISOMERAPI_DEBUG_TRACE, 1) {
     DEFINES += ISOMERAPI_DEBUG_TRACE
     message("IsomerAPI qDebug trace output enabled")

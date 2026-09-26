@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.8"
-#define isomerAPI_date         "23-SEP-2026"
+#define isomerAPI_version      "1.4.9"
+#define isomerAPI_date         "26-SEP-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
