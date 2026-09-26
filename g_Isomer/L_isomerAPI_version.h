@@ -227,3 +227,11 @@
 //-----------------------------
 // 1.4.7           8/25/26  Hudson
 // fixed compilation error from resource file/project file building old files
+
+//-----------------------------
+// 1.4.8           9/23/26  Hudson/Daniel
+// included early version of edit records utility
+
+//-----------------------------
+// 1.4.9           9/26/26  Hudson
+// Revised edit records utility, added range clear buttons

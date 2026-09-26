@@ -28,7 +28,7 @@ DEFINES += IsomerAPI_case
 # Debug trace switch:
 #   default: hide qDebug() output
 #   enable : run qmake with ISOMERAPI_DEBUG_TRACE=1
-isEmpty(ISOMERAPI_DEBUG_TRACE): ISOMERAPI_DEBUG_TRACE = 0
+isEmpty(ISOMERAPI_DEBUG_TRACE): ISOMERAPI_DEBUG_TRACE = 1
 equals(ISOMERAPI_DEBUG_TRACE, 1) {
     DEFINES += ISOMERAPI_DEBUG_TRACE
     message("IsomerAPI qDebug trace output enabled")
@@ -67,6 +67,7 @@ HEADERS += \
     g_Isomer/L_isoStructs.h \
     g_Isomer/L_isomerAPI_version.h \
     g_Isomer/L_levelProxyModel.h \
+    g_Isomer/L_recordsQueryModel.h \
     g_Isomer/d_ColumnsOptions.h \
     g_Isomer/d_DownloadFiles.h \
     g_Isomer/d_DrawingOptions.h \

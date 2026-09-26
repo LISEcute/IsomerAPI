@@ -506,3 +506,22 @@ QTableView *IsomerAPI::getTableView(int page, SchemeType schemeType) {
     return nullptr; // Fallback for any unexpected values
 }
 
+void IsomerAPI::clearRange(QString suffix) {
+    if (suffix == "A") {
+        ui->le_numA1->setText("");
+        ui->le_numA2->setText("");
+    } else if (suffix == "Z") {
+        ui->le_numZ1->clear();
+        ui->le_numZ2->clear();
+    } else if (suffix == "T12") {
+        ui->le_T121->clear();
+        ui->le_T122->clear();
+    } else if (suffix == "EGAM") {
+        ui->le_GE1->clear();
+        ui->le_GE2->clear();
+    } else if (suffix == "ELVL") {
+        ui->le_FINE1->clear();
+        ui->le_FINE2->clear();
+    }
+}
+
