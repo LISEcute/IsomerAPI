@@ -12,8 +12,8 @@ win32-msvc {
 DESTDIR = $$PWD/_install_MSVC
 }
 
-win32:VERSION = 1.4.10.0 # major.minor.patch.build
-else:VERSION  = 1.4.10   # major.minor.patch
+win32:VERSION = 1.4.11.0 # major.minor.patch.build
+else:VERSION  = 1.4.11   # major.minor.patch
 VERSION_STR = $$section(VERSION, ., 0, 2)
 
 win32 {

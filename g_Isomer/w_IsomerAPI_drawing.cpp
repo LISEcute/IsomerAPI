@@ -116,8 +116,11 @@ void IsomerAPI::openDrawing()
     QString drawSelection = "";
     SchemeMap schemeMap;
 
-    auto showLevelScheme = [this](const SchemeMap &schemes) {
-        auto *levelScheme = new LevelScheme(schemes, this);
+    auto showLevelScheme = [](const SchemeMap &schemes) {
+        // Keep the scheme as an independent top-level window.  Making it an
+        // owned window of IsomerAPI causes Windows to keep it above its owner,
+        // preventing the main window from being brought back to the front.
+        auto *levelScheme = new LevelScheme(schemes);
         levelScheme->setWindowFlag(Qt::Window, true);
         levelScheme->setAttribute(Qt::WA_DeleteOnClose);
         levelScheme->show();

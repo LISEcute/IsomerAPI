@@ -7,6 +7,67 @@
 #include <QStaticText>
 #include <QTextDocument>
 
+#include <cmath>
+
+namespace {
+
+QString halfLifeQualifier(const QString &uncertainty)
+{
+    const QString qualifier = uncertainty.trimmed().toUpper();
+
+    if (qualifier == "LT") return QStringLiteral("< ");
+    if (qualifier == "GT") return QStringLiteral("> ");
+    if (qualifier == "GE") return QStringLiteral("\u2265 ");
+    if (qualifier == "LE") return QStringLiteral("\u2264 ");
+
+    return QString();
+}
+
+QString formatHalfLife(double halfLifeMicroseconds, const QString &uncertainty)
+{
+    // Half-lives are stored in microseconds.  Pick the largest unit that
+    // keeps the displayed value at least one, so values such as 6e-3 us are
+    // rendered as 6 ns instead of scientific notation.
+    struct Unit {
+        double microseconds;
+        QString suffix;
+    };
+
+    static const Unit units[] = {
+        {1e6,  "s"},
+        {1e3,  "ms"},
+        {1.0,  "\u03BCs"},
+        {1e-3, "ns"},
+        {1e-6, "ps"},
+        {1e-9, "fs"},
+        {1e-12, "as"},
+        {1e-15, "zs"}
+    };
+
+    const QString qualifier = halfLifeQualifier(uncertainty);
+
+    if (!std::isfinite(halfLifeMicroseconds) || halfLifeMicroseconds <= 0.0) {
+        return qualifier + QString("%1 \u03BCs")
+            .arg(halfLifeMicroseconds, 0, 'e', 2);
+    }
+
+    for (const Unit &unit : units) {
+        if (halfLifeMicroseconds >= unit.microseconds) {
+            return qualifier + QString("%1 %2")
+                .arg(halfLifeMicroseconds / unit.microseconds, 0, 'g', 3)
+                // .arg(QString::fromLatin1(unit.suffix));
+                .arg(unit.suffix);
+        }
+    }
+
+    // Keep a sensible unit even for values smaller than a zeptosecond.
+    return qualifier + QString("%1 zs")
+        .arg(halfLifeMicroseconds / units[std::size(units) - 1].microseconds,
+             0, 'g', 3);
+}
+
+} // namespace
+
 
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -140,17 +201,18 @@ void graphicsView::paint(QPainter *painter,
     QString levelText = QString("%1 keV")
                             .arg(gs.lvlEnergy, 0, 'f', 0);
 
-    QString halfLifeText = QString("%2 \u03BCs")
-                               .arg(gs.halfLife, 0, 'e',2);
-    // qDebug() << "[gsDraw: halfLiftext]" << halfLifeText;
+    if (gs.halfLife != 0.0) {
+        QString halfLifeText = formatHalfLife(gs.halfLife, gs.dhalfLife);
+        // qDebug() << "[gsDraw: halfLiftext]" << halfLifeText;
 
-    textWidth = metrics.horizontalAdvance(levelText);
-    textRect.setRect(lineRight + infoHOffset, yBase - textHeight/2, textWidth, textHeight);
-    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline,levelText);
+        textWidth = metrics.horizontalAdvance(levelText);
+        textRect.setRect(lineRight + infoHOffset, yBase - textHeight/2, textWidth, textHeight);
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline,levelText);
 
-    textWidth = metrics.horizontalAdvance(halfLifeText);
-    textRect.setRect(lineRight + infoHOffset + halfLifeOffset, yBase - textHeight/2, textWidth, textHeight);
-    painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline, halfLifeText);
+        textWidth = metrics.horizontalAdvance(halfLifeText);
+        textRect.setRect(lineRight + infoHOffset + halfLifeOffset, yBase - textHeight/2, textWidth, textHeight);
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignBaseline, halfLifeText);
+    }
 
     // qDebug() << "[gsDraw: TRIGGERED]" << L_isotope.A << L_isotope.Z;
 
@@ -182,8 +244,7 @@ void graphicsView::paint(QPainter *painter,
         QString levelText = QString("%1 keV")
                                 .arg(lvl.lvlEnergy, 0, 'f', 0);
 
-        QString halfLifeText = QString("%2 \u03BCs")
-                                .arg(lvl.halfLife, 0, 'e',2);
+        QString halfLifeText = formatHalfLife(lvl.halfLife, lvl.dhalfLife);
 
         textWidth = metrics.horizontalAdvance(levelText);
         textRect.setRect(lineRight + infoHOffset, y - textHeight/2, textWidth, textHeight);

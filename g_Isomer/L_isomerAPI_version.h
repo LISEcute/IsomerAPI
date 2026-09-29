@@ -1,5 +1,5 @@
-#define isomerAPI_version      "1.4.10"
-#define isomerAPI_date         "26-SEP-2026"
+#define isomerAPI_version      "1.4.11"
+#define isomerAPI_date         "29-SEP-2026"
 
 //-----------------------------
 // 1.1.110        11/10/25
@@ -239,3 +239,10 @@
 //-----------------------------
 // 1.4.10           9/26/26  Hudson
 // Fixed disabled groupbox coloring in mainstyle.qss
+
+//-----------------------------
+// 1.4.11           9/29/26  Hudson
+// Updated level scheme to convert halflives into appropriate units
+// Fix level scheme window always displaying on top
+// Includes </>/<=/>= signs for uncertainties in halflives
+// Fixed some UI tweaks (A_IT --> A, fix Isomer table title in both pages)
